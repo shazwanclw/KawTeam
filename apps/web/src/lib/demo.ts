@@ -1,6 +1,7 @@
 export type ProfileId = 'organiser' | 'teammate' | 'observer';
 export type Stage = 'brief' | 'research' | 'negotiation' | 'decision' | 'decided';
 export type Vendor = {
+  liaisonStatus?: 'discovered'|'awaiting_reply'|'negotiating'|'ready';
   id: string; name: string; initials: string; location: string; color: string;
   executionMode?: 'demo' | 'live'; sourceUrl?: string; evidenceExcerpt?: string; quantity?: number; validUntil?: string; serverFit?: string; goodsSen: number; deliverySen: number | null; initialSen: number;
   arrival: string | null; specsConfirmed: boolean; status: string; description: string;
@@ -8,6 +9,9 @@ export type Vendor = {
 };
 export type Activity = { id: string; title: string; detail: string; time: string; kind: 'research' | 'mail' | 'offer' | 'human' };
 export type ProcurementCase = {
+  taskWorkflowVersion?: number;selectionTarget?:number;
+  approvalQueue?: {vendorId:string;status:'approval_needed'|'waitlist'|'approved'|'secured'|'rejected'|'not_selected'|'liaising'|'needs_terms';reason:string;rank?:number;termsHash?:string}[];
+  vendorDecisions?:{id:string;vendorId:string;status:string;termsHash:string;approvedAt:string;confirmedAt?:string;confirmationMessageId?:string;executionMode:string}[];
   taskId?:string|null;workflowMode?:'research'|'liaise';workflowPlan?:{id:string;label:string;status:string;detail:string}[];shortlistVendorIds?:string[];
   backendRevision?: number; eventId?: string; messages?: {id:string;vendorId:string;direction:string;body:string;time:string;executionMode:string}[]; id: string; title: string; goal: string; quantity: number; budgetSen: number; targetSen: number;
   deadline: string; location: string; stage: Stage; selectedVendorId: string | null;
@@ -17,6 +21,8 @@ export type ProcurementCase = {
 export type DemoState = { version: 2; cases: ProcurementCase[] };
 export type NewBrief = { title: string; goal: string; quantity: number; budgetSen: number; targetSen: number; deadline: string; location: string };
 export type Action =
+  | {type:'liaise-task';caseId:string}
+  | {type:'approve-vendor'|'reject-vendor'|'confirm-vendor';caseId:string;vendorId:string}
   | { type: 'research' | 'approve' | 'reject' | 'send' | 'sync'; caseId: string }
   | { type: 'choose'; caseId: string; vendorId: string }
   | { type: 'prepare'; caseId: string; vendorId: string }

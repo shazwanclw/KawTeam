@@ -1,8 +1,8 @@
 # KawTeam
 
-**If you have trouble searching, KawTeam with us!**
+**What are we going to KawTeam today?**
 
-KawTeam starts with a conversation. Pick a project for context, or send a request without one and KawTeam creates a project while saving your first message. Projects have their own chat, recent activity, approval checkpoints and optional subprojects. A project name and optional Google Drive link replace the upload flow. Memory, conversations and assistant preferences persist in Supabase. There is no login or procurement intake form.
+KawTeam starts with a conversation. Pick a project for context, or send a request without one and KawTeam creates a project while saving your first message. Each new conversation creates a task inside a project; choosing an existing task resumes its conversation. A project name and optional Google Drive link replace the upload flow. Memory and conversations persist in Supabase. There is no login or procurement intake form.
 
 ## Run locally
 
@@ -26,9 +26,19 @@ Open **http://localhost:3000**. Local ignored environment files already connect 
 
 The hamburger opens Chat, Overview, Projects and Connections. Create a project with the **plus beside Projects**; use the search icon to filter the list. The empty project picker also offers Add a project. Try “Find shirt printing vendors for 50 shirts within RM2,000 by 25 October 2026 in Subang Jaya.” Missing facts are requested in the conversation. Enter sends; Shift+Enter adds a line.
 
-Each project starts with Chat and has Recent Activity, Approval and Subprojects tabs. **New subproject** creates a separate conversation sharing the parent project's memory. **Assistant settings** beside the composer offers Automatic, Research first or Existing vendor, a preferred supplier, a shortlist cap of three and custom instructions. Repeat orders skip discovery and require fresh terms; previous prices, approvals and supplier decisions are not copied.
+Projects open directly to chat, with **New Task** selected by default. Send a new request to create a named task, or use **Choose task** to expand an existing task's saved conversation. Follow-up questions and edits stay in that task. Changing quantity, budget, dates or specifications updates its request in place and requires fresh supplier terms. **All Task** and **Recent Activity** are below the composer; there are no top project tabs or Subprojects controls.
 
-**Overview** shows the latest 15 saved actions, approval checkpoints and a calendar of saved dates across projects. Activity and approval rows open details; global approval details lead to project review. **Connections** contains suppliers with recorded messages or a prior human selection, with history and a fresh-request shortcut. Research candidates and unsent drafts alone do not count as relationships.
+Task rows display pending approval counts. Opening a task shows **Secured** and a ranked **Approval** queue on the left, with **Upcoming events** on the right. Use **Continue conversation** to return to its chat. A request for 50 shirts normally targets one supplier; a request for 10 event vendors targets ten placements. Item quantity and supplier target are stored separately. Existing supplier reuse through Connections requests fresh terms. Earlier project-wide conversations and saved requests remain accessible as tasks.
+
+The sidebar starts closed and stays open across navigation until you close it. **Overview** sections appear only in that sidebar. Recent Activity lists up to 15 completed business milestones, excluding internal parsing, planning and setup logs. Contact totals count actual recorded outgoing messages, never unsent drafts or discovered candidates.
+
+**Approval** has **Approval Needed** and **Approved** filters. Supplier checkpoints appear only after recorded final quotation replies match the current request and meet its requirements. All discovered candidates remain in the liaison pool; the old three-candidate cap is removed. Suitable final quotes are ordered by confirmed landed cost, delivery date and name. Single-supplier tasks expose one active approval slot; multi-supplier tasks expose the remaining number of slots. Rejecting advances the waitlist. Filling the target marks the remaining suitable candidates not selected locally, without claiming rejection emails were sent.
+
+A row opens the request, quoted terms and saved reply summaries. Only the organiser can approve or reject there, or use **Open in project** for the task. Approval reserves a slot and stays **Awaiting confirmation**. **Secured requires a separate supplier confirmation matching the approved terms**; no automatic purchase, payment or signature occurs. Requirement changes preserve prior decisions as superseded history and clear current quotes/approvals.
+
+**Calendar** marks saved dates with red dots and shows Upcoming dates and Past dates for the displayed month. Selecting a day filters that month's list; changing month resets the day filter. Today's dates remain upcoming. Past dates do not imply that unfinished project work is completed. Task deadlines, proposed/confirmed delivery dates and pending quote expiries feed the calendar. Sidebar badges show pending approval checkpoints and distinct upcoming saved dates.
+
+**Connections** contains suppliers with recorded messages or a prior human selection, with history and a fresh-request shortcut. Research candidates and unsent drafts alone do not count as relationships.
 
 Switch Organiser, Teammate and Observer using the profile button. Server-side permissions protect mutations, approvals and selection, but this deliberately shared public demo is not private personal authentication. **Only the organiser chooses a final vendor.** Choosing never buys, pays or signs anything.
 
@@ -54,10 +64,10 @@ Refresh replaces each file's current version and recomputes project facts. A com
 
 ## Current implementation
 
-- Supabase projects, optional subprojects, assistant settings, Drive snapshots, extracted memory, scoped conversations, requests, drafts and human decisions. Atomic saves/chat completion, conflict detection and retry protection. Five additive migrations are in `supabase/migrations`, applied to the connected KawTeam project.
+- Supabase projects, task conversations, ranked supplier checkpoints, Drive snapshots, extracted memory, scoped conversations, requests, drafts and human decisions. Atomic saves/chat completion, conflict detection and retry protection. Seven additive migrations are in `supabase/migrations`, applied to the connected KawTeam project.
 - Project-scoped context retrieval/citations. Stable Drive file identities replace stale versions and exclude archived documents from memory. Existing document records remain compatible.
 - Optional Gemini conversation and Tavily source discovery adapters. **Neither key is configured yet.** Public-source candidates remain unquoted; unknown terms and contacts are never invented.
-- Controlled tote scenario: **Prepare enquiry → Approve draft → Send in demo → Check demo reply**. Exact-message hash/revision, 30-minute approval expiry, single-use send and three-round cap. Replies are fictional and saved; no external email is sent.
+- Legacy controlled tote scenario: **Prepare enquiry → Approve draft → Send in demo → Check demo reply**. Exact-message hash/revision, 30-minute approval expiry, single-use send and three-round cap. Replies are fictional and saved; no external email is sent.
 - Outcome report with constraints, evidence references, pending/no-deal outcomes and explicitly simulated potential savings for the sample scope.
 
 **WorkBuddy remains deferred at your request. External email is not connected.** The health-only scaffold is preserved; live agent execution and real supplier email require their integrations. Until AI/search keys are supplied, requests and workflow plans save with honest setup notes. Working status appears only during an actual request; no background execution is claimed. No public deployment has been created.
@@ -80,16 +90,19 @@ In `apps/api`: `.venv/Scripts/python.exe -m pytest -q` and `.venv/Scripts/python
 
 In `apps/web`: `npm run test`, `npm run lint`, `npm run typecheck`, `npm run build`. Stop the dev server before building the same directory. With both servers running and Playwright Chromium installed, run `npm run test:e2e`.
 
-`npm run test:e2e` runs `tests/chat-home-browser.mjs`. Browser tests create labelled QA projects in the connected workspace; remove only those test records after inspection. Screenshots are ignored under `apps/web/test-results/`. The obsolete overview/upload browser test was removed.
+`npm run test:e2e` runs the read-only task layout check. `node tests/refinement-browser.mjs` checks the chat, persistent sidebar, overview and calendar. Screenshots are ignored under `apps/web/test-results/`.
 
-For the controlled outreach check, run from `apps/api`:
+For the complete saved task/liaison check, run from `apps/api`:
 
 ```powershell
 $env:PYTHONPATH='src'
-.venv/Scripts/python.exe tests/live_outreach_browser.py
+$env:KAWTEAM_TEST_URL='http://127.0.0.1:3000'
+.venv/Scripts/python.exe tests/live_task_browser.py
 ```
 
-It verifies the project approval dialog, exact approval, one simulated send, saved reply, Connections history and fresh-request continuation, then restores the original sample case. `tests/live_database.py` is a separate opt-in concurrency check.
+This opt-in check creates a labelled QA project, verifies separate tasks, continued edits, role restrictions, ranked rejection/approval and a separate simulated supplier confirmation. It restores the original tote sample in `finally`; remove only the QA project ID printed afterward. Its browser script requires the wrapper's explicit mutation flag. No external email is sent.
+
+`tests/live_task_database.py` is a separate opt-in database check for concurrent task starts/retries, preserved legacy history, permissions and atomic in-place request/chat completion. It prints the labelled disposable project ID for scoped cleanup. Older chat-home/outreach/choice browser scripts document previous UI versions and are superseded by the current task checks.
 
 ## Free deployment preparation
 
@@ -101,4 +114,4 @@ Database tables deny direct public access. Scoped RPCs require a separate secret
 
 Submission: public GitHub repository, deployed app URL, presentation PDF, group name and campus branch. Aim **11 October 08:45 MYT**, ahead of the supplied 09:00 buffer cutoff.
 
-See the [current chat/Drive checkpoint](docs/CHAT_HOME_DRIVE_CHECKPOINT.md), [implementation plan](docs/plans/2026-10-10-chat-home-drive.md), [earlier makeover](docs/PROJECT_MAKEOVER_CHECKPOINT.md), [backend checkpoint](docs/PHASE_3_7_CHECKPOINT.md) and [checklist](KAWTEAM_BUILD_CHECKLIST.md). Original blueprint retained.
+See the [current task checkpoint](docs/TASK_CONVERSATIONS_CHECKPOINT.md), [UI refinement checkpoint](docs/CHAT_OVERVIEW_REFINEMENT_CHECKPOINT.md), [chat/Drive checkpoint](docs/CHAT_HOME_DRIVE_CHECKPOINT.md), [implementation plan](docs/plans/2026-10-10-chat-home-drive.md), [earlier makeover](docs/PROJECT_MAKEOVER_CHECKPOINT.md), [backend checkpoint](docs/PHASE_3_7_CHECKPOINT.md) and [checklist](KAWTEAM_BUILD_CHECKLIST.md). Original blueprint retained.

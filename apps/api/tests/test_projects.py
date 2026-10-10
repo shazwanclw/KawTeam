@@ -100,7 +100,7 @@ def test_repeat_vendor_requires_fresh_terms_and_does_not_research(monkeypatch):
             headers=HEADERS,
             json={
                 "eventId": "tech-night",
-                "message": "I want to buy 20 more shirts from that vendor",
+                "message": "I want to buy 20 more shirts from Willow Supply Studio",
             },
         )
         assert reply.status_code == 200
@@ -150,6 +150,7 @@ def test_missing_facts_can_be_completed_in_followup_chat():
             headers=HEADERS,
             json={
                 "eventId": "tech-night",
+                "taskId": first.json()['taskId'],
                 "message": "Deadline: 2026-10-25\nLocation: Subang Jaya",
             },
         )
@@ -165,7 +166,7 @@ def test_missing_facts_can_be_completed_in_followup_chat():
 def test_followup_budget_override_wins_and_project_references_are_ambiguous():
     with client() as c:
         sign_in(c)
-        c.post(
+        first = c.post(
             "/chat",
             headers=HEADERS,
             json={
@@ -178,6 +179,7 @@ def test_followup_budget_override_wins_and_project_references_are_ambiguous():
             headers=HEADERS,
             json={
                 "eventId": "tech-night",
+                "taskId": first.json()["taskId"],
                 "message": "Actually budget RM900. Deadline: 2026-10-25\nLocation: Subang",
             },
         )
@@ -189,7 +191,7 @@ def test_followup_budget_override_wins_and_project_references_are_ambiguous():
         assert case["budgetSen"] == 90000
 
 
-def test_research_mode_does_not_reuse_old_supplier_and_shortlist_is_capped(monkeypatch):
+def test_research_mode_preserves_entire_candidate_pool_for_liaison(monkeypatch):
     from fastapi.testclient import TestClient
     from test_api import MemoryRepository
 
@@ -233,7 +235,7 @@ def test_research_mode_does_not_reuse_old_supplier_and_shortlist_is_capped(monke
             if case["id"] == response.json()["assistant"]["caseId"]
         )
         assert case["workflowMode"] == "research"
-        assert len(case["shortlistVendorIds"]) == 2
+        assert len(case["shortlistVendorIds"]) == 3
         assert case["selectedVendorId"] is None
         assert case["workflowPlan"][-1]["status"] == "pending"
 

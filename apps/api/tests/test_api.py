@@ -150,14 +150,14 @@ class MemoryRepository:
         backup = copy.deepcopy((self.rows, self.requests))
         try:
             if case:
-                self.save("case", case, 0, actor, "chat-case-" + case["id"], payload_hash(case))
+                self.save("case", case, case.get('backendRevision', 0), actor, "chat-case-" + message['inReplyTo'], payload_hash(case))
             thread["messages"].append(message)
             return self.save(
                 "thread",
                 thread,
                 thread["backendRevision"],
                 actor,
-                "chat-message-" + message["id"],
+                "chat-message-" + conversation_id + '-' + message["id"],
                 payload_hash(message),
             )
         except Exception:
@@ -171,6 +171,27 @@ class MemoryRepository:
         if old_digest != digest:
             raise ValueError("Idempotency key reused")
         return result
+
+    def start_task(self, event_id, task, message, actor):
+        from kawteam.repository import payload_hash
+        event = self.get('event', event_id)
+        backup = copy.deepcopy((self.rows, self.requests))
+        try:
+            existing = next((t for t in event.get('tasks', []) if t['id'] == task['id']), None)
+            if not existing:
+                if len(event.get('tasks', [])) >= 30:
+                    raise ValueError('Maximum 30 tasks per project.')
+                event['tasks'] = [*event.get('tasks', []), task]
+                self.save('event', event, event['backendRevision'], actor, 'task-start-'+task['id'], payload_hash(task))
+                if task.get('sourceThreadId'):
+                    source = self.get('thread', task['sourceThreadId'])
+                    for previous in source['messages']:
+                        self.append_message(event_id, previous, actor, task_id=task['id'])
+            self.append_message(event_id, message, actor, task_id=task['id'])
+            return self.get('event', event_id)
+        except Exception:
+            self.rows, self.requests = backup
+            raise
 
     def save(self, kind, data, expected, actor, key, digest):
         prior = self.prior(key, digest)

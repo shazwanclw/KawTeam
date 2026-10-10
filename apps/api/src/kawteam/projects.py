@@ -139,15 +139,15 @@ def workflow_plan(mode, search_connected, shortlist):
         },
         {
             "id": "shortlist",
-            "label": "Review shortlist",
+            "label": "Verify candidate pool",
             "status": "pending" if shortlist else "blocked",
-            "detail": f"{len(shortlist)} candidate(s). No verified best-vendor ranking without quotes.",
+            "detail": f"{len(shortlist)} candidate(s) retained for liaison. Ranking needs final quotes.",
         },
         {
             "id": "outreach",
-            "label": "Approve and send enquiries",
+            "label": "Liaise with all suitable suppliers",
             "status": "blocked",
-            "detail": "Exact-message approval and a connected email provider required. Nothing sent.",
+            "detail": "Verified supplier contacts and a connected email provider are required. Non-binding enquiries only; nothing sent.",
         },
         {
             "id": "quotes",
@@ -157,8 +157,8 @@ def workflow_plan(mode, search_connected, shortlist):
         },
         {
             "id": "decision",
-            "label": "Your final decision",
+            "label": "Your approval, then supplier confirmation",
             "status": "pending",
-            "detail": "The organiser chooses the supplier.",
+            "detail": "Rank complete final replies for human approval. A separate supplier confirmation is required before secured.",
         },
     ]

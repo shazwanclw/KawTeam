@@ -1,11 +1,12 @@
 'use client';
 
-import {createContext,useContext,useEffect,useRef,useState,type ReactNode} from 'react';
+import {createContext,useContext,useEffect,useRef,useState,type ReactNode,type Dispatch,type SetStateAction} from 'react';
 import {applyAction,initialState,restoreState,profiles,type Action,type DemoState,type ProfileId} from '@/lib/demo';
 import {api,type WorkspaceState,type Connections} from '@/lib/workspace';
 import {Icon} from './icon';
 
 type ContextValue={state:WorkspaceState;profile:ProfileId;isApi:boolean;busy:boolean;loading:boolean;connections:Connections|null;
+  navOpen:boolean;setNavOpen:Dispatch<SetStateAction<boolean>>;
   switchProfile:(id:ProfileId)=>Promise<void>;perform:(action:Action,message?:string)=>Promise<boolean>;
   refresh:()=>Promise<void>;acceptState:(value:WorkspaceState|((previous:WorkspaceState)=>WorkspaceState))=>void;notify:(message:string)=>void};
 const Context=createContext<ContextValue|null>(null);
@@ -16,6 +17,7 @@ export function DemoProvider({children}:{children:ReactNode}) {
   const isApi=process.env.NEXT_PUBLIC_DATA_MODE==='api';
   const [state,setState]=useState<WorkspaceState>(()=>extend(isApi?{version:2,cases:[]}:initialState()));
   const [profile,setProfile]=useState<ProfileId>('organiser');
+  const [navOpen,setNavOpen]=useState(false);
   const [toast,setToast]=useState('');const [loading,setLoading]=useState(isApi);const [busy,setBusy]=useState(false);
   const [connectionError,setConnectionError]=useState('');const [connections,setConnections]=useState<Connections|null>(null);
   const running=useRef(false);
@@ -68,7 +70,7 @@ export function DemoProvider({children}:{children:ReactNode}) {
     try{if(isApi)await api('session',{profile:id});setProfile(id);localStorage.setItem('kawteam:profile',id);setToast(`Viewing as ${profiles.find(p=>p.id===id)!.role}.`);}
     catch(error){setToast(error instanceof Error?error.message:'Profile change failed.');}
   }
-  return <Context.Provider value={{state,profile,isApi,busy,loading,connections,switchProfile,perform,refresh,acceptState:setState,notify:setToast}}>
+  return <Context.Provider value={{state,profile,isApi,busy,loading,connections,navOpen,setNavOpen,switchProfile,perform,refresh,acceptState:setState,notify:setToast}}>
     {connectionError&&<div className="connection-error" role="alert">{connectionError}<button onClick={()=>void refresh().catch(e=>setConnectionError(e.message))}>Retry connection</button></div>}
     {children}
     {toast&&<div className="toast" role="status"><Icon name="check" size={18}/><span>{toast}</span><button aria-label="Dismiss notification" onClick={()=>setToast('')}><Icon name="close" size={16}/></button></div>}

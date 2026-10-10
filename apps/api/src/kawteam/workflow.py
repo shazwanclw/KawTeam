@@ -9,6 +9,8 @@ from pathlib import Path
 from uuid import uuid4
 from zoneinfo import ZoneInfo
 
+from .tasks import task_transition
+
 
 def seed():
     return json.loads(Path(__file__).with_name("seed.json").read_text(encoding="utf-8"))
@@ -62,6 +64,10 @@ def log(c, title, detail, kind="human"):
 
 def transition(original, actor, action):
     kind = action["type"]
+    if kind in {'liaise-task', 'approve-vendor', 'reject-vendor', 'confirm-vendor'}:
+        return task_transition(original, actor, action)
+    if original.get('taskWorkflowVersion') and kind == 'choose':
+        raise ValueError('Use the ranked task approval queue for this request.')
     if actor not in {"organiser", "teammate", "observer"} or actor == "observer":
         raise PermissionError("This profile is view-only.")
     if kind in {"choose", "approve", "reject", "send"} and actor != "organiser":

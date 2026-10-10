@@ -1,5 +1,7 @@
 # StakeMate AI — Complete Hackathon Blueprint
 
+> **KawTeam workflow amendment, 11 October 2026:** The user's latest task workflow supersedes earlier shortlist and outgoing-message approval descriptions below. Every new conversation starts a task within a selected, inferred or newly named project; subsequent messages continue the selected task. Research retains the full evidence-backed candidate pool for non-binding liaison through connected providers. Final, complete replies are ranked for human approval, with a waitlist and one or multiple placement slots according to the request. Rejection advances the queue; filling the target closes other candidates locally. Only a separate supplier confirmation matching approved terms makes a placement Secured. Requirement edits need fresh terms. WorkBuddy remains deferred and real email is not connected; the tote demonstration is explicitly simulated. See [the current implementation checkpoint](docs/TASK_CONVERSATIONS_CHECKPOINT.md).
+
 > **Track:** WorkBuddy Track 2 — Agentic Solutions  
 > **Product tagline:** *From First Contact to Final Agreement.*  
 > **Core idea:** An AI stakeholder liaison agent powered by Tencent WorkBuddy that discovers, evaluates, engages, negotiates, coordinates, and verifies outcomes with external stakeholders.

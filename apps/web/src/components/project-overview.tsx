@@ -7,24 +7,30 @@ import {Button} from '@/components/ui/button';
 import {Calendar} from '@/components/ui/calendar';
 import {useDemo} from './workspace-context';
 import {money,totalCost} from '@/lib/demo';
-import type {WorkspaceState,EventMemory} from '@/lib/workspace';
+import type {EventMemory} from '@/lib/workspace';
 
-export type ScheduledItem={id:string;projectId?:string;project:string;label:string;date:string;href:string};
-export function scheduledItems(state:WorkspaceState):ScheduledItem[]{
-  const items:ScheduledItem[]=[];
-  for(const project of state.events){for(const [key,label] of [['eventDate','Event date'],['deadline','Delivery deadline']]){const date=project.facts[key];if(typeof date==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(date))items.push({id:`${project.id}-${key}`,projectId:project.id,project:project.name,label,date,href:`/projects/${project.id}`});}}
-  for(const c of state.cases){if(items.some(d=>d.projectId===c.eventId&&d.date===c.deadline))continue;const project=state.events.find(p=>p.id===c.eventId);items.push({id:c.id,projectId:c.eventId,project:project?.name||c.title,label:c.title,date:c.deadline,href:`/cases/${c.id}`});}
-  return items.sort((a,b)=>a.date.localeCompare(b.date));
-}
+import {scheduledItems,scheduleForMonth,malaysiaToday} from '@/lib/schedule';
+import type {ScheduledItem} from '@/lib/schedule';
+export {scheduledItems} from '@/lib/schedule';
 const longDate=(iso:string)=>new Date(iso+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
 const shortDate=(iso:string)=>new Date(iso+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'});
 export function ProjectMark({project}:{project:EventMemory}){return <span className={`project-mark tone-${project.name.length%3}`}><Folder size={20} strokeWidth={1.7}/></span>;}
 
 export function Schedule({large=false}:{large?:boolean}){
-  const {state}=useDemo();const dates=scheduledItems(state);const [selected,setSelected]=useState<Date>();
+  const {state}=useDemo();const dates=scheduledItems(state);const today=malaysiaToday();
+  const [month,setMonth]=useState(()=>new Date(today+'T12:00:00'));const [selected,setSelected]=useState<Date>();
+  const monthISO=`${month.getFullYear()}-${String(month.getMonth()+1).padStart(2,'0')}`;
   const selectedISO=selected?`${selected.getFullYear()}-${String(selected.getMonth()+1).padStart(2,'0')}-${String(selected.getDate()).padStart(2,'0')}`:null;
-  const visible=selectedISO?dates.filter(d=>d.date===selectedISO):dates;
-  return <section className={`schedule-panel ${large?'large-schedule':''}`}><div className="panel-heading"><div><span className="section-caption">LOOKING AHEAD</span><h2>{large?'Your schedule':'On the calendar'}</h2></div>{!large&&<Link href="/calendar" aria-label="Open calendar"><ArrowRight size={17}/></Link>}</div><Calendar mode="single" selected={selected} onSelect={setSelected} modifiers={{scheduled:dates.map(d=>new Date(d.date+'T12:00:00'))}} modifiersClassNames={{scheduled:'scheduled-day'}} className="kt-calendar"/><div className="schedule-agenda"><div className="agenda-heading"><span>{selectedISO?shortDate(selectedISO):'Upcoming dates'}</span>{selected&&<button onClick={()=>setSelected(undefined)}>Show all</button>}</div>{(large?visible:visible.slice(0,3)).map(item=><Link href={item.href} className="agenda-item" key={item.id}><span className="agenda-date"><strong>{new Date(item.date+'T12:00:00').getDate()}</strong><small>{new Date(item.date+'T12:00:00').toLocaleDateString('en-GB',{month:'short'})}</small></span><span><strong>{item.project}</strong><small>{large?longDate(item.date):item.label}</small></span><ArrowRight size={14}/></Link>)}{!visible.length&&<p className="quiet-empty">{selected?'Nothing scheduled for this day.':'Dates from your project plans will appear here.'}</p>}</div><p className="schedule-note">Dates from saved project plans and supplier requests.</p></section>;
+  const monthLabel=month.toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+  const grouped=scheduleForMonth(dates,monthISO,today,selectedISO);
+  const agenda=(items:ScheduledItem[],past=false)=><>{items.map(item=><Link href={item.href} className={`agenda-item ${past?'past':''}`} key={item.id}><span className="agenda-date"><strong>{Number(item.date.slice(8))}</strong><small>{shortDate(item.date).split(' ').at(-1)}</small></span><span><strong>{item.project}</strong><small>{item.label} · {longDate(item.date)}</small></span><ArrowRight size={14}/></Link>)}</>;
+  return <section className={`schedule-panel ${large?'large-schedule':''}`}><div className="panel-heading"><div><span className="section-caption">{monthLabel.toUpperCase()}</span><h2>{large?'Your schedule':'On the calendar'}</h2></div>{!large&&<Link href="/calendar" aria-label="Open calendar"><ArrowRight size={17}/></Link>}</div>
+    <Calendar mode="single" month={month} onMonthChange={next=>{setMonth(next);setSelected(undefined);}} selected={selected} onSelect={date=>{setSelected(date);if(date&&date.getMonth()!==month.getMonth())setMonth(new Date(date.getFullYear(),date.getMonth(),1));}} modifiers={{scheduled:dates.map(d=>new Date(d.date+'T12:00:00'))}} modifiersClassNames={{scheduled:'scheduled-day'}} className="kt-calendar"/>
+    <div className="schedule-agenda"><div className="agenda-month"><strong>{selectedISO?shortDate(selectedISO):monthLabel}</strong>{selected&&<button onClick={()=>setSelected(undefined)}>Show month</button>}</div>
+      <section aria-label="Upcoming dates" className="agenda-group"><h3>Upcoming dates<span>{grouped.upcoming.length}</span></h3>{agenda(grouped.upcoming)}{!grouped.upcoming.length&&<p className="quiet-empty">{selectedISO?'No upcoming dates on this day.':`No upcoming dates in ${monthLabel}.`}</p>}</section>
+      <section aria-label="Past dates" className="agenda-group past"><h3>Past dates<span>{grouped.past.length}</span></h3>{agenda(grouped.past,true)}{!grouped.past.length&&<p className="quiet-empty">{selectedISO?'No past dates on this day.':`No past dates in ${monthLabel}.`}</p>}</section>
+    </div><p className="schedule-note"><span className="calendar-key-dot"/>Important saved dates. Past dates have passed; project work may still be open.</p>
+  </section>;
 }
 
 export function WorkspaceOverview({onNewProject}:{onNewProject:()=>void}){

@@ -1,5 +1,7 @@
 import base64
+import copy
 import hmac
+import re
 from datetime import datetime
 from typing import Literal
 from uuid import NAMESPACE_URL, uuid4, uuid5
@@ -18,6 +20,7 @@ from .projects import DEFAULT_SETTINGS, fresh_vendor, named_vendors, route, thre
 from .providers import chat_response, discover
 from .repository import SupabaseRepository, payload_hash
 from .schemas.domain import NewBrief
+from .tasks import invalidate_terms, project_name, selection_target, task_name, task_queue
 from .workflow import fit, log, outcome, transition
 
 
@@ -28,7 +31,19 @@ class ProfileBody(BaseModel):
 class ActionBody(BaseModel):
     model_config = ConfigDict(extra="forbid")
     type: Literal[
-        "create", "research", "choose", "edit-draft", "approve", "reject", "prepare", "send", "sync"
+        "create",
+        "research",
+        "choose",
+        "edit-draft",
+        "approve",
+        "reject",
+        "prepare",
+        "send",
+        "sync",
+        "liaise-task",
+        "approve-vendor",
+        "reject-vendor",
+        "confirm-vendor",
     ]
     caseId: str | None = Field(default=None, max_length=150)
     id: str | None = Field(default=None, max_length=150)
@@ -165,6 +180,7 @@ def create_app(settings=None, repository=None):
         for case in snapshot["cases"]:
             for vendor in case["vendors"]:
                 vendor["serverFit"] = fit(case, vendor)
+            case["approvalQueue"] = task_queue(case)
         return {**snapshot, "profile": role, "storage": "supabase"}
 
     @app.get("/connections")
@@ -207,13 +223,8 @@ def create_app(settings=None, repository=None):
                 c["vendors"] = [
                     v for v in fresh_candidates if v["id"] not in retained_ids
                 ] + retained
-                event_settings = (
-                    (repository.get("event", c.get("eventId")) or {}).get("assistantSettings", {})
-                    if c.get("eventId")
-                    else {}
-                )
-                cap = event_settings.get("shortlistSize", 3)
-                c["shortlistVendorIds"] = [v["id"] for v in fresh_candidates[:cap]]
+                c["shortlistVendorIds"] = [v["id"] for v in fresh_candidates]
+                c["outreachVendorIds"] = list(c["shortlistVendorIds"])
                 c["workflowMode"] = "research"
                 c["workflowPlan"] = workflow_plan("research", True, c["shortlistVendorIds"])
                 if c.get("selectedVendorId"):
@@ -457,7 +468,7 @@ def create_app(settings=None, repository=None):
                     raise ValueError("Maximum 20 projects in this hackathon workspace.")
                 event = {
                     "id": project_id,
-                    "name": body.message.strip().split("\n")[0][:65] or "New project",
+                    "name": project_name(body.message),
                     "facts": {},
                     "tasks": [],
                     "assistantSettings": dict(DEFAULT_SETTINGS),
@@ -476,12 +487,47 @@ def create_app(settings=None, repository=None):
                 )
             elif event.get("initialPrompt") != body.message:
                 raise ValueError("Idempotency key reused for a different message.")
-        if body.taskId and not any(t["id"] == body.taskId for t in event.get("tasks", [])):
+        task_id = body.taskId or str(
+            uuid5(
+                NAMESPACE_URL, f"kawteam-task:{settings.workspace}:{event['id']}:{body.requestId}"
+            )
+        )
+        task = next((t for t in event.get("tasks", []) if t["id"] == task_id), None)
+        legacy_case = next(
+            (
+                c
+                for c in snapshot["cases"]
+                if c["id"] == task_id and c.get("eventId") == event["id"]
+            ),
+            None,
+        )
+        legacy_thread = (
+            repository.get("thread", thread_id(event["id"]))
+            if task_id == "legacy-" + event["id"]
+            else None
+        )
+        if body.taskId and not task and not legacy_case and not legacy_thread:
             raise ValueError("Task does not belong to the selected project.")
-        conversation_id = thread_id(event["id"], body.taskId)
+        user_message = {
+            "id": body.requestId,
+            "role": "user",
+            "body": body.message,
+            "time": datetime.now(ZoneInfo("Asia/Kuala_Lumpur")).isoformat(),
+        }
+        if not task:
+            task = {
+                "id": task_id,
+                "name": legacy_case["title"] if legacy_case else task_name(body.message),
+                "createdAt": user_message["time"],
+                "initialRequestId": body.requestId,
+            }
+            if legacy_thread:
+                task.update(name="Earlier project conversation", sourceThreadId=legacy_thread["id"])
+            event = repository.start_task(event["id"], task, user_message, role)
+        conversation_id = thread_id(event["id"], task_id)
         thread = repository.get("thread", conversation_id) or {
             "id": conversation_id,
-            "taskId": body.taskId,
+            "taskId": task_id,
             "eventId": event["id"],
             "messages": [],
             "backendRevision": 0,
@@ -493,7 +539,12 @@ def create_app(settings=None, repository=None):
             (m for m in thread["messages"] if m.get("inReplyTo") == body.requestId), None
         )
         if existing:
-            return {"assistant": existing, "eventId": event["id"], "state": state(role)}
+            return {
+                "assistant": existing,
+                "eventId": event["id"],
+                "taskId": task_id,
+                "state": state(role),
+            }
         if len(thread["messages"]) >= 150:
             raise ValueError("Conversation limit reached for this hackathon workspace.")
         documents = repository.documents(event["id"])
@@ -508,10 +559,22 @@ def create_app(settings=None, repository=None):
                     "time": datetime.now(ZoneInfo("Asia/Kuala_Lumpur")).isoformat(),
                 },
                 role,
-                task_id=body.taskId,
+                task_id=task_id,
             )
         try:
-            answer = chat_response(body.message, event, context, thread["messages"], settings)
+            provider_event = {
+                **event,
+                "activeTask": task,
+                "activeRequests": [
+                    c
+                    for c in snapshot["cases"]
+                    if c.get("eventId") == event["id"]
+                    and (c.get("taskId") == task_id or c["id"] == task_id)
+                ],
+            }
+            answer = chat_response(
+                body.message, provider_event, context, thread["messages"], settings
+            )
         except (
             ValueError,
             KeyError,
@@ -542,8 +605,59 @@ def create_app(settings=None, repository=None):
         )
         pending = last_answer.get("pendingRequest")
         request_message = (pending.get("message", "") + "\n" if pending else "") + body.message
+        scoped_cases = [
+            c
+            for c in snapshot["cases"]
+            if c.get("eventId") == event["id"]
+            and (c.get("taskId") == task_id or c["id"] == task_id)
+        ]
+        current_case = next(
+            (c for c in reversed(scoped_cases) if c["id"] == last_answer.get("caseId")),
+            scoped_cases[-1] if scoped_cases else None,
+        )
         mode, known_vendor = route(request_message, event, snapshot["cases"], thread)
-        requested = (
+        overrides = facts_from_text(body.message)
+        # "Make it 40" is a quantity update only within a known task.
+        if current_case and "quantity" not in overrides:
+            changed_quantity = re.search(
+                r"\b(?:make it|only (?:want|need)|change (?:it|quantity) to)\s+(\d+)\b",
+                body.message,
+                re.IGNORECASE,
+            )
+            if changed_quantity:
+                overrides["quantity"] = int(changed_quantity.group(1))
+        target = selection_target(
+            request_message, current_case.get("selectionTarget", 1) if current_case else 1
+        )
+        spec_edit = bool(
+            re.search(
+                r"\b(?:change|update|switch|instead|make|different)\b", body.message, re.IGNORECASE
+            )
+            and re.search(
+                r"\b(?:colou?r|material|design|printing|size|specifications?)\b",
+                body.message,
+                re.IGNORECASE,
+            )
+        )
+        model_edit = (
+            answer.get("action") == "find_vendors"
+            and any(
+                value is not None and value != current_case.get(key)
+                for key, value in (answer.get("brief") or {}).items()
+            )
+            if current_case
+            else False
+        )
+        updated_requirements = bool(
+            current_case
+            and (
+                any(value != current_case.get(key) for key, value in overrides.items())
+                or target != current_case.get("selectionTarget", 1)
+                or spec_edit
+                or model_edit
+            )
+        )
+        requested = updated_requirements or (
             bool(pending)
             or answer.get("action") == "find_vendors"
             or (
@@ -570,16 +684,56 @@ def create_app(settings=None, repository=None):
             )
         ):
             requested = True
+        if current_case and not updated_requirements and not pending:
+            requested = False
+            if answer["provider"] == "setup_required" and re.search(
+                r"\b(?:what|current|budget|summary|status|summarise|summarize)\b",
+                body.message,
+                re.IGNORECASE,
+            ):
+                assistant["provider"] = "saved_context"
+                assistant["body"] = (
+                    f"Saved task details: {current_case['quantity']} items; budget RM{current_case['budgetSen'] / 100:,.2f}; deadline {current_case['deadline']}; location {current_case['location']}. Live supplier liaison is not connected."
+                )
         resulting_case = None
         if requested:
             brief = {
                 **intake(request_message, event),
+                **(
+                    {
+                        k: current_case[k]
+                        for k in [
+                            "title",
+                            "goal",
+                            "quantity",
+                            "budgetSen",
+                            "targetSen",
+                            "deadline",
+                            "location",
+                        ]
+                    }
+                    if current_case
+                    else {}
+                ),
                 **(pending.get("brief", {}) if pending else {}),
                 **(answer.get("brief") or {}),
             }
             # Explicit new user values take priority over model output and document memory.
             brief.update(facts_from_text(request_message))
-            brief.update(facts_from_text(body.message))
+            brief.update(overrides)
+            if (
+                not current_case
+                and selection_target(request_message) > 1
+                and not brief.get("quantity")
+            ):
+                brief["quantity"] = 1
+            brief["title"] = task["name"]
+            if current_case and updated_requirements:
+                brief["goal"] = (current_case["goal"] + "\nUpdated requirement: " + body.message)[
+                    -2000:
+                ]
+            if current_case and target != current_case.get("selectionTarget", 1) and not overrides:
+                brief["goal"] = current_case["goal"]
             if brief.get("budgetSen"):
                 brief["targetSen"] = min(
                     brief.get("targetSen") or brief["budgetSen"], brief["budgetSen"]
@@ -587,9 +741,9 @@ def create_app(settings=None, repository=None):
             missing = [
                 k for k in ["quantity", "budgetSen", "deadline", "location"] if not brief.get(k)
             ]
-            if mode == "liaise" and not known_vendor:
+            if mode == "liaise" and not known_vendor and not current_case:
                 assistant["body"] += (
-                    "\n\nWhich vendor should I contact? Name a supplier from this project or choose one in assistant settings."
+                    "\n\nWhich vendor should I contact? Name a supplier from this project or use Connections to start a fresh enquiry."
                 )
                 assistant["pendingRequest"] = {"message": request_message, "brief": brief}
             elif missing:
@@ -618,15 +772,41 @@ def create_app(settings=None, repository=None):
                         str(
                             uuid5(
                                 NAMESPACE_URL,
-                                f"kawteam:{event['id']}:{body.taskId or 'main'}:{body.requestId}",
+                                f"kawteam:{event['id']}:{task_id}:{body.requestId}",
                             )
                         ),
                         event["id"],
                     )
+                    if current_case:
+                        updated_brief = {
+                            k: c[k]
+                            for k in [
+                                "title",
+                                "goal",
+                                "quantity",
+                                "budgetSen",
+                                "targetSen",
+                                "deadline",
+                                "location",
+                            ]
+                        }
+                        # Preserve historical messages/decisions but invalidate prior scope and quote commitments.
+                        c = copy.deepcopy(current_case)
+                        invalidate_terms(c)
+                        c.update(updated_brief)
+                        log(
+                            c,
+                            "Task requirements updated",
+                            "Fresh supplier terms and new approval are required. Previous decisions are retained as superseded history.",
+                            "human",
+                        )
+                        c["events"][-1]["milestone"] = True
+                    c.update(taskWorkflowVersion=1, selectionTarget=target)
+                    c.setdefault("vendorDecisions", [])
                     c["sourceDocumentIds"] = [d["id"] for d in documents]
-                    c["taskId"] = body.taskId
+                    c["taskId"] = task_id
                     c["workflowMode"] = mode
-                    if mode == "liaise":
+                    if mode == "liaise" and known_vendor and not current_case:
                         c["vendors"] = [fresh_vendor(known_vendor)]
                         c["stage"] = "negotiation"
                         c["draft"].update(
@@ -643,6 +823,9 @@ def create_app(settings=None, repository=None):
                             "Research skipped. Prior quotation and approval cleared; fresh terms required.",
                             "negotiation",
                         )
+                    elif current_case:
+                        # Already-discovered identities are retained; edits need fresh quotes, not stale confirmations.
+                        pass
                     elif settings.tavily_key:
                         c["vendors"] = discover(c, settings.tavily_key)
                         c["stage"] = "research"
@@ -653,12 +836,8 @@ def create_app(settings=None, repository=None):
                             "Request saved from chat; live search is not configured. No vendors contacted.",
                             "research",
                         )
-                    c["shortlistVendorIds"] = [
-                        v["id"]
-                        for v in c["vendors"][
-                            : event.get("assistantSettings", {}).get("shortlistSize", 3)
-                        ]
-                    ]
+                    c["shortlistVendorIds"] = [v["id"] for v in c["vendors"]]
+                    c["outreachVendorIds"] = list(c["shortlistVendorIds"])
                     c["workflowPlan"] = workflow_plan(
                         mode, bool(settings.tavily_key), c["shortlistVendorIds"]
                     )
@@ -669,7 +848,7 @@ def create_app(settings=None, repository=None):
                         + (
                             "Existing supplier reused; a fresh enquiry is drafted. No message has been sent."
                             if mode == "liaise"
-                            else "Public sources collected; supplier quotes and email approval are still needed."
+                            else "Public sources collected for the entire candidate pool; verified contact details and final quotation replies are still needed. Approval happens after liaison."
                             if settings.tavily_key
                             else "Live vendor search and email are not connected yet; no outreach has been sent."
                         )
@@ -677,10 +856,15 @@ def create_app(settings=None, repository=None):
                 except (ValueError, httpx.HTTPError) as error:
                     assistant["body"] += "\n\n" + str(error)
         thread = repository.append_message(
-            event["id"], assistant, role, resulting_case, task_id=body.taskId
+            event["id"], assistant, role, resulting_case, task_id=task_id
         )
         assistant = next(m for m in thread["messages"] if m.get("inReplyTo") == body.requestId)
-        return {"assistant": assistant, "eventId": event["id"], "state": state(role)}
+        return {
+            "assistant": assistant,
+            "eventId": event["id"],
+            "taskId": task_id,
+            "state": state(role),
+        }
 
     return app
 

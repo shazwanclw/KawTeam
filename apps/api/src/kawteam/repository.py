@@ -84,6 +84,9 @@ class SupabaseRepository:
             p_actor=actor,
         )
 
+    def start_task(self, event_id, task, message, actor):
+        return self.rpc('kawteam_task_start', p_event=event_id, p_task=task, p_message=message, p_actor=actor)
+
     def get(self, kind, id):
         return self.rpc("kawteam_record", p_kind=kind, p_id=id)
 

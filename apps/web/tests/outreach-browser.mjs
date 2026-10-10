@@ -7,15 +7,15 @@ try{
   await page.getByRole('button',{name:'Prepare enquiry',exact:true}).waitFor();
   await page.getByRole('button',{name:'Prepare enquiry',exact:true}).click();
   await page.getByRole('status').getByText(/Counteroffer prepared/).waitFor();
-  await page.goto('http://127.0.0.1:3000/projects/tech-night/approvals?request=case-totes&checkpoint=message');
-  await page.getByRole('dialog').getByRole('heading',{name:'Review outgoing message',exact:true}).waitFor();
-  await page.getByRole('dialog').getByText(/Approval applies to this exact revision/).waitFor();
+  await page.goto('http://127.0.0.1:3000/overview/approvals?request=case-totes&checkpoint=message');
+  await page.getByRole('dialog').getByRole('heading',{name:'Summary: Totes for the tech crowd',exact:true}).waitFor();
+  await page.getByRole('dialog').getByText(/Enquiry ready for approval/).waitFor();
   await page.screenshot({path:'test-results/project-approval-desktop.png',fullPage:true});
   await page.setViewportSize({width:390,height:844});
   await page.screenshot({path:'test-results/project-approval-mobile.png',fullPage:true});
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),JSON.stringify(await page.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth,overflow:Array.from(document.querySelectorAll('body *')).filter(e=>e.getBoundingClientRect().right>innerWidth+1).map(e=>({tag:e.tagName,class:e.className,right:e.getBoundingClientRect().right})).slice(0,15)}))));
   await page.setViewportSize({width:1440,height:1000});
-  await page.getByRole('button',{name:'Approve exact message',exact:true}).click();
+  await page.getByRole('dialog').getByRole('button',{name:'Approved',exact:true}).click();
   await page.getByRole('status').getByText(/Exact draft approved/).waitFor();
   await page.goto('http://127.0.0.1:3000/cases/case-totes/conversations');
   await page.getByRole('button',{name:'Send in demo',exact:true}).click();
@@ -34,5 +34,5 @@ try{
   await page.getByRole('link',{name:'Start a fresh request with this supplier',exact:true}).click();
   await page.waitForURL(/\/projects\/tech-night\?vendor=/);
   assert.match(await page.getByLabel('Message KawTeam').inputValue(),/^I want to request a fresh quotation from /);
-  console.log('PASS: project-table exact approval, one controlled send, supplier reply, consumed approval, connection history and fresh-request continuation.');
+  console.log('PASS: overview summary approval, one controlled send, supplier reply, consumed approval, connection history and fresh-request continuation.');
 }finally{await browser.close();}

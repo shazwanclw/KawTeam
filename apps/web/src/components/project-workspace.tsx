@@ -3,19 +3,29 @@
 import Link from 'next/link';
 import {useSearchParams} from 'next/navigation';
 import {useState} from 'react';
-import {ArrowRight,ChevronRight,Folder,Link2,MessageSquare,Plus} from 'lucide-react';
+import {ArrowRight,Folder,Link2,MessageSquare} from 'lucide-react';
 import type {EventMemory} from '@/lib/workspace';
+import {projectTasks,taskCases,taskProgress} from '@/lib/tasks';
 import {useDemo} from './workspace-context';
-import {CreateTask,DriveMemory} from './project-controls';
+import {DriveMemory} from './project-controls';
 import {ChatSurface} from './chat-surface';
-import {ActivityTable,ApprovalTable,AgentStatus} from './activity-views';
+import {ActivityTable} from './activity-views';
+import {TaskDetail} from './task-detail';
 
-export function ProjectWorkspace({project,tab='chat',taskId,onCreateProject}:{project:EventMemory;tab?:string;taskId?:string;onCreateProject:()=>void}){
- const params=useSearchParams();const {state,profile}=useDemo();const [newTask,setNewTask]=useState(false);const [memory,setMemory]=useState(false);const task=project.tasks?.find(t=>t.id===taskId);
- const active=tab==='tasks'?'subprojects':tab==='activity'?'activity':tab==='approvals'?'approvals':'chat';
- const tabs=[{id:'chat',label:'Chat',href:`/projects/${project.id}${taskId?`/tasks/${taskId}`:''}`},{id:'activity',label:'Recent Activity',href:`/projects/${project.id}/activity`},{id:'approvals',label:'Approval',href:`/projects/${project.id}/approvals`},{id:'subprojects',label:'Subprojects',href:`/projects/${project.id}/tasks`}];
- if(taskId&&!task)return <div className="flow-page"><h1>Subproject not found</h1><Link href={`/projects/${project.id}`}>Back to project</Link></div>;
- return <div className="project-flow"><header className="project-flow-heading"><div>{task&&<Link className="subproject-parent" href={`/projects/${project.id}`}><Folder size={13}/>{project.name}<ChevronRight size={13}/>Subproject</Link>}<div className="project-flow-title"><h1>{task?.name||project.name}</h1>{project.sample&&<span className="flow-tag">Sample</span>}</div></div><div className="project-flow-actions"><AgentStatus projectId={project.id} taskId={taskId}/><button aria-label="Project memory" className="project-memory-button" onClick={()=>setMemory(true)}><Link2 size={16}/><span>{project.driveSource?'Drive context':'Project memory'}</span></button></div></header><nav className="project-flow-tabs" aria-label="Project sections">{tabs.map(t=><Link key={t.id} href={t.href} className={active===t.id?'active':''}>{t.label}</Link>)}</nav>
- {active==='activity'?<div className="project-flow-content"><div className="flow-section-intro"><h2>Recent Activity</h2><p>The last 15 saved actions for this project. Open a row to see what happened.</p></div><ActivityTable projectId={project.id}/></div>:active==='approvals'?<div className="project-flow-content"><div className="flow-section-intro"><h2>Approval</h2><p>Review the evidence, approve the next message, and make the final supplier choice.</p></div><ApprovalTable projectId={project.id}/></div>:active==='subprojects'?<div className="project-flow-content"><div className="flow-section-intro subproject-intro"><div><h2>Smaller conversations. One shared project.</h2><p>Split a big event into focused requests. Drive context stays shared.</p></div><button className="flow-primary" onClick={()=>setNewTask(true)} disabled={profile==='observer'}><Plus size={16}/>New subproject</button></div><div className="subproject-list"><Link className="subproject-row" href={`/projects/${project.id}`}><span className="subproject-icon"><MessageSquare size={19}/></span><div><strong>General conversation</strong><p>Everything that doesn’t need its own subproject.</p></div><span>Open chat<ArrowRight size={15}/></span></Link>{project.tasks?.map(t=>{const count=state.threads.find(thread=>thread.taskId===t.id&&thread.eventId===project.id)?.messages.length||0;return <Link key={t.id} className="subproject-row" href={`/projects/${project.id}/tasks/${t.id}`}><span className="subproject-icon"><Folder size={19}/></span><div><strong>{t.name}</strong><p>{count} messages · shared project memory</p></div><span>Continue<ArrowRight size={15}/></span></Link>;})}</div>{!project.tasks?.length&&<p className="subproject-optional">Subprojects are optional. You can keep asking in the general conversation.</p>}</div>:<ChatSurface key={`${project.id}-${taskId||'general'}-${params.get('vendor')||''}`} project={project} taskId={taskId} onCreateProject={onCreateProject}/>}
- <CreateTask project={project} open={newTask} onOpenChange={setNewTask}/>{memory&&<DriveMemory key={project.id} project={project} open={memory} onOpenChange={setMemory}/>}</div>;
+export function ProjectWorkspace({project,taskId,onCreateProject}:{project:EventMemory;tab?:string;taskId?:string;onCreateProject:()=>void}){
+ const params=useSearchParams();const {state}=useDemo();const [memory,setMemory]=useState(false);const [view,setView]=useState('tasks');
+ const tasks=projectTasks(state,project);const task=tasks.find(t=>t.id===taskId);
+ if(taskId&&!task)return <div className="flow-page"><h1>Task not found</h1><Link href={`/projects/${project.id}`}>Back to project</Link></div>;
+ if(task)return <TaskDetail project={project} task={task}/>;
+ return <div className="project-flow task-project">
+  <header className="project-flow-heading"><div className="project-flow-title"><h1>{project.name}</h1>{project.sample&&<span className="flow-tag">Sample</span>}</div><button aria-label="Project memory" className="project-memory-button" onClick={()=>setMemory(true)}><Link2 size={16}/><span>{project.driveSource?'Drive context':'Project memory'}</span></button></header>
+  <ChatSurface key={`${project.id}-${params.get('task')||'new'}-${params.get('vendor')||''}`} project={project} onCreateProject={onCreateProject}/>
+  <section className="project-task-section">
+   <div className="project-task-tabs" role="tablist" aria-label="Project tasks and activity">{[['tasks','All Task'],['activity','Recent Activity']].map(([id,label])=><button id={`project-${id}-tab`} key={id} role="tab" aria-label={label} aria-selected={view===id} aria-controls={`project-${id}-panel`} tabIndex={view===id?0:-1} onClick={()=>setView(id)} onKeyDown={e=>{if(['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();const next=id==='tasks'?'activity':'tasks';setView(next);document.getElementById(`project-${next}-tab`)?.focus();}}}>{label}{id==='tasks'&&<span>{tasks.length}</span>}</button>)}</div>
+   <div role="tabpanel" id={`project-${view}-panel`} aria-labelledby={`project-${view}-tab`}>
+    {view==='activity'?<ActivityTable projectId={project.id}/>:<div className="project-task-list">{tasks.map(t=>{const cases=taskCases(state,project.id,t.id);const progress=taskProgress(cases);const count=state.threads.find(thread=>thread.taskId===t.id&&thread.eventId===project.id)?.messages.length||0;return <Link key={t.id} className="project-task-row" aria-label={`Open task: ${t.name}`} href={`/projects/${project.id}/tasks/${t.id}`}><span className="project-task-icon"><MessageSquare size={18}/></span><span className="project-task-name"><strong>{t.name}</strong><small>{progress.secured?`${progress.secured} of ${progress.target} secured`:progress.approved?`${progress.approved} awaiting supplier confirmation`:count?`${count} messages · shared project context`:'Ready to continue'}</small></span>{progress.pending>0&&<span className="task-approval-count" data-task-approvals={progress.pending}>{progress.pending} {progress.pending===1?'approval':'approvals'}</span>}<ArrowRight size={16}/></Link>;})}{!tasks.length&&<div className="project-no-tasks"><Folder size={21}/><p>Your tasks will live here.<small>Send your first request above to start one.</small></p></div>}</div>}
+   </div>
+  </section>
+  {memory&&<DriveMemory project={project} open={memory} onOpenChange={setMemory}/>}
+ </div>;
 }

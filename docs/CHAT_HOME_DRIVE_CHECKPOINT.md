@@ -2,6 +2,8 @@
 
 10 October 2026. This supersedes the overview-first navigation and exposed upload flow in `PROJECT_MAKEOVER_CHECKPOINT.md`. Existing project records, documents and human decisions are retained.
 
+Later UI refinements are documented in [the 11 October checkpoint](CHAT_OVERVIEW_REFINEMENT_CHECKPOINT.md), which supersedes the assistant-settings trigger, raw approval preview and overview navigation details below.
+
 ## Implemented flow
 
 The landing page starts with the user's slogan and a centred chat composer. The project selector changes conversation context. With no selected project, the first request creates a project and saves its conversation atomically. Retries use the same request identity and do not create another project or lose the first message.

@@ -1,0 +1,34 @@
+import {chromium} from 'playwright';
+import assert from 'node:assert/strict';
+const browser=await chromium.launch();const page=await browser.newPage({viewport:{width:1440,height:1000}});
+const href='http://127.0.0.1:3000/overview/approvals?request=case-totes&checkpoint=decision';
+try{
+ await page.goto(href);
+ await page.getByRole('dialog').getByRole('heading',{name:'Choose the supplier to approve',exact:true}).waitFor();
+ const before=await page.evaluate(async()=>{const state=await (await fetch('/api/kawteam/state')).json();return state.cases.find(c=>c.id==='case-totes').selectedVendorId;});
+ assert.equal(before,null,'Opening the summary chose a vendor');
+ assert.equal(await page.getByRole('dialog').getByRole('button',{name:'Approved',exact:true}).isEnabled(),false);
+ await page.getByRole('dialog').getByRole('button',{name:'Close',exact:true}).click();
+ await page.getByRole('button',{name:/Switch profile/}).click();await page.getByRole('menuitem',{name:/Teammate/}).click();
+ await page.getByRole('button',{name:'Switch profile, currently Teammate',exact:true}).waitFor();
+ await page.goto(href);
+ await page.getByRole('dialog').getByRole('heading',{name:'Choose the supplier to approve',exact:true}).waitFor();
+ assert.equal(await page.getByRole('dialog').getByRole('button',{name:'Approved',exact:true}).isEnabled(),false);
+ assert.equal(await page.getByRole('dialog').getByRole('radio',{name:/Willow Supply Studio/}).isEnabled(),false);
+ await page.getByRole('dialog').getByRole('button',{name:'Close',exact:true}).click();
+ await page.getByRole('button',{name:/Switch profile/}).click();await page.getByRole('menuitem',{name:/Organiser/}).click();
+ await page.getByRole('button',{name:'Switch profile, currently Organiser',exact:true}).waitFor();
+ await page.goto(href);
+ await page.getByRole('dialog').getByRole('radio',{name:/Willow Supply Studio/}).check();
+ await page.screenshot({path:'test-results/refinement-choice-desktop.png',fullPage:true});
+ await page.getByRole('dialog').getByRole('button',{name:'Approved',exact:true}).click();
+ await page.getByRole('status').getByText('Supplier choice approved. No order was placed.',{exact:true}).waitFor();
+ const chosen=await page.evaluate(async()=>{const state=await (await fetch('/api/kawteam/state')).json();return state.cases.find(c=>c.id==='case-totes').selectedVendorId;});
+ assert.equal(chosen,'willow');
+ await page.getByRole('dialog').getByRole('button',{name:'Close',exact:true}).click();
+ await page.getByRole('button',{name:'Approved',exact:true}).click();
+ await page.getByRole('button',{name:'Review supplier decision: Totes for the tech crowd',exact:true}).click();
+ await page.getByRole('dialog').getByRole('heading',{name:'Your approved supplier',exact:true}).waitFor();
+ assert.equal(await page.getByRole('dialog').getByRole('radio').count(),0);
+ console.log('PASS: summary does not choose automatically, teammate is blocked, organiser explicitly approves a supplier and approved history persists.');
+}finally{await browser.close();}

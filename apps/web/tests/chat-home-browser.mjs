@@ -7,7 +7,7 @@ const errors=[];page.on('pageerror',e=>errors.push(e.message));
 await mkdir('test-results',{recursive:true});
 try{
  await page.goto('http://127.0.0.1:3000');
- await page.getByRole('heading',{name:'If you have trouble searching, KawTeam with us!',exact:true}).waitFor({timeout:10000});
+ await page.getByRole('heading',{name:'What are we going to KawTeam today?',exact:true}).waitFor({timeout:10000});
  await page.getByRole('button',{name:'Choose project',exact:true}).waitFor();
  assert.equal(await page.locator('input[type=file]').count(),0);
  await page.getByRole('button',{name:'Open navigation',exact:true}).click();
@@ -26,16 +26,14 @@ try{
  await page.getByRole('link',{name:'View supplier request',exact:true}).waitFor({timeout:30000});
  await page.getByRole('link',{name:'Recent Activity',exact:true}).click();
  await page.getByRole('table').waitFor();
- await page.getByRole('button',{name:/View activity/}).first().click();
- await page.getByRole('dialog').waitFor();
- await page.getByRole('dialog').getByRole('button',{name:'Close',exact:true}).click();
+ assert.equal(await page.getByRole('button',{name:/View activity: Research connection needed/}).count(),0);
  await page.getByRole('link',{name:'Subprojects',exact:true}).click();
  await page.getByRole('button',{name:'New subproject',exact:true}).click();
  await page.getByLabel('Subproject name').fill('T-shirt printing');
  await page.getByRole('button',{name:'Create subproject',exact:true}).click();
  await page.getByRole('heading',{name:'T-shirt printing',exact:true}).waitFor();
  assert.equal(await page.getByText('Find shirt printing vendors for 50 shirts within RM2000 by 25 October 2026 in Subang Jaya.',{exact:true}).count(),0);
- await page.getByRole('button',{name:'Open navigation',exact:true}).click();
+ if(await page.getByRole('button',{name:'Open navigation',exact:true}).count())await page.getByRole('button',{name:'Open navigation',exact:true}).click();
  await page.locator('#flow-navigation').getByRole('link',{name:'Chat',exact:true}).click();
  await page.waitForURL('http://127.0.0.1:3000/');
  await page.getByLabel('Message KawTeam').fill('Find catering vendors for 20 people within RM500 by 25 October 2026 in Subang Jaya.');
@@ -49,7 +47,7 @@ try{
  await page.goto('http://127.0.0.1:3000/overview/approvals');
  await page.getByRole('heading',{name:'Approval',exact:true,level:1}).waitFor();
  await page.getByRole('button',{name:/Review message|Review supplier decision/}).first().click();
- await page.getByRole('dialog').getByRole('link',{name:'Review in project',exact:true}).waitFor();
+ await page.getByRole('dialog').getByRole('link',{name:'Open in project',exact:true}).waitFor();
  await page.getByRole('dialog').getByRole('button',{name:'Close',exact:true}).click();
  await page.goto('http://127.0.0.1:3000/connections');
  await page.getByRole('heading',{name:'Connections',exact:true,level:1}).waitFor();
