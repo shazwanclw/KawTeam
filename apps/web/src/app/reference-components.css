@@ -85,3 +85,11 @@
 .approval-summary-dialog > .flow-dialog-actions {
   flex-wrap: nowrap;
 }
+.chat-surface[aria-label="Main chat"].start-conversation > .chat-start {
+  padding-top: clamp(90px, 20dvh, 190px);
+}
+@media (max-width: 650px) {
+  .chat-surface[aria-label="Main chat"].start-conversation > .chat-start {
+    padding-top: clamp(75px, 15dvh, 120px);
+  }
+}
