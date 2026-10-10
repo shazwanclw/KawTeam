@@ -41,6 +41,9 @@ def test_chat_sends_actual_execution_status_to_model(monkeypatch):
     status = {"email": "configured", "websiteOutreach": "not_connected", "suppliersFound": 5, "verifiedContacts": 0, "emailsSent": 0}
     def handle(request):
         payload = json.loads(request.content)
+        schema = payload['generationConfig']['responseJsonSchema']
+        assert schema['properties']['action']['enum'] == ['none', 'find_vendors']
+        assert schema['additionalProperties'] is False
         prompt = json.loads(payload["contents"][0]["parts"][0]["text"])
         assert prompt["executionStatus"] == status
         assert "executionStatus" in payload["systemInstruction"]["parts"][0]["text"]

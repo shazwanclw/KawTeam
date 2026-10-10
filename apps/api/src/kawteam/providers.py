@@ -143,6 +143,7 @@ def chat_response(message, event, context, history, settings):
                     "temperature": 0.2,
                     "maxOutputTokens": 1800,
                     "responseMimeType": "application/json",
+                    "responseJsonSchema": AgentAnswer.model_json_schema(),
                 },
             },
         )
