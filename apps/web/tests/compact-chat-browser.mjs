@@ -41,7 +41,7 @@ try{
  assert.equal(await page.locator('.chat-start-kicker').count(),0);
  assert.equal(await page.locator('.flow-app').evaluate(el=>el.classList.contains('nav-open')),true);
  const title=await page.getByRole('heading',{name:'Tech Night',exact:true}).boundingBox();
- const slogan=await page.getByRole('heading',{name:'Just ?KawTeam? it',exact:true}).boundingBox();
+ const slogan=await page.getByRole('heading',{name:'Just KawTeam it!',exact:true}).boundingBox();
  assert.ok(slogan.y-title.y<130);
  assert.equal(await page.getByRole('tab',{name:'Failsafe',exact:true}).innerText(),'Failsafe\n1');
  await page.getByRole('tab',{name:'Recent Activity',exact:true}).focus();await page.keyboard.press('ArrowRight');

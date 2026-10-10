@@ -15,9 +15,9 @@ List projects, read the chosen case and use its current backendRevision for muta
 
 Enquiries are non-binding. Reuse request_id with identical content for retries; reserved/uncertain intents require manual reconciliation, not a new request ID. Limits: four emails per supplier, 60 per task, 20 saved threads per sync and 30 messages per thread. No arbitrary inbox access. Never send orders, bookings, payments or final acceptance. Use `kawteam_interpret_quote` on the latest saved supplier reply. It validates quoted evidence and terms; unsupported quotes remain pending. Secured requires a current human approval, exact terms and a later matching confirmation. Never bypass validation. No extra test sends or supplier outreach without authorised task scope.
 
-## Intended workflow once tools exist
+## Task workflow
 
-Read the selected project/task and authorised project context. New conversations create tasks; follow-ups continue the selected task. Confirm essential missing facts in chat. Keep item quantity separate from the desired number of suppliers/placements.
+Read the selected project/task and authorised project context. New conversations create tasks; follow-ups continue the selected task. Proceed with available context. Record missing quantity as unresolved, request pricing tiers, omit unknown destination and label a provisional 14-day deadline when absent. Escalate only essential unresolved context via Failsafe; never invent final scope. Keep item quantity separate from the desired number of suppliers/placements.
 
 For new sourcing, retain all returned candidates, verify identity/contact/suitability and perform permitted non-binding liaison within user limits. Do not contact only an arbitrarily chosen three. For an existing supplier, skip discovery but obtain fresh price, quantity, specs, delivery and validity. Discovery bounds are not proof of exhaustive coverage.
 
@@ -31,4 +31,4 @@ Requirement changes supersede old quote/decision terms while retaining history. 
 
 No autonomous final supplier selection, payment, purchase, signature or unapproved final commitment. Non-binding liaison does not require the legacy per-draft human checkpoints in the latest target flow, but it still needs authorised tools, verified recipients and enforced execution limits. Keep demo/live provenance visible; never fabricate contacts, prices, replies, confirmation, metrics or savings.
 
-Persist checkpoints and request identities once scoped tools support them. Do not assume the website can trigger WorkBuddy, that desktop credits imply API access, or that a desktop runtime is hosted on Vercel. Escalate unavailable tools/access and report pending work honestly.
+Persist checkpoints and request identities through the scoped tools. Do not assume the website can trigger WorkBuddy, that desktop credits imply API access, or that a desktop runtime is hosted on Vercel. Escalate unavailable tools/access and report pending work honestly.

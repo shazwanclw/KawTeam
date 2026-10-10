@@ -4,21 +4,19 @@ Updated 11 October 2026. The chosen approach is Gemini website chat plus WorkBud
 
 ## What is configured
 
-The user's desktop app signs in with Google. Actual UI: **Connectors -> MCP Server Management -> Add MCP**. The JSON editor identifies `%USERPROFILE%/.workbuddy-ai/mcp.json`; a KawTeam entry is present. The user reports the connection is okay. A local MCP client successfully launches the Python server, discovers kawteam_health and calls it. An independently inspected actual WorkBuddy request/result is still needed.
-
-The user's supplied credit screen showed 2,350 total credits, including base and reward credits. Do not assume that balance is current, that one credit equals one task, or that credits grant hosted API access. Measure a small run before extrapolating.
+WorkBuddy desktop consumes the KawTeam stdio MCP server. Nine tools were discovered through a real local MCP client, and saved project/task reads succeeded against Supabase. Actual WorkBuddy desktop orchestration and a website-to-agent trigger remain unverified. See the acceptance checklist below; tool discovery is not proof of an entire agent run.
 
 ## Configuration
 
-The following matches this Windows workspace. Preserve other servers; merge the kawteam entry rather than replacing populated mcpServers. On another machine replace both absolute paths, or use `workbuddy/kawteam/mcp.example.json`.
+The following is a Windows configuration example; replace `C:/path/to/KawTeam` with your repository location. Preserve other servers; merge the kawteam entry rather than replacing populated mcpServers. On another machine replace both absolute paths, or use `workbuddy/kawteam/mcp.example.json`.
 
 ```json
 {
   "mcpServers": {
     "kawteam": {
-      "command": "C:/Users/shazw/Documents/Taylor Hackathon/apps/api/.venv/Scripts/python.exe",
+      "command": "C:/path/to/KawTeam/apps/api/.venv/Scripts/python.exe",
       "args": [
-        "C:/Users/shazw/Documents/Taylor Hackathon/apps/api/src/kawteam/mcp/server.py"
+        "C:/path/to/KawTeam/apps/api/src/kawteam/mcp/server.py"
       ]
     }
   }
@@ -56,4 +54,4 @@ The real stdio test verifies discovery and health calls. A live local MCP client
 6. Resolve supported website start/resume. Desktop initiation must be labelled if automatic triggering is unavailable.
 7. Show useful matching task UI/server/client tool evidence beyond health.
 
-Local laptop execution requires that runtime to stay available. A Vercel frontend deployment does not host it. Gmail is locally authorised with a saved controlled-test receipt; actual reply/deployed checks remain. Drive credentials are still missing. [Official MCP guide](https://www.codebuddy.ai/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/MCP-Guide), [model guide](https://www.workbuddy.ai/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Model).
+Local laptop execution requires that runtime to stay available. A Vercel frontend deployment does not host it. Gmail is locally authorised with a saved controlled-test receipt; real commercial quote/confirmation and deployed checks remain. Drive credentials are still missing. [Official MCP guide](https://www.codebuddy.ai/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/MCP-Guide), [model guide](https://www.workbuddy.ai/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Model).

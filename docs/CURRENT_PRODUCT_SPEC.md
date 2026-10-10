@@ -1,18 +1,18 @@
 # KawTeam: current product specification
 
-Updated 11 October 2026, Asia/Kuala_Lumpur. This is the current product source of truth. The user's latest decisions supersede older plans. [Integration status](INTEGRATION_STATUS.md) separates working functionality from pending connections; [build checklist](../KAWTEAM_BUILD_CHECKLIST.md) records remaining work.
+Updated 11 October 2026, Asia/Kuala_Lumpur. This is the current product source of truth. The user's latest decisions supersede older plans. [Integration status](INTEGRATION_STATUS.md) separates working functionality from pending connections; its remaining-work checklist records unfinished acceptance steps.
 
 ## Product and purpose
 
 KawTeam helps student organisers and small businesses source and liaise with suppliers or other stakeholders. The user describes an outcome in chat; project memory provides context; the intended agent researches, communicates and negotiates; the organiser makes the final choice. A supplier is secured only after the approved terms receive a matching supplier confirmation.
 
-The main headline is **What are we going to KawTeam today?** The product is chat-first, with focused task management below the project composer. Procurement is the primary implemented scenario. Sponsorship, scholarships, partnerships and meeting coordination remain broader product directions, not claims of completed specialist workflows.
+The main headline is **What are we going to KawTeam today?**, without a logo/emblem above it. The product is chat-first, with focused task management below the project composer. Procurement is the primary implemented scenario. Sponsorship, scholarships, partnerships and meeting coordination remain broader product directions, not claims of completed specialist workflows.
 
 ## Navigation and design
 
-Use the exact light material tokens, five aurora gradients and TeX Gyre Heros font files from [the supplied design reference](https://github.com/Waaayneee/SatuHati), with its font licence retained. Deep teal `#00545f`, lime `#d6fb00`, pale lime `#ecffb6`, translucent white fills and matched shadows form the shared component theme. Headings, names and active labels use the reference's 700 weight; body/meta use 400. Compact page positioning and current workflow remain intact while the user-authorised larger type and approval/calendar/connection views replace earlier styles. The official wordmark and stationary hamburger share a centre line, Overview's three links each have an icon, and the bright brand icon appears in the browser tab. Do not restore generic metric cards, a login screen, duplicate creation controls, a model picker or assistant-preference controls.
+Use the exact light material tokens, five aurora gradients and TeX Gyre Heros font files from [the supplied design reference](https://github.com/Waaayneee/SatuHati), with its font licence retained. Deep teal `#00545f`, lime `#d6fb00`, pale lime `#ecffb6`, translucent white fills and matched shadows form the shared component theme. Headings, names and active labels use the reference's 700 weight; body/meta use 400. Keep the original compact font sizes, with the centred project title slightly larger (34px desktop, 28px mobile). Approval, calendar and connection views use the reference component materials without restoring its old flow. The official wordmark and stationary hamburger share a centre line, Overview's three links each have an icon, and the bright brand icon appears in the browser tab. Do not restore generic metric cards, a login screen, duplicate creation controls, a model picker or assistant-preference controls.
 
-Recent Activity starts directly with the table column headings, without its duplicate inner title/description/count block. Global Approval uses reference-style review cards, only Approval Needed/Approved filters, and no Return action; organiser decisions still use the current final-supplier workflow. Connections uses searchable vendor cards rather than a table and retains saved relationship/history dialogs. Calendar uses the reference's standalone glass month view and agenda cards. Dates are grouped per project and day, at most three summary cards per day, with all underlying dates available in a detail dialog. Month filtering, upcoming/past semantics and important-date red dots are retained; grouping never deletes saved data.
+Recent Activity starts directly with the table column headings, without its duplicate inner title/description/count block. Global Approval uses reference-style review cards, only Approval Needed/Approved filters, no latest-email preview, no View summary button and no Return action; organiser decisions still use the current final-supplier workflow. Connections starts with search and vendor cards, without a duplicate inner heading, description or count, and retains saved relationship/history dialogs. Calendar uses a smaller standalone glass month view with the legend directly underneath and agenda cards alongside it; the extra month/Your schedule heading is omitted. Dates are grouped per project and day, at most three summary cards per day, with all underlying dates available in a detail dialog. Month filtering, upcoming/past semantics and important-date red dots are retained; grouping never deletes saved data.
 
 The top rail contains only a stationary hamburger that toggles the sidebar from the same screen position; separate sidebar close buttons are removed. Its three lines retain their hamburger shape and subtly change width, with a background that blends into the opening sidebar; reduced-motion preferences disable the transition. Breadcrumbs, brand repetition, profile chip and page eyebrows are removed. The profile switcher lives at the bottom of the sidebar. The hamburger starts closed. Once opened, it stays open across navigation until the user closes it; a full reload starts closed. Navigation and Escape used to dismiss a dialog/menu do not close the sidebar. The sidebar contains:
 
@@ -41,7 +41,7 @@ An explicit event/project name is preserved. Otherwise new projects receive conc
 
 ## Project Chat and task list
 
-Opening a project starts directly at its chat composer. Remove the former top Chat / Recent Activity / Approval / Subproject tabs. The selector defaults to **New Task** and can choose an existing task.
+Opening a project starts directly at its chat composer. The project title is centred and shows no Sample badge, even for prepared demo projects. The slogan is **Just KawTeam it!**, at 22px desktop and 20px mobile, smaller than the project title; omit the Start a task description and visible Message KawTeam label while preserving an accessible composer name. Remove the former top Chat / Recent Activity / Approval / Subproject tabs. The selector defaults to **New Task** and can choose an existing task.
 
 - New Task + a request starts a new task conversation.
 - Selecting a saved task expands its transcript and continues that task.
@@ -66,7 +66,7 @@ The left side contains:
 
 The right side contains **Upcoming events**: task deadlines, relevant proposed/confirmed delivery dates and quote expiries that still matter. Dates must come from saved records, not invented scheduling.
 
-Supplier review opens a concise summary of scope, landed cost, delivery, conditions and final replies. Keep detailed evidence available without placing raw email headers or a full email conversation in the primary approval modal. Each supplier row has a separate history icon opening the saved sent/received email timeline for that supplier and task, including prior revisions. Subjects, timestamps and message bodies are plain text; missing history is clearly empty and demo messages are labelled. Only the organiser can approve/reject. Continue conversation returns to the project with the task selected.
+Supplier review opens a concise summary of scope, landed cost, delivery, conditions and final replies. Keep detailed evidence available without placing raw email headers or a full email conversation in the primary approval modal. Each supplier row and its approval dialog have a small history icon opening the saved sent/received email timeline for that supplier and task, including prior revisions. Subjects, timestamps and message bodies are plain text; missing history is clearly empty and demo messages are labelled. Only the organiser can approve/reject. Continue conversation returns to the project with the task selected.
 
 ## Supplier workflow and final control
 
@@ -116,50 +116,21 @@ An approval is tied to its current terms. Secured needs a distinct received comm
 
 Recent Activity displays at most 15 saved milestones across projects, with row dialogs for details. Exclude thought processes, parsing, setup, draft edits and step-by-step internal planning. Contact counts derive from recorded sends; a discovered candidate is not a contacted supplier. Demo activity remains labelled.
 
-Overview Approval has **Approval Needed** and **Approved**, not All checkpoints. Its cards summarise ready supplier decisions, quoted terms and the latest supplier reply, with View summary and Open in project actions. Organisers can approve the specific ready supplier directly; other roles cannot. The sidebar badge counts actionable approvals; it does not count every waitlisted candidate. Approved history can include secured placements while task details retain the distinction.
+Overview Approval has **Approval Needed** and **Approved**, not All checkpoints. Its cards summarise ready supplier decisions and quoted terms without a latest-email preview or View summary button. Open in project navigates to the matching task and automatically opens that supplier approval; closing it keeps it dismissed. Its history icon opens the full saved email conversation. Organisers can approve the specific ready supplier directly; other roles cannot. The sidebar badge counts actionable approvals; it does not count every waitlisted candidate. Approved history can include secured placements while task details retain the distinction.
 
-Calendar uses red dots for saved important dates. Upcoming and Past lists reflect the displayed month and optional selected day. Changing month resets the day filter. Today remains upcoming. Past dates do not mean unfinished work completed. The sidebar counts distinct upcoming saved dates. There is no Google Calendar connection, automatic external invitation or continuous agent scheduler.
+Calendar uses red dots for saved important dates. Upcoming and Past lists reflect the displayed month and optional selected day. Changing month resets the day filter. Today remains upcoming. Past dates do not mean unfinished work completed. The sidebar counts distinct upcoming saved dates. The website calendar is implemented. One-way Google Calendar synchronisation and reminders are requested but not implemented; enabling the API alone does not connect the app. No automatic external invitation or continuous agent scheduler exists.
 
 Connections includes suppliers with recorded communication or a legacy explicit selection, with controlled provenance retained. Merely finding a website or drafting a message does not establish a relationship. A fresh-request shortcut can reuse a supplier without discovery but still requires fresh terms.
 
-## Technical implementation
+## Implementation boundary
 
-| Layer | Current implementation |
-|---|---|
-| Frontend | Next.js 16.4, React, TypeScript, Tailwind, existing shadcn primitives |
-| Backend | FastAPI/Pydantic, signed shared-demo profiles, server gateway |
-| Persistence | KawTeam Supabase; seven additive migrations, scoped RPCs, revisions and retry protection |
-| Conversation | Gemini adapter; live reply through the website verified |
-| Discovery | Tavily adapter; live public-source results verified |
-| Project memory | Stored extraction/retrieval and Drive adapter; actual Drive reads await credentials |
-| WorkBuddy | Nine scoped desktop MCP tools, real local transport/project/task reads; orchestration and website trigger pending |
-| Email | Gmail locally authorised; durable send intents, provider receipts and saved-thread reading; live supplier quote/confirmation acceptance pending |
-| Hosting | Two Vercel projects planned, apps/web and apps/api; public deployment not verified |
-
-The Next.js server forwards allowlisted requests to FastAPI. Gateway/database/session secrets are server-only. Supabase tables deny direct public access; private credential-gated RPCs enforce ownership, roles and transactional writes. Seven migrations include atomic task starts, in-place case/chat completion and preservation of earlier general threads.
-
-Task records belong to projects; task threads are separate; supplier cases carry project/task IDs. Legacy API/case routes and browser-local demo helpers remain for compatibility. The live API mode uses Supabase as the source of truth.
-
-## WorkBuddy and Gmail decisions
-
-The team chose **Gemini for website chat plus WorkBuddy through MCP** after personal Google-sign-in access did not establish Enterprise API access. WorkBuddy consumes KawTeam tools; adding our MCP does not make the website call WorkBuddy. A supported API/SDK or verified bridge/trigger is still needed for website-initiated agent runs. Do not claim an always-on desktop agent on Vercel.
-
-The user supplied a WorkBuddy screenshot showing 2,350 credits. Actual remaining balance, expiry and workflow consumption must be checked in that account. Credits are not API credentials and are not evidence that Enterprise API usage is included.
-
-Gmail is locally authorised; one controlled test send has a saved provider receipt, and saved-thread reading works. Nine scoped WorkBuddy MCP tools exist and real local project/task reads pass. Actual desktop orchestration, website trigger, live supplier quote/confirmation acceptance, Drive access and public deployment remain pending. See [integration status](INTEGRATION_STATUS.md).
+See [architecture](ARCHITECTURE.md) for services and data flow, [API contract](contracts/mission-api.md) for endpoints and [integration status](INTEGRATION_STATUS.md) for credentials, verified evidence and remaining work. Website conversations currently use Gemini; WorkBuddy consumes KawTeam tools through MCP and cannot yet be automatically launched from a website prompt. Google Calendar is a planned integration.
 
 ## Scope and non-goals
 
 Keep no login, no separate procurement/upload page, no assistant-preference button, no top project tabs and no optional Subproject feature. No agent final choice, checkout, payment, signature, fabricated supplier confirmation, fabricated savings or silent social messaging. Real private multi-account access, verified social integrations, automatic background Drive sync and external calendar invites are future features.
 
-## Verification and completion boundary
-
-Latest verification: 131 backend tests and 44 frontend tests pass; Ruff, TypeScript and ESLint pass. Prior production build/browser evidence remains. A controlled Gmail send receipt is saved, and real local MCP project/task reads pass. The QA email project is retained for reply acceptance; earlier QA projects were removed.
-
-The application is not yet a complete autonomous supplier-liaison system. Completion still needs real supplier quote/confirmation acceptance, actual WorkBuddy orchestration/website trigger, Drive credentials, public deployment and submission materials. See [integration status](INTEGRATION_STATUS.md).
-
-
-## Automatic website outreach (11 October 2026)
+## Automatic website outreach
 
 Chat supplier requests now persist an authorised task-scoped outreach queue. The visible website runs one bounded step approximately every 15 seconds: verify a public supplier business contact, send a non-binding enquiry, sync saved Gmail threads, interpret a current reply, or request missing/revised terms. Only a literal address from the supplier's own site is used, with grounded service evidence; ambiguous contacts and provider failures remain visible on the task. All discovered candidates stay in the pool; unrelated sources are not emailed.
 
@@ -167,4 +138,4 @@ Email receipts, request hashes, deterministic send IDs, compare-and-swap writes 
 
 Existing tasks are not silently enrolled: continue that task and say `Email the suppliers` or `Start outreach`. New or edited sourcing requests queue outreach automatically, unless the user asks for research only. Keep KawTeam open to advance website ticks; a permanently running hosted worker is not implemented. WorkBuddy can call `kawteam_outreach_step` for the same authorised task, but this does not give the website an inbound WorkBuddy API. Reconnect desktop MCP to discover the ninth tool.
 
-Verification: controlled mailbox tests, live read-only supplier contact extraction, and an isolated browser tick check pass. No real supplier enquiry was sent during development. Real commercial supplier acceptance, public deployment, unattended scheduling and Drive access remain pending.
+Current provider evidence and acceptance gaps are maintained in [integration status](INTEGRATION_STATUS.md), rather than inferred from task labels or configured keys.

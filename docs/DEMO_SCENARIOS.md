@@ -10,7 +10,7 @@ The reproducible offline generator is [demo_scenarios.py](../apps/api/src/kawtea
 | Kampus Weekend Market | Ten exhibitor placements from twelve candidates, RM5,000 total support ceiling | Two secured, one approved awaiting confirmation, seven review slots and two alternatives. Each fictional exhibitor has enquiry, initial reply, negotiation and final terms. |
 | Build Together Workshop | Reusing a known catering supplier instead of researching again | Original 50 lunch packs secured at RM780. Separate extra-20-pack task has fresh RM300 terms approved but not confirmed. Both tasks share the Green Table connection. |
 
-There are exactly three projects, four task conversations, four supplier requests, three project briefing documents and 20 request-specific supplier entries representing 19 distinct businesses. Project memory includes event dates, locations, budgets and scope. Completed milestones feed Recent Activity; saved deadlines, quote expiry and proposed delivery dates feed Calendar. Full supplier timelines feed the history dialogs and Connections. Secured records contain a matching supplier confirmation linked to an organiser approval and exact terms hash. An approval alone is never counted as secured.
+There are exactly three projects, four task conversations, four supplier requests, three project briefing documents and 20 request-specific supplier entries representing 19 distinct businesses. Project memory includes event dates, locations, budgets and scope. Project headers intentionally omit the Sample badge; saved messages, records and history retain demo provenance. Completed milestones feed Recent Activity; saved deadlines, quote expiry and proposed delivery dates feed Calendar, grouped into at most three project summaries per day with full details available on click. Full supplier timelines feed the history dialogs and Connections. Secured records contain a matching supplier confirmation linked to an organiser approval and exact terms hash. An approval alone is never counted as secured.
 
 The multi-exhibitor request follows the existing generic placement model: `selectionTarget=10` is the number of placements; request-level quantity is the scope agreed by each exhibitor, and individual support quotations are counted against the aggregate budget. This is not a specialist marketplace or sponsorship integration. Catering is a supported procurement example rather than a claim of a new specialist sponsorship workflow.
 
@@ -26,16 +26,16 @@ From the repository root:
 
 ```powershell
 $env:PYTHONPATH='apps/api/src'
-apps/api/.venv/Scripts/python.exe -m kawteam.demo_scenarios --output test-results/demo-backup-query.sql --workspace a86971a9-7f0a-4169-9f29-d31a7ca719b1 --backup-query
+apps/api/.venv/Scripts/python.exe -m kawteam.demo_scenarios --output test-results/demo-backup-query.sql --workspace WORKSPACE_UUID --backup-query
 ```
 
 Execute that read-only query with an authorised database administrator tool. Securely save its returned `payload` **and** `digest` outside the repository, then generate the replacement SQL with the actual returned digest:
 
 ```powershell
-apps/api/.venv/Scripts/python.exe -m kawteam.demo_scenarios --output test-results/demo-replacement.sql --workspace a86971a9-7f0a-4169-9f29-d31a7ca719b1 --expected-digest RETURNED_BACKUP_DIGEST
+apps/api/.venv/Scripts/python.exe -m kawteam.demo_scenarios --output test-results/demo-replacement.sql --workspace WORKSPACE_UUID --expected-digest RETURNED_BACKUP_DIGEST
 ```
 
-Execute the generated SQL through the same administrator connection. It locks the two application tables, rechecks the exact backup digest, deletes the scoped old records/actions and inserts all relationships in one transaction. If anything changed after the backup, it aborts before deletion; take a fresh backup. No temporary public reset RPC or permanent administrative credential is introduced. Stop application writers during replacement and verify the resulting snapshot before presenting. This document describes the preparation; actual remote replacement evidence belongs in integration status after execution.
+Execute the generated SQL through the same administrator connection. It locks the two application tables, rechecks the exact backup digest, deletes the scoped old records/actions and inserts all relationships in one transaction. If anything changed after the backup, it aborts before deletion; take a fresh backup. No temporary public reset RPC or permanent administrative credential is introduced. Stop application writers during replacement and verify the resulting snapshot before presenting. The initial replacement was executed as recorded above; future replacements must follow the same guarded procedure.
 
 To regenerate the offline JSON:
 
@@ -47,4 +47,4 @@ Quotes are valid through 20 October 2026 for this hackathon presentation. A late
 
 ## Browser verification
 
-With the frontend dev server running, execute `node tests/presentation-demo-browser.mjs` from `apps/web`. It uses a read-only remote snapshot when exported into `test-results/premium/remote-demo-snapshot.json`, or generates the same offline scenarios through the existing API virtual environment. Every browser gateway call is mocked. It checks all three projects, four saved transcripts, approval/secured counts, full per-supplier histories, nineteen connections and separate confirmation controls without modifying Supabase or sending emails. `premium-visual-browser.mjs` records a `before` baseline by default; set `KAWTEAM_VISUAL_PHASE=after` for a strict copy/geometry comparison. Screenshot artifacts remain Git-ignored.
+With the frontend dev server running, execute `node tests/presentation-demo-browser.mjs` from `apps/web`. It uses a read-only remote snapshot when exported into `test-results/premium/remote-demo-snapshot.json`, or generates the same offline scenarios through the existing API virtual environment. Every browser gateway call is mocked. It checks all three projects, four saved transcripts, approval/secured counts, full per-supplier histories, nineteen connections and separate confirmation controls without modifying Supabase or sending emails. `premium-visual-browser.mjs` captures visual baselines. Set `KAWTEAM_VISUAL_PHASE=reference` for the current styling capture; old strict before/after geometry checks predate the authorised card/calendar redesign. Screenshot artifacts remain Git-ignored.

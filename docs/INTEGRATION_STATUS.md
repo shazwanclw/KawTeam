@@ -4,11 +4,11 @@ Updated 11 October 2026. Status is based on code/configuration and recorded chec
 
 ## Verified and pending
 
-### Presentation refresh — 11 October 2026
+### Presentation refresh â€” 11 October 2026
 
 The workspace's old application records and action history were backed up privately outside Git, then replaced in a single digest-checked transaction. Supabase now contains exactly **three projects, four supplier tasks, four conversations and three project briefing documents**. Workspace credentials, schema and provider configuration were retained. [Presentation scenarios](DEMO_SCENARIOS.md) cover T-shirt sourcing, ten exhibitor placements and repeat catering. Their 88 sent/received messages are explicitly simulated; no real supplier was contacted during this refresh. Earlier live Gmail test receipts are retained only in the private backup rather than the active demonstration workspace.
 
-The initial component restyle retained layout and copy, with twenty screenshot comparisons reporting no geometry differences greater than 1 px. The user's subsequent refinements explicitly requested the reference's larger Heros typography, exact gradient/material values, approval/vendor cards and a standalone calendar. Those visual changes supersede the earlier geometry baseline for the affected components. Recent Activity's duplicate inner header is removed; Overview links have icons; the official logo and stationary hamburger share a centre line. Calendar summaries are grouped by project/day with at most three per date, without deleting underlying saved dates.
+The initial component restyle retained layout and copy, with twenty screenshot comparisons reporting no geometry differences greater than 1 px. Subsequent refinements use the reference's Heros family and exact gradient/material values, approval/vendor cards and a standalone calendar. The enlarged font sizes were subsequently reverted to the original compact scale, with only project titles slightly enlarged. Those visual changes supersede the earlier geometry baseline for the affected components. Recent Activity's duplicate inner header is removed; Overview links have icons; the official logo and stationary hamburger share a centre line. Calendar summaries are grouped by project/day with at most three per date, without deleting underlying saved dates.
 
 Remote-seeded UI checks verified eight pending approvals, nineteen searchable vendor cards, task transcripts, full email histories and separate controlled confirmation actions. Checks passed: 154 backend tests, 47 frontend tests, TypeScript, ESLint, Ruff and the compact/reference/history/profile, approval-card and grouped-calendar browser suites. These checks do not constitute live supplier or deployed acceptance.
 
@@ -17,6 +17,7 @@ Remote-seeded UI checks verified eight pending approvals, nineteen searchable ve
 | Supabase | Configured; API reads saved projects; seven migrations applied; task/chat transactions tested | Deployment environment and final deployed checks |
 | Gemini | `GEMINI_API_KEY` present; adapter succeeded; website chat returned and saved a Gemini reply after backend reload | Usage/error handling and deployed smoke test |
 | Tavily | `TAVILY_API_KEY` present; real bounded supplier search returned five source candidates | Broader sourcing and real commercial outreach acceptance |
+| Google Calendar | Requested one-way sync; setup instructions supplied; no Calendar adapter or consent implemented | Enable API, obtain owned calendar ID, implement OAuth, upsert sync and reminders |
 | Google Drive | Adapter and persisted snapshot/retrieval exist; neither credential configured | Authorised folder, credential and actual ingestion test |
 | WorkBuddy | Nine scoped tools discovered over real stdio; real project/task reads succeed against Supabase | Actual desktop orchestration evidence and supported website-to-WorkBuddy trigger |
 | Gmail | Google consent and sender identity verified; one authorised test sent with saved receipt; saved-thread read succeeds | Real supplier quote/confirmation acceptance and deployed validation |
@@ -47,9 +48,9 @@ Provide an intended folder/document URL plus one supported server credential:
 
 A Gemini key is not automatically Drive authorisation. A private folder URL alone is insufficient. No Google user sign-in flow or continuous Drive sync exists. Refresh currently reads a bounded snapshot on demand. Credentials stay on the backend.
 
-## Gmail: current sender shazwanclw@gmail.com
+## Gmail authorisation
 
-Google consent and sender identity verification succeeded for `shazwan15122005@gmail.com`, using `Downloads/Email API.json`. One user-authorised labelled test was sent to `shazwan1512alt@gmail.com`; its Gmail receipt is saved in **QA - Email connection test**. No real supplier was contacted. One actual matching reply was received and saved, completing the controlled send/reply check. The sender was then changed to `shazwanclw@gmail.com`; its Google consent and identity check passed. No message has been sent from the new account.
+A controlled test between user-owned inboxes verified send and saved-thread reply retrieval with provider receipts. The sender was subsequently changed; consent and identity verification for the current sender passed, but no test message from the new sender is claimed. Earlier test receipts are retained in a private backup, not the active presentation dataset. No real commercial supplier was contacted by these checks.
 
 The CLI requests `gmail.send` and `gmail.readonly`, with no delete permission, and verifies the selected sender before storing the token in ignored `apps/api/.secrets/gmail-token.json`. From `apps/api`:
 
@@ -85,7 +86,7 @@ Target zero out-of-pocket hosting with two Vercel projects from the same reposit
 
 Use server-only secrets, HTTPS API URL, `COOKIE_SECURE=true`, and the matching web/API gateway secret. Replace the local API URL on deployment. Vercel request functions cannot be assumed to run an always-on desktop WorkBuddy process or a continuous inbox-polling loop.
 
-Remaining submission inputs: team/group name, campus branch, presentation PDF and final public application/repository verification. Original supplied deadline: 11 October 2026, 09:30 MYT, with a 30-minute buffer; operational cutoff 09:00, target 08:45. No submission receipt or final public URLs have been verified.
+The GitHub repository [shazwanclw/KawTeam](https://github.com/shazwanclw/KawTeam) was verified publicly accessible on 11 October 2026. Remaining submission inputs: team/group name, campus branch, presentation PDF and final public application verification. Original supplied deadline: 11 October 2026, 09:30 MYT, with a 30-minute buffer; operational cutoff 09:00, target 08:45. No submission receipt or deployed application URL has been verified.
 
 Mailboxes and request scopes are isolated: saved intents/replies carry the sender and request hash. Brief changes retain verified contact identity but require fresh enquiries/terms; old replies cannot regain approval eligibility. Latest replies use provider timestamps, not thread traversal order. These review findings have regression coverage.
 
@@ -102,10 +103,29 @@ Existing tasks are not silently enrolled: continue that task and say `Email the 
 
 Verification: controlled mailbox tests, live read-only supplier contact extraction, and an isolated browser tick check pass. No real supplier enquiry was sent during development. Real commercial supplier acceptance, public deployment, unattended scheduling and Drive access remain pending.
 
-## Compact autonomous chat update ? 11 October 2026
+## Google Calendar setup (planned)
 
-Pages use a compact hamburger rail and sidebar profile switcher. Project tabs include Failsafe. Sparse briefs can run research and provisional enquiries; unknown quantity uses pricing tiers, unknown destination is omitted, and absent deadlines use an explicit provisional 14-day assumption. Final scope/fit checks and organiser selection remain enforced. Recorded outreach progress is posted to the saved task transcript; foreground polling still requires KawTeam to be open. No real supplier email was sent by the verification tests for this update.
+The requested integration is one-way: KawTeam saved important dates become events in an owned Google Calendar, with updates rather than duplicates. Website calendar functionality already works; external sync does not exist yet. No Calendar environment variable or connection command is currently implemented.
 
-## Chat references update ? 11 October 2026
+1. In the existing Gmail Google Cloud project, enable **Google Calendar API** under APIs & Services > Library.
+2. In Google Auth Platform > Data Access, add `https://www.googleapis.com/auth/calendar.events.owned`, keeping Gmail scopes.
+3. For an External app in Testing, add the calendar account under Audience > Test users.
+4. In Google Calendar, create an owned **KawTeam** calendar, set Asia/Kuala_Lumpur, and copy its Calendar ID from Settings > Integrate calendar.
+5. Implement Calendar consent/token handling and sync before reauthorising. The current Gmail CLI requests only Gmail scopes and cannot grant Calendar access.
+6. Verify create/update, duplicate prevention, reminders, expiry/reconnection and deployment without silently exporting the whole fabricated demo dataset.
 
-Automatic projects now use concise purpose names; the existing prompt-named project was renamed T-shirt Sourcing. The Drive icon is available before selecting a project and until a project has a saved source. A paperclip supports readable task-scoped documents, up to three files and 3 MB total. Multipart submission reads files before the assistant receives context; retries bind file content and link identity. Drive credentials/access are still required for ingestion. The hamburger stays at a fixed screen position and toggles the sidebar without separate close controls.
+Reuse the existing OAuth client where appropriate; no new API key is needed for user-authorised Calendar events. [Google setup](https://developers.google.com/workspace/calendar/api/quickstart/python), [Calendar scopes](https://developers.google.com/workspace/calendar/api/auth).
+
+## Remaining work before claiming completion
+
+- [ ] Configure authorised Drive credentials and verify a real folder read/refresh.
+- [ ] Demonstrate actual WorkBuddy desktop planning/tool execution and saved outcomes, beyond independent MCP transport checks.
+- [ ] Resolve a supported website-to-WorkBuddy start/resume trigger; desktop MCP consumption alone is not that trigger.
+- [ ] Verify a real commercial supplier reply, usable final quotation and post-approval matching confirmation.
+- [ ] Implement and verify Google Calendar OAuth, stable event IDs, one-way updates and reminders.
+- [ ] Verify task-wide final reporting/export and measure outcomes only from comparable real evidence.
+- [ ] Deploy the two prepared Vercel roots with server-only secrets, HTTPS gateway URL and secure cookies; validate hosted role/retry/budget behaviour.
+- [ ] Choose and verify an unattended runner if work must continue after closing the site; no hosted background worker exists.
+- [ ] Complete pitch PDF, group/campus details, deployed link and submission receipt.
+
+Future directions, not demo blockers: private organisation accounts, authorised social messaging, richer CRM/analytics and specialist sponsorship/scholarship workflows. No paid upgrade is assumed or authorised.
