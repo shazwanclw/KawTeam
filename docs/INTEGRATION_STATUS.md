@@ -129,3 +129,9 @@ Reuse the existing OAuth client where appropriate; no new API key is needed for 
 - [ ] Complete pitch PDF, group/campus details, deployed link and submission receipt.
 
 Future directions, not demo blockers: private organisation accounts, authorised social messaging, richer CRM/analytics and specialist sponsorship/scholarship workflows. No paid upgrade is assumed or authorised.
+
+## Vercel missing-dependency troubleshooting
+
+The initial backend deployment returned `FUNCTION_INVOCATION_FAILED` because importing `index.py` reached `import httpx` and failed with `ModuleNotFoundError`. The project's Python metadata did not declare runtime dependencies, despite the requirements file listing them. `apps/api/pyproject.toml` now explicitly lists all API runtime dependencies, with separate desktop MCP and development extras. A fresh isolated install using that manifest successfully imported the Vercel entrypoint and returned HTTP 200 from `/health`; this does not verify the hosted deployment.
+
+Push the manifest update and redeploy the backend from the new commit. If using manual Redeploy, disable the existing build cache for that rebuild. Confirm root directory `apps/api` and check `/health` before retrying the frontend. Use the actual backend production domain for frontend `KAWTEAM_API_URL`, without `/health`. Keep local `.env.local` pointed at localhost.
