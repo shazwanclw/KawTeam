@@ -6,7 +6,7 @@ Updated 11 October 2026. This replaces the original StakeMate name and supersede
 
 KawTeam is a stakeholder liaison workspace for student organisers and small businesses. Sourcing a supplier is only the beginning: organisers must explain their requirements, request quotes, compare equivalent terms, negotiate, track replies and confirm the final choice. Those steps are fragmented across documents, search and inboxes.
 
-The intended outcome is one prompt -> a saved project/task -> research and non-binding liaison -> evidence-backed options -> human approval -> supplier confirmation -> secured outcome. WorkBuddy is intended to execute the tool-based work; Gemini currently handles website conversations. The live communication/orchestration layer is still pending.
+The intended outcome is one prompt -> a saved project/task -> research and non-binding liaison -> evidence-backed options -> human approval -> supplier confirmation -> secured outcome. WorkBuddy is intended to execute the tool-based work; Gemini currently handles website conversations. Task-scoped Gmail send/read and grounded quote/confirmation services are implemented; full desktop orchestration and the website trigger remain pending.
 
 The interface headline is **What are we going to KawTeam today?** The pitch should state a concrete benefit: less manual supplier chasing, clearer project context and traceable human-controlled decisions. Do not claim measured savings or hours saved without real evidence.
 
@@ -93,15 +93,15 @@ flowchart LR
   A --> G[Gemini conversation]
   A --> T[Tavily discovery]
   A -. authorised reads pending .-> D[Google Drive]
-  B[WorkBuddy desktop] --> M[KawTeam MCP health scaffold]
+  B[WorkBuddy desktop] --> M[KawTeam scoped MCP tools]
   M -. execution tools pending .-> A
-  A -. provider pending .-> E[Gmail enquiries/replies]
+  M --> E[Gmail enquiries and saved-thread replies]
   W -. trigger unresolved .-> B
 ```
 
 Next.js 16.4 / React / TypeScript / Tailwind / shadcn; FastAPI / Pydantic / MCP Python SDK; Supabase protected RPCs and seven migrations. Web gateway and signed demo roles are server-enforced. Files/context are project-scoped, tasks have separate threads and edits update existing cases. Durable database state is implemented; a durable agent/email runner is not.
 
-Gemini and Tavily keys are configured and live calls succeeded, including a saved website Gemini reply. Drive adapter exists but credentials are absent. WorkBuddy's desktop MCP configuration exists and the local health test passes; actual task tools and automatic website trigger remain open. Real Gmail/provider access and public deployment are not yet established.
+Gmail is locally authorised; one controlled test send has a saved provider receipt, and saved-thread reading works. Eight scoped WorkBuddy MCP tools exist and real local project/task reads pass. Actual desktop orchestration, website trigger, automated contact enrichment, live supplier quote/confirmation acceptance, Drive access and public deployment remain pending. See [integration status](docs/INTEGRATION_STATUS.md).
 
 ## 8. Context and data contracts
 
@@ -118,11 +118,11 @@ Keep immutable message identities, request IDs, expected revisions and term fing
 | Workspace | Chat, projects/tasks, saved history, role switcher, responsive task views | Private tenancy and genuine account membership |
 | Context | Project retrieval/citations and Drive snapshot code | Real folder access, OAuth and background sync |
 | Discovery | Gemini request interpretation and bounded Tavily results | Contacts, richer deduplication, more sources, social-platform adapters |
-| Liaison | Controlled tote sample and saved simulated replies | Gmail OAuth, actual sends/replies, follow-up worker |
+| Liaison | Controlled lifecycle plus actual Gmail test send and bounded thread reading | Contact enrichment, final quotes/confirmations and orchestration |
 | Decisions | Ranked quote queue, waitlist, one/many targets, human permissions, separate confirmation | Live provider evidence and deployed validation |
 | Operations | Activity milestones, month-based calendar, Connections | External calendar invites, meeting commitments |
 | Reporting | Legacy case outcome/print support, evidence/pending states | Task-wide final report/export and print QA |
-| Agent | MCP health scaffold and desktop configuration | WorkBuddy scoped tools, runner/trigger, resume and call evidence |
+| Agent | Seven scoped MCP tools and real local project/task reads | Actual desktop orchestration, website trigger and resume acceptance |
 | Sponsorship/partnership | Broader product direction; generic named tasks | Dedicated matching, contributions/benefits and relationship workflows |
 
 ## 10. Demo and pitch
@@ -135,7 +135,7 @@ Track compliance still requires a real WorkBuddy run using useful tools beyond h
 
 ## 11. Remaining build order
 
-1. Use the supplied `Downloads/Email API.json` (verified Desktop OAuth client format) to implement sender consent and the send/read provider using controlled inboxes; token/API access still need verification.
+1. Finish controlled reply acceptance, then contact enrichment, live supplier quote/confirmation acceptance and confirmation on the implemented Gmail services.
 2. Add verified supplier identity/contact and complete-quote parsing with reply correlation.
 3. Implement scoped WorkBuddy task/context/search/liaison/checkpoint tools on shared services.
 4. Prove actual desktop tool calls and resolve a supported website start/resume trigger. No unofficial undocumented personal-account proxy.
@@ -152,7 +152,7 @@ After the core live flow works: sponsorship cash/in-kind missions; workshop part
 
 ## 13. Verification and official references
 
-71 backend tests and 43 frontend tests pass, along with Ruff, TypeScript and ESLint. Production build and responsive saved-flow browser acceptance passed before the documentation refresh. Live Gemini/Tavily and Supabase checks passed; MCP health was discovered/called through a real local stdio client. WorkBuddy orchestration, Gmail, real Drive and public deployment remain unverified.
+100 backend tests and 43 frontend tests pass, plus lint/type checks. Prior build/browser evidence remains. Live Gemini/Tavily, Supabase and scoped local MCP reads pass; one authorised Gmail test receipt is saved. Full orchestration, final quotes/confirmation, Drive and deployment remain pending.
 
 - [WorkBuddy MCP guide](https://www.codebuddy.ai/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/MCP-Guide)
 - [WorkBuddy model configuration](https://www.workbuddy.ai/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Model)

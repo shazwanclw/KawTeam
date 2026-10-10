@@ -62,8 +62,15 @@ Seven applied migrations protect `kawteam_workspaces`, `kawteam_records`, `kawte
 
 ## MCP and current routes
 
-MCP exposes only `kawteam_health(request_id)` over stdio, returning request_id/product/status/capabilities/phase. Its historical phase label is not a full application completion status. No final-decision tool is exposed.
+MCP exposes eight scoped stdio tools: health, project list, task/context, research, sender identity, non-binding enquiry, saved-thread reply sync and quote/confirmation interpretation. No final-decision tool exists. See [WorkBuddy guide](../integration/workbuddy.md).
 
 Primary UI routes: `/`, `/projects/{id}`, `/projects/{id}?task={taskId}`, `/projects/{id}/tasks/{taskId}`, `/overview/activity`, `/overview/approvals`, `/overview/calendar`, `/connections`. Catch-all routing retains older project/case links; old URLs do not reinstate removed top project tabs. `/demo` and legacy case/report views remain secondary.
 
-Gemini/Tavily are live-tested. Actual Gmail, Drive account reads, WorkBuddy execution tools and website trigger remain pending. Do not equate a configured-status field or MCP SDK health test with full end-to-end execution.
+Gemini/Tavily are live-tested; Gmail consent and controlled send are verified, and saved-thread reading works. WorkBuddy scoped tools are transport-tested. Real commercial reply/confirmation acceptance, actual desktop orchestration/website trigger, Drive reads and deployment remain pending.
+
+
+## Live email routes
+
+All routes require the gateway and signed demo profile. `GET /email/status` verifies the configured Gmail sender. `POST /cases/{caseId}/email/contact` accepts vendorId/email/expectedRevision and is organiser-only; this registers a human-verified contact, not a final supplier choice. `POST /cases/{caseId}/email/send` accepts vendorId/subject/body/expectedRevision/requestId and is editable-profile-only, non-binding. `POST /cases/{caseId}/email/sync` accepts expectedRevision and is editable-profile-only. `POST /cases/{caseId}/email/quote` accepts vendorId/providerMessageId/expectedRevision and interprets only the latest saved supplier reply. Unknown fields are rejected.
+
+Recipients must be real task suppliers with organiser-registered contacts. No arbitrary inbox, payment, booking or final-approval MCP capability. Intents are saved before send; identical request retries return a saved receipt, changed content fails, and ambiguous/reserved sends block retry. Provider IDs and received raw evidence are retained. Quote interpretation requires verbatim evidence, supported prices and explicit dates. Confirmation requires a current organiser decision, exact matching terms and provider receipt after that approval. Raw replies alone never imply final readiness or Secured.

@@ -14,3 +14,4 @@ playwright-report/
 *.tsbuildinfo
 *.log
 .migration-config.json
+.secrets/

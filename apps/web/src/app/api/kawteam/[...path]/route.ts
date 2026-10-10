@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 
 export const maxDuration=120;
 
-const allowed = /^(session|state|connections|actions|chat|events|events\/[^/]+\/(documents|tasks|settings|drive)|documents\/[^/]+|cases\/[^/]+\/report)$/;
+const allowed = /^(session|state|connections|actions|chat|events|email\/status|events\/[^/]+\/(documents|tasks|settings|drive)|documents\/[^/]+|cases\/[^/]+\/(report|email\/(contact|send|sync|quote)))$/;
 
 async function proxy(request: NextRequest, context: { params: Promise<{path:string[]}> }) {
   const path=(await context.params).path.join('/');

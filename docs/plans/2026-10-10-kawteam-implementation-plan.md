@@ -17,8 +17,8 @@ Reconciled 11 October 2026. The original frontend-first foundation has been deli
 | 2: frontend | Latest chat/task/overview/Connections layout implemented and browser-checked |
 | 3: persistence | Seven migrations, roles, revisions, transactions and retries implemented |
 | 4: conversation/discovery | Gemini/Tavily configured and live-tested; Drive credential/contact enrichment open |
-| 5: liaison/approval | Controlled lifecycle and final queue rules implemented; real Gmail/replies open |
-| 6: WorkBuddy | Health scaffold only; scoped execution tools/runner/trigger needed |
+| 5: liaison/approval | Gmail OAuth/send/reply acceptance passes; grounded quote/confirmation guards implemented; real commercial run pending |
+| 6: WorkBuddy | Eight scoped tools with real local transport/project/task reads; actual desktop runner/website trigger pending |
 | 7: outcome | Task status/dates and legacy reporting present; complete live task report pending |
 | 8: deployment | Configuration roots prepared; public deployment unverified |
 | 9: submission | Public links, PDF, group/campus and receipt still need verification |
@@ -27,9 +27,9 @@ Reconciled 11 October 2026. The original frontend-first foundation has been deli
 
 No login, intake form or upload UI. Optional Drive link at creation. Main Chat chooses projects; Project Chat chooses New Task/existing tasks. A new conversation creates a task; follow-ups/questions/edits continue it. Only All Task / Recent Activity below project chat. Task detail Secured/Approval left, dates right. Sidebar Overview sublinks only. Organiser is final approver. Remove three-supplier cap; contact verified suitable returned pool; rank completed final quotes, maintain waitlist and separate confirmation.
 
-## Next step A: Gmail authorisation
+## Step A: Gmail authorisation implemented; deployment acceptance remains
 
-**Current user preparation:** The user reports Gmail API setup complete and supplied `Downloads/Email API.json`. Its Desktop OAuth client format, required credential fields and Google endpoints are verified; it stays outside Git. Personal Gmail can work; dedicated inbox preferred. Enabled API, consent/test-user settings, selected sender and OAuth token remain unverified until actual authorisation.
+**Current user preparation:** The user reports Gmail API setup complete and supplied `Downloads/Email API.json`. Its Desktop OAuth client format, required credential fields and Google endpoints are verified; it stays outside Git. Personal Gmail can work; dedicated inbox preferred. Google consent, selected identity and a controlled send/reply check passed for the original sender. Current sender `shazwanclw@gmail.com` is separately authorised and identity-verified; no new-account send has been made.
 
 **Implementation locations:** `apps/api/src/kawteam/config.py`, a new Gmail provider module and local authorisation command, `apps/api/.env.example`, provider tests and integration docs. Protect token/client files with ignored paths before writing credentials. No Gmail password, invented callback route or frontend-public token.
 
@@ -91,7 +91,7 @@ From `apps/web`: `npm test`, `npm run typecheck`, `npm run lint`, `npm run build
 
 Opt-in saved-data wrappers: `tests/live_task_browser.py`, `tests/live_task_database.py`; follow README, restore sample and remove only explicitly labelled QA records. Live provider tests consume limited quota; tests do not authorise vendor emails.
 
-Current evidence: 71 backend/43 frontend tests, lint/type checks, prior production build, browser/DB acceptance, live Gemini/Tavily and local MCP health. Treat an unchecked future step as pending even if the scaffolding exists.
+Current evidence: 100 backend/43 frontend tests, lint/type checks, prior build/browser/DB acceptance, live Gemini/Tavily, real scoped MCP reads and a controlled Gmail send/reply. The new sender identity is verified; no new-account email was sent. Treat an unchecked future step as pending even if the scaffolding exists.
 
 ## Submission and later phases
 

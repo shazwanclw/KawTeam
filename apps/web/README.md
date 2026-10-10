@@ -10,7 +10,7 @@ From this directory: `npm ci` on a fresh checkout, then `npm run dev`. Open http
 
 Main chat selects projects. Projects open directly to New Task/existing-task chat; selecting a task expands saved history. All Task / Recent Activity sit below chat. Task detail has Secured / ranked Approval and Upcoming events, with approval badges and separate supplier confirmation. Sidebar has Chat, Overview links, Projects plus/search and Connections. No login, upload UI, assistant preferences or top project/subproject tabs.
 
-Use existing teal/lime tokens and shadcn primitives; preserve responsive stacking and keyboard access. Gemini/Tavily work through the backend. Drive credentials, Gmail and WorkBuddy execution/website trigger remain pending; do not show fabricated active work or sent emails.
+Keep teal/lime tokens, shadcn primitives, responsive stacking and keyboard access. Gmail send/read and eight WorkBuddy tools are implemented; full orchestration/trigger, live supplier quote/confirmation acceptance, Drive access and deployment remain pending. Do not fabricate active work, quotes or sent messages.
 
 ## Verify
 

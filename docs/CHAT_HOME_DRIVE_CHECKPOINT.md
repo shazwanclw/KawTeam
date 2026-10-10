@@ -22,8 +22,8 @@ Seven migrations now include the earlier drive_snapshot RPC plus task/legacy cha
 
 Deterministic parsing and Gemini can use project facts; essential missing terms are asked conversationally. Explicit user updates override memory and invalidate current quotes only when requirements change. Task history remains separate from other tasks. Source citations must point to actual project excerpts.
 
-Backend/frontend tests and injected Drive transports pass; real Google folder access still needs credentials. Current test counts are 71 backend/43 frontend. Production build and browser/database flows were previously verified; read-only e2e now targets task-layout-browser, not the old chat-home script.
+Backend/frontend tests and injected Drive transports pass; real Google folder access still needs credentials. Current test counts are 100 backend/43 frontend. Production build and browser/database flows were previously verified; read-only e2e now targets task-layout-browser, not the old chat-home script.
 
 ## Latest provider status
 
-Gemini/Tavily keys are configured and live-tested. WorkBuddy desktop health setup is present but actual execution/website trigger pending. Gmail Desktop OAuth client JSON is supplied and format-verified, but sender consent/token/provider and Drive access remain pending. No external emails or public deployment claimed. See [integration status](INTEGRATION_STATUS.md) and root README for setup.
+Gmail is locally authorised; one controlled test send has a saved provider receipt, and saved-thread reading works. Eight scoped WorkBuddy MCP tools exist and real local project/task reads pass. Actual desktop orchestration, website trigger, automated contact enrichment, live supplier quote/confirmation acceptance, Drive access and public deployment remain pending. See [integration status](INTEGRATION_STATUS.md).

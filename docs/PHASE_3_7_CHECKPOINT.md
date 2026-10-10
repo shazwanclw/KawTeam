@@ -8,7 +8,7 @@ Reconciled 11 October 2026. [Current specification](CURRENT_PRODUCT_SPEC.md), [i
 |---|---|---|
 | 3 | Supabase, seven migrations, signed shared-demo roles, protected RPCs, atomic tasks/chat/cases, revisions/retries | Public deployment and deployed checks |
 | 4 | Project retrieval/citations, Drive adapter, live Gemini/Tavily, bounded candidate pool, eligibility | Actual Drive access, verified contacts and broader deduplication |
-| 5 | Controlled liaison/replies, final-quote ranked queue, one/many targets, human decisions and separate confirmation | Gmail OAuth/send/read, real final quotes/receipts, durable waits/follow-ups |
+| 5 | Controlled queue lifecycle plus Gmail authorisation/send/saved-thread read and durable intents | Real final quotes/confirmations, contact enrichment and follow-up orchestration |
 | 6 | Desktop MCP configuration and health transport scaffold | Actual useful WorkBuddy tools, orchestration/resume and website trigger |
 | 7 | Task statuses/dates, milestone history, legacy report/pending/no-deal/simulated savings | Complete live task outcome/export and print QA |
 
@@ -22,6 +22,6 @@ Task start, initial message and legacy history copy are transactional. Case/assi
 
 ## Evidence and boundaries
 
-71 backend tests and 43 frontend tests pass; lint/type checks pass. Production build, saved browser/DB task checks and responsive layouts passed before this docs refresh. Live Gemini reply and Tavily sources verified; local MCP health works. QA records removed and original sample restored.
+100 backend tests and 43 frontend tests pass; lint/type checks pass. Production build, saved browser/DB task checks and responsive layouts passed before this docs refresh. Live Gemini reply and Tavily sources verified; local MCP health works. QA records removed and original sample restored.
 
-No real vendor enquiry, payment, order or binding acceptance was issued. Latest target uses non-binding liaison with human approval only at final selection; legacy exact-draft demo machinery remains secondary. Real Gmail, Drive, WorkBuddy execution and deployed end-to-end verification remain required.
+Gmail is locally authorised; one controlled test send has a saved provider receipt, and saved-thread reading works. Eight scoped WorkBuddy MCP tools exist and real local project/task reads pass. Actual desktop orchestration, website trigger, automated contact enrichment, live supplier quote/confirmation acceptance, Drive access and public deployment remain pending. See [integration status](INTEGRATION_STATUS.md).

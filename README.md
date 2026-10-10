@@ -50,8 +50,8 @@ Try: "Find vendors for 50 shirts within RM2,000 by 25 October 2026 in Subang Jay
 | Tavily discovery | Key configured; live public-source search verified |
 | Ranked post-liaison approval and confirmation rules | Implemented and tested; controlled sample exercises the lifecycle |
 | Drive extraction, snapshot and project retrieval | Implemented; real access awaits credentials |
-| WorkBuddy MCP | Desktop entry configured; health transport tested; execution tools/trigger not built |
-| Supplier emails and automated negotiations | Fictional sample only; live Gmail integration not built |
+| WorkBuddy MCP | Eight scoped tools; real stdio discovery and saved project/task reads verified; desktop orchestration/website trigger pending |
+| Supplier emails | Gmail OAuth/send/saved-thread read implemented; one controlled test receipt saved; quote/confirmation guards tested; real supplier acceptance pending |
 | Public deployment | Planned; not verified |
 
 Research retains the returned candidate pool rather than selecting only three for outreach. Current search still has a bounded five-source result limit. Returned websites are provisional: no invented prices, verified contacts, sent emails or supplier commitments. Ranking uses valid final quotation evidence, landed cost and arrival, not arbitrary AI scores.
@@ -64,7 +64,7 @@ The web uses `NEXT_PUBLIC_DATA_MODE=api`, `KAWTEAM_API_URL` and server-only `KAW
 
 AI/search keys are already configured locally. Drive supports `GOOGLE_DRIVE_API_KEY` for public content or `GOOGLE_DRIVE_SERVICE_ACCOUNT_JSON` for a shared private folder. Share a private folder with the service-account `client_email` as reader. Docs/Slides export as text; Sheets as XLSX. PDF, DOCX, XLSX, TXT, MD and CSV have bounded extraction. Scanned PDFs have no OCR. Refresh is manual and preserves previous readable memory on failure; active snapshots replace old versions and archive removed files after complete sync.
 
-Gmail is the next connection: use OAuth rather than a password; a dedicated sending account is recommended. `Downloads/Email API.json` is supplied and verified as Desktop OAuth client credentials. Keep it outside the repository. Sender consent/token and live mail access are not verified; no Gmail callback, token storage or send/read command is implemented. See [integration status](docs/INTEGRATION_STATUS.md) for preparation and [WorkBuddy guide](docs/integration/workbuddy.md) for the actual desktop MCP setup.
+Gmail is locally authorised via `Downloads/Email API.json`, with an ignored local token and one controlled test receipt saved. Use `GMAIL_SENDER`, `GMAIL_OAUTH_CLIENT_PATH`, optional `GMAIL_TOKEN_PATH`; deployment can use server-secret `GMAIL_AUTHORIZED_USER_JSON`. See [integration status](docs/INTEGRATION_STATUS.md) for commands, limits and remaining acceptance, and [WorkBuddy guide](docs/integration/workbuddy.md) for the eight scoped tools. No actual supplier was contacted.
 
 ## Verification
 

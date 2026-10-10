@@ -20,8 +20,8 @@ Run sample liaison and Check demo confirmation are restricted labelled actions f
 
 Seven applied migrations include task conversations and legacy-copy changes. Shared-demo role selection is deliberate, not private multi-user authentication. Tests cover naming/retries, continuation/edits, isolation, legacy threads, valid final quotes, one/ten targets, total budget, stale terms, confirmation proof and role restrictions.
 
-71 backend tests and 43 frontend tests pass, plus Ruff, TypeScript and ESLint. Production build, responsive saved browser flow and database concurrency checks passed before this documentation refresh. Original sample restored; QA projects removed. README documents read-only and opt-in checks.
+100 backend tests and 43 frontend tests pass, plus Ruff, TypeScript and ESLint. Production build, responsive saved browser flow and database concurrency checks passed before this documentation refresh. Original sample restored; QA projects removed. README documents read-only and opt-in checks.
 
 ## Latest integration update
 
-Gemini and Tavily keys are now configured and live-tested, including a saved website Gemini reply. Supabase works. WorkBuddy desktop configuration exists and local health transport passes; execution tools, verified client orchestration and website trigger remain open. Drive credentials are missing. Gmail Desktop OAuth client JSON is supplied and format-verified, but sender consent/token and send/read provider remain pending. No public deployment or full autonomous live liaison is claimed.
+Gmail is locally authorised; one controlled test send has a saved provider receipt, and saved-thread reading works. Eight scoped WorkBuddy MCP tools exist and real local project/task reads pass. Actual desktop orchestration, website trigger, automated contact enrichment, live supplier quote/confirmation acceptance, Drive access and public deployment remain pending. See [integration status](INTEGRATION_STATUS.md).

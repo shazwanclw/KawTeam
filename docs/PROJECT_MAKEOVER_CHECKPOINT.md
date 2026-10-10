@@ -16,4 +16,4 @@ New project takes name plus optional Drive link. Creation uses Projects plus and
 
 The original project_tasks_chat migration is retained; seven total migrations now cover Drive snapshots, atomic task starts, case edits and legacy threads. Existing user records are preserved. Role/revision/ownership/retry protections remain, with deliberate shared-demo profile switching and no private authentication claim.
 
-Gemini and Tavily are configured/live-tested. Real Drive, Gmail and WorkBuddy useful tools/website trigger remain pending. Controlled supplier messages are simulated. Production build/browser flows previously passed; latest suites are 71 backend/43 frontend plus lint/type checks. No public deployment is verified.
+Gmail is locally authorised; one controlled test send has a saved provider receipt, and saved-thread reading works. Eight scoped WorkBuddy MCP tools exist and real local project/task reads pass. Actual desktop orchestration, website trigger, automated contact enrichment, live supplier quote/confirmation acceptance, Drive access and public deployment remain pending. See [integration status](INTEGRATION_STATUS.md).

@@ -55,20 +55,20 @@ Checked means implemented or verified as stated. A provider key alone does not c
 - [x] Organiser-only final decisions; approval never implies secured.
 - [x] Separate matching supplier confirmation required; stale edits invalidate terms.
 - [x] Obtain `Downloads/Email API.json`; verify Desktop OAuth client format without exposing secrets.
-- [ ] Authorise sender consent/token and verify Gmail API access (no password).
-- [ ] Implement real email send/read, recipient validation and thread correlation.
-- [ ] Handle idempotent sends, ambiguous delivery, replies and bounded follow-ups.
-- [ ] Parse actual final quotes and confirmations without inventing terms.
-- [ ] Test real flow using controlled inboxes before live supplier outreach.
+- [x] Authorise sender consent/token and verify Gmail sender identity (no password).
+- [x] Implement Gmail send/saved-thread read, recipient validation and correlation.
+- [x] Persist send intents, prevent duplicate retry, block uncertain sends, deduplicate replies; enforce per-supplier/task limits.
+- [x] Implement grounded quote extraction and post-approval matching confirmation guards; real commercial acceptance still pending.
+- [x] Controlled email send/reply passed with one message and one reply; no real supplier outreach. Current new sender consent/identity separately verified.
 
 ## Phase 6: WorkBuddy execution
 
 - [x] Desktop setup instructions reflect Connectors -> MCP Server Management -> Add MCP.
 - [x] One health tool exists and is transport-tested.
-- [ ] Implement scoped read-context/task, discovery, liaison and checkpoint tools.
+- [x] Implement scoped project/task/context, discovery, non-binding liaison and saved-thread tools.
 - [ ] Load updated workflow guidance in the actual client.
 - [ ] Demonstrate goal planning, tool execution, reply validation and saved outcomes.
-- [ ] Keep human final approval outside agent tools.
+- [x] Keep human final approval outside all agent tools.
 - [ ] Verify bounded/concurrent runs, resume and website trigger.
 - [ ] Capture useful matching UI/server/client call evidence beyond health.
 
@@ -98,7 +98,7 @@ Checked means implemented or verified as stated. A provider key alone does not c
 
 ## Verified evidence
 
-71 backend tests, 43 frontend tests, Ruff, TypeScript and ESLint pass. Production build and browser task/overview flows passed before the docs refresh, including responsive widths, saved continuation/edit, rejection, approval and separate confirmation. Live Gemini/Tavily succeeded; Supabase transactional checks and MCP health transport succeeded. QA data was cleaned and original samples restored.
+100 backend tests, 43 frontend tests, Ruff, TypeScript and ESLint pass. Production build and browser task/overview flows passed before the docs refresh, including responsive widths, saved continuation/edit, rejection, approval and separate confirmation. Live Gemini/Tavily succeeded; Supabase transactional checks and MCP health transport succeeded. QA data was cleaned and original samples restored.
 
 ## Future product, not hackathon blockers
 

@@ -10,6 +10,6 @@ Profile switcher supports shared-demo Organiser/Teammate/Observer; server checks
 
 ## Verification and later delivery
 
-Latest suites: 43 frontend tests, 71 backend tests, type/lint checks. Production build and saved browser flows passed before docs refresh, including task continuation/edit, approval/confirmation, roles and responsive widths. Phases 3-5 persistence/decision foundations now exist; Gemini/Tavily are live-tested.
+Latest suites: 43 frontend tests, 100 backend tests, type/lint checks. Production build and saved browser flows passed before docs refresh, including task continuation/edit, approval/confirmation, roles and responsive widths. Phases 3-5 persistence/decision foundations now exist; Gemini/Tavily are live-tested.
 
-Actual Drive reads, Gmail provider, useful WorkBuddy execution/trigger, public deployment and submission are still open. Phase 6 is not satisfied by the health tool alone. See the root checklist for the next steps.
+Gmail is locally authorised; one controlled test send has a saved provider receipt, and saved-thread reading works. Eight scoped WorkBuddy MCP tools exist and real local project/task reads pass. Actual desktop orchestration, website trigger, automated contact enrichment, live supplier quote/confirmation acceptance, Drive access and public deployment remain pending. See [integration status](INTEGRATION_STATUS.md).

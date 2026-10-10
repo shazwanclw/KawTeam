@@ -12,4 +12,4 @@ Main Chat selects projects and creates tasks. Project starts directly at New Tas
 
 ## Follow-on work
 
-Visual/task redesign and seven Supabase migrations are complete. Gemini/Tavily live calls work. Follow the [current phase plan](2026-10-10-kawteam-implementation-plan.md) for Gmail, real Drive, WorkBuddy tools/trigger and deployment; do not reimplement the old makeover. Verification currently covers 71 backend/43 frontend tests plus type/lint and prior build/browser evidence.
+Gmail is locally authorised; one controlled test send has a saved provider receipt, and saved-thread reading works. Eight scoped WorkBuddy MCP tools exist and real local project/task reads pass. Actual desktop orchestration, website trigger, automated contact enrichment, live supplier quote/confirmation acceptance, Drive access and public deployment remain pending. See [integration status](../INTEGRATION_STATUS.md).

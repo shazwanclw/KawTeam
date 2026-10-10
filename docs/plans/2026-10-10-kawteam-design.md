@@ -13,11 +13,11 @@ Supplied submission requirements: public repository, deployed app, PDF slides, g
 | Boundary | Design |
 |---|---|
 | Conversation | Gemini understands requests, asks essential questions and explains saved context |
-| Execution | WorkBuddy should plan/use scoped tools and save results; only health exists today |
+| Execution | WorkBuddy should plan/use scoped tools and save results; eight scoped tools exist; actual desktop orchestration/website trigger is pending |
 | Rules | FastAPI validates scope, roles, revisions, budgets and terms |
 | State | Supabase projects/tasks/threads/cases/evidence; seven migrations |
 | Discovery | Bounded Tavily public sources; provisional candidates |
-| Communication | Intended Gmail OAuth send/read; provider not built |
+| Communication | Gmail locally authorised; send receipts and saved-thread reads; grounded commercial interpretation implemented; live commercial acceptance pending |
 | Context | Project Drive snapshots and retrieval; real access not configured |
 | Final choice | Organiser approves; separate supplier receipt establishes secured |
 
@@ -45,4 +45,4 @@ Project documents are untrusted reference content; tasks have separate history a
 
 ## Implementation evidence and open work
 
-Current UI/state/decision lifecycle is implemented, with 71 backend and 43 frontend tests; lint/type checks pass. Production build and saved browser/DB flows passed before this docs refresh. Gemini/Tavily live calls passed. Actual Drive, Gmail, WorkBuddy execution/trigger and public deployment are still pending. See [phase plan](2026-10-10-kawteam-implementation-plan.md) for remaining build order and [checklist](../../KAWTEAM_BUILD_CHECKLIST.md) for acceptance.
+Gmail is locally authorised; one controlled test send has a saved provider receipt, and saved-thread reading works. Eight scoped WorkBuddy MCP tools exist and real local project/task reads pass. Actual desktop orchestration, website trigger, automated contact enrichment, live supplier quote/confirmation acceptance, Drive access and public deployment remain pending. See [integration status](../INTEGRATION_STATUS.md).

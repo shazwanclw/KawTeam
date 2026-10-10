@@ -30,7 +30,7 @@ Save, enable KawTeam and open a new conversation. Ask: **Call kawteam_health wit
 ## Direction matters
 
 ```text
-WorkBuddy -> our KawTeam MCP server -> task tools (not implemented yet)
+WorkBuddy -> our KawTeam MCP server -> saved task/context/search/email tools
 Website -> WorkBuddy agent run -> requires a separate verified trigger
 ```
 
@@ -38,20 +38,22 @@ Add MCP lets WorkBuddy consume tools. It does not expose a WorkBuddy agent API t
 
 Tencent documents Enterprise Managed Agents/ADK APIs, but the user's personal Google-login account has not established access. Do not assume entitlement or require a paid upgrade. No unofficial personal-account proxy or undocumented endpoint is authorised. See [official Enterprise API documentation](https://cloud.tencent.com/document/api/1831/138581).
 
-## Existing tool and limits
+## Implemented tools and limits
 
-`apps/api/src/kawteam/mcp/server.py` exposes only `kawteam_health(request_id)`. It returns a structured health result with product/status/capabilities and a historical phase label. It does not access Supabase/project context, research, Gmail, website chats or final decisions. Its Python process does not need the web server for a health call.
+Eight tools are implemented in `apps/api/src/kawteam/mcp/server.py`: `kawteam_health`, `kawteam_projects`, `kawteam_task`, `kawteam_research`, `kawteam_email_status`, `kawteam_send_enquiry`, `kawteam_sync_replies`, `kawteam_interpret_quote`. Reconnect/restart the KawTeam MCP entry to refresh discovery. They use shared backend services directly; FastAPI need not be running, but server environment, Supabase and provider access must work.
 
-The MCP SDK test in `apps/api/tests/test_mcp_stdio.py` is genuine local transport evidence, not proof of WorkBuddy planning/orchestration or email execution. Current guidance lives in [the workflow skill](../../workbuddy/kawteam/skills/kawteam-procurement/SKILL.md); installation/loading into the actual client is not verified.
+List projects, read a saved task, then use its current backendRevision. Research saves bounded public candidates without verifying contacts or quotes. Only organiser-registered contacts can receive non-binding enquiries. Limits: four per supplier, 60 per task, 20 saved threads per sync and 30 messages per thread. Sends reserve an intent before Gmail; uncertain outcomes cannot be automatically repeated. No arbitrary inbox read, final approve/reject, payment or booking tool exists. The interpretation tool validates quoted evidence and exact terms; Secured additionally requires current human approval and a later matching reply. Real commercial acceptance still needs testing.
+
+The real stdio test verifies discovery and health calls. A live local MCP client also read Supabase projects and the QA task containing one actual Gmail receipt and zero human supplier decisions. This is service/tool evidence, not actual WorkBuddy orchestration. [Workflow skill](../../workbuddy/kawteam/skills/kawteam-procurement/SKILL.md) loading into the actual client still needs verification.
 
 ## Remaining build and acceptance
 
 1. Capture actual WorkBuddy health call evidence.
-2. Implement scoped project/task/context and checkpoint tools using shared backend services.
-3. Add discovery and non-binding liaison/reply tools after contact/email providers exist.
+2. Exercise the implemented project/task/context/search/email tools in the actual desktop client.
+3. Complete contact enrichment, final-quote interpretation and follow-up orchestration.
 4. Keep human final approval outside agent tools; require current quotes and separate supplier confirmation.
 5. Verify retries, budget/round limits, concurrent runs, waits and resume.
 6. Resolve supported website start/resume. Desktop initiation must be labelled if automatic triggering is unavailable.
 7. Show useful matching task UI/server/client tool evidence beyond health.
 
-Local laptop execution requires that runtime to stay available. A Vercel frontend deployment does not host it. Gmail and Drive credentials/providers remain separate requirements. [Official MCP guide](https://www.codebuddy.ai/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/MCP-Guide), [model guide](https://www.workbuddy.ai/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Model).
+Local laptop execution requires that runtime to stay available. A Vercel frontend deployment does not host it. Gmail is locally authorised with a saved controlled-test receipt; actual reply/deployed checks remain. Drive credentials are still missing. [Official MCP guide](https://www.codebuddy.ai/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/MCP-Guide), [model guide](https://www.workbuddy.ai/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Model).

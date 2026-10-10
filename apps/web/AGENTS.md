@@ -14,6 +14,6 @@ Read [current product specification](../../docs/CURRENT_PRODUCT_SPEC.md), [integ
 
 Keep chat-first home, project/task pickers, below-chat All Task / Recent Activity, task Secured/Approval/dates, sidebar-only Overview links and Connections. No login, upload UI, preferences trigger, top project tabs or Subprojects. Human final approval is separate from supplier confirmation. Preserve shared-demo role/revision/ownership checks and legacy records.
 
-Gemini/Tavily live checks pass. Actual Drive credentials, Gmail send/read, WorkBuddy execution tools/website trigger and public deployment remain pending. Gmail client JSON is supplied, but consent/token are not verified. Do not infer sent email, agent execution or secured outcomes from configured keys or health status. Never copy or print secret values into documentation, client bundles or logs.
+Gemini/Tavily live checks pass. Gmail is locally authorised with a controlled test receipt, and eight WorkBuddy MCP tools are implemented. Real supplier quote/confirmation acceptance, actual WorkBuddy orchestration/website trigger, Drive access and deployment remain pending. Never infer completed outcomes from configured keys or health, or expose secrets in docs/client/logs.
 
 After implementation, run checks appropriate to the change using README commands. Documentation-only changes require link/content/format verification, not an unnecessary application rebuild. Keep this project section outside the generated Next.js block.

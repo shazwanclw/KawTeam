@@ -10,11 +10,11 @@ Updated 11 October 2026. Status is based on code/configuration and recorded chec
 | Gemini | `GEMINI_API_KEY` present; adapter succeeded; website chat returned and saved a Gemini reply after backend reload | Usage/error handling and deployed smoke test |
 | Tavily | `TAVILY_API_KEY` present; real bounded supplier search returned five source candidates | Contact verification, broader sourcing and live liaison handoff |
 | Google Drive | Adapter and persisted snapshot/retrieval exist; neither credential configured | Authorised folder, credential and actual ingestion test |
-| WorkBuddy | Custom KawTeam entry exists in desktop MCP configuration; local stdio discovery/call passes; user reports connection okay | Independently captured WorkBuddy call, execution tools, task runner and website trigger |
-| Gmail | `Downloads/Email API.json` exists; Desktop OAuth client structure and Google endpoints verified without exposing secrets | Sender consent/token, send/read adapter, durable reply processing and controlled-inbox test |
+| WorkBuddy | Eight scoped tools discovered over real stdio; real project/task reads succeed against Supabase | Actual desktop orchestration evidence, complete liaison runner and website trigger |
+| Gmail | Google consent and sender identity verified; one authorised test sent with saved receipt; saved-thread read succeeds | Real supplier quote/confirmation acceptance, contact enrichment and deployed validation |
 | Vercel | Next.js/FastAPI deployment roots prepared; no public deployment verified | Account/GitHub access, environment values, two deployments and deployed acceptance |
 
-The backend reports AI/search as configured, email as controlled_demo_only and WorkBuddy execution as deferred. The last label reflects unimplemented execution, not a decision to abandon WorkBuddy: connection setup is now underway.
+The backend reports email configured and WorkBuddy desktop tools available, with its website trigger not connected. `GET /email/status` performs a live sender identity check. Configuration is not evidence of complete autonomous execution.
 
 ## Gemini and Tavily
 
@@ -39,21 +39,23 @@ Provide an intended folder/document URL plus one supported server credential:
 
 A Gemini key is not automatically Drive authorisation. A private folder URL alone is insufficient. No Google user sign-in flow or continuous Drive sync exists. Refresh currently reads a bounded snapshot on demand. Credentials stay on the backend.
 
-## Gmail setup: client supplied; authorisation next
+## Gmail: current sender shazwanclw@gmail.com
 
-A dedicated Gmail inbox is recommended; personal Gmail can be authorised if chosen. Do not ask for its password. The user reports setup complete and supplied `Downloads/Email API.json`. The file is a Desktop-app (`installed`) OAuth client with client ID/secret and the expected Google authorisation/token endpoints. This verifies its format, not sender consent, enabled API or working mail access. The documented preparation is Google's local OAuth testing route:
+Google consent and sender identity verification succeeded for `shazwan15122005@gmail.com`, using `Downloads/Email API.json`. One user-authorised labelled test was sent to `shazwan1512alt@gmail.com`; its Gmail receipt is saved in **QA - Email connection test**. No real supplier was contacted. One actual matching reply was received and saved, completing the controlled send/reply check. The sender was then changed to `shazwanclw@gmail.com`; its Google consent and identity check passed. No message has been sent from the new account.
 
-1. Select/create a Google Cloud project and enable Gmail API.
-2. Configure Google Auth Platform Branding with KawTeam.
-3. Set Audience to External, keep Testing, and add the intended sender as a test user.
-4. Create a Desktop-app OAuth client called KawTeam Local and download its JSON.
-5. Keep the JSON outside the repository, for example Downloads, and provide only its local filename/path.
+The CLI requests `gmail.send` and `gmail.readonly`, with no delete permission, and verifies the selected sender before storing the token in ignored `apps/api/.secrets/gmail-token.json`. From `apps/api`:
 
-Then implement a local authorisation command, request only required send/read permissions, let the user consent in Google's browser page, and store credentials outside public source/client bundles. Tokens may need reauthorisation under Google's testing rules. Validate production authorisation separately; the initial local client is not a claim of a production-ready public OAuth service.
+```powershell
+$env:PYTHONPATH='src'
+.venv/Scripts/python.exe -m kawteam.gmail_auth
+# Historical fixed-account test already passed; do not rerun it under the new sender.
+```
 
-Source: [Google Gmail Python quickstart](https://developers.google.com/workspace/gmail/api/quickstart/python), [Gmail scopes](https://developers.google.com/workspace/gmail/api/auth/scopes).
+`gmail_check send` is an opt-in fixed-recipient test already executed. Its durable identity prevents a rerun sending another email. Local `.env` uses `GMAIL_OAUTH_CLIENT_PATH`, `GMAIL_SENDER`, optional `GMAIL_TOKEN_PATH`. Deployment can use secret `GMAIL_AUTHORIZED_USER_JSON` instead of a local file. Downloads paths do not exist on Vercel. Never put tokens in Git or public frontend variables. Local authorisation is not public production OAuth acceptance; testing tokens may need reauthorisation.
 
-No Gmail environment names, connection command or callback route are implemented yet. Do not invent one in setup instructions. Start with two or three controlled inboxes; test thread correlation, recipient validation, reply parsing, retry/uncertain-send handling and final confirmation. No supplier email has been sent during current verification.
+Live services persist intent before sending and save actual Gmail message/thread IDs. Incoming IDs are deduplicated. Reserved/uncertain sends block automatic retries: inspect the sender's Sent folder and reconcile manually, without bypassing the block through a new request ID. Limits: four messages per supplier, 60 per task, 20 threads per sync, last 30 messages per thread. Only organiser-registered, human-verified contacts are accepted; automated public contact enrichment is pending. Raw replies are untrusted evidence. The interpretation tool uses Gemini plus verbatim evidence/amount/date validation: incomplete terms stay out of approval, and a confirmation needs current human approval, matching terms and a later provider timestamp. Only explicit ISO dates and RM/MYR amounts qualify; unclear replies need clarification. Extraction and confirmation guards pass automated tests; the actual test acknowledgement was correctly excluded from final approval. A real commercial supplier run and follow-up orchestration remain unverified.
+
+[Google Gmail Python quickstart](https://developers.google.com/workspace/gmail/api/quickstart/python), [Gmail scopes](https://developers.google.com/workspace/gmail/api/auth/scopes).
 
 ## WorkBuddy direction and access
 
@@ -65,7 +67,7 @@ Website -> WorkBuddy runner: still unresolved
 
 WorkBuddy's Models API-key screen connects external models into WorkBuddy; it is not proof of an API allowing KawTeam to start its agent. Personal Google-sign-in credits do not establish Tencent Cloud Enterprise entitlements. Hosted Managed Agents access has not been obtained.
 
-The user's actual UI path is Connectors -> MCP Server Management -> Add MCP. Its configuration file is `%USERPROFILE%/.workbuddy-ai/mcp.json`. Preserve unrelated entries. The one installed KawTeam tool is `kawteam_health`; it cannot search, read projects, send mail or update supplier tasks.
+The user's actual UI path is Connectors -> MCP Server Management -> Add MCP. Its configuration file is `%USERPROFILE%/.workbuddy-ai/mcp.json`. Preserve unrelated entries. Reconnect the KawTeam entry to discover eight tools: health, projects, task/context, research, sender status, non-binding enquiry, saved-thread reply sync and quote/confirmation interpretation. No final approve/reject tool is exposed.
 
 See [WorkBuddy integration guide](integration/workbuddy.md) for configuration and acceptance. The agent needs real scoped tools, limits, durable checkpoints and a verified start/resume mechanism. Do not install unofficial personal-account-to-API proxies or assume an undocumented endpoint to satisfy deployment.
 
@@ -76,3 +78,5 @@ Target zero out-of-pocket hosting with two Vercel projects from the same reposit
 Use server-only secrets, HTTPS API URL, `COOKIE_SECURE=true`, and the matching web/API gateway secret. Replace the local API URL on deployment. Vercel request functions cannot be assumed to run an always-on desktop WorkBuddy process or a continuous inbox-polling loop.
 
 Remaining submission inputs: team/group name, campus branch, presentation PDF and final public application/repository verification. Original supplied deadline: 11 October 2026, 09:30 MYT, with a 30-minute buffer; operational cutoff 09:00, target 08:45. No submission receipt or final public URLs have been verified.
+
+Mailboxes and request scopes are isolated: saved intents/replies carry the sender and request hash. Brief changes retain verified contact identity but require fresh enquiries/terms; old replies cannot regain approval eligibility. Latest replies use provider timestamps, not thread traversal order. These review findings have regression coverage.

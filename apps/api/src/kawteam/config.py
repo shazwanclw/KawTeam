@@ -21,6 +21,10 @@ class Settings:
     drive_api_key: str = os.getenv("GOOGLE_DRIVE_API_KEY", "")
     drive_service_account_json: str = os.getenv("GOOGLE_DRIVE_SERVICE_ACCOUNT_JSON", "")
     cookie_secure: bool = os.getenv("COOKIE_SECURE", "false").lower() == "true"
+    gmail_oauth_client_path: str = os.getenv("GMAIL_OAUTH_CLIENT_PATH", "")
+    gmail_token_path: str = os.getenv("GMAIL_TOKEN_PATH", "")
+    gmail_authorized_user_json: str = os.getenv("GMAIL_AUTHORIZED_USER_JSON", "")
+    gmail_sender: str = os.getenv("GMAIL_SENDER", "")
 
     def validate(self):
         if (

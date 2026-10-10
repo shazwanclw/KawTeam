@@ -1,4 +1,4 @@
-"""Deterministic procurement services. AI/WorkBuddy execution is deliberately deferred."""
+"""Deterministic procurement rules. Provider execution lives in shared task services."""
 
 import copy
 import hashlib

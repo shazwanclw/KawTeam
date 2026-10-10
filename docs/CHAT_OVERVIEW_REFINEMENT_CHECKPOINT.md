@@ -15,6 +15,6 @@ Reconciled 11 October 2026. These delivered refinements remain active; [task con
 
 ## Evidence and limits
 
-Current suites: 43 frontend and 71 backend tests; TypeScript/ESLint/Ruff pass. Earlier refinement and later task browser acceptance passed, including responsive overflow and permissions. Production build verified before docs-only refresh. Legacy browser scripts target older screens; current read-only checks are task-layout-browser and refinement-browser.
+Current suites: 43 frontend and 100 backend tests; TypeScript/ESLint/Ruff pass. Earlier refinement and later task browser acceptance passed, including responsive overflow and permissions. Production build verified before docs-only refresh. Legacy browser scripts target older screens; current read-only checks are task-layout-browser and refinement-browser.
 
-Gemini/Tavily now have successful live checks. Drive credentials, Gmail execution, WorkBuddy useful tools/trigger and deployment remain pending. No fake background progress or supplier messaging should be inferred from configured keys.
+Gmail is locally authorised; one controlled test send has a saved provider receipt, and saved-thread reading works. Eight scoped WorkBuddy MCP tools exist and real local project/task reads pass. Actual desktop orchestration, website trigger, automated contact enrichment, live supplier quote/confirmation acceptance, Drive access and public deployment remain pending. See [integration status](INTEGRATION_STATUS.md).

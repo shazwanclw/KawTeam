@@ -25,6 +25,6 @@ Final received matching valid quotes rank by landed cost/arrival/name. Item quan
 
 ## Evidence and remaining work
 
-71 backend/43 frontend tests, Ruff, TypeScript and ESLint pass. Production build, saved browser flow (including rejection/approval/separate confirmation/roles/responsive widths) and transaction/concurrency/legacy checks passed before docs refresh. Original sample restored; QA projects removed.
+100 backend/43 frontend tests, Ruff, TypeScript and ESLint pass. Production build, saved browser flow (including rejection/approval/separate confirmation/roles/responsive widths) and transaction/concurrency/legacy checks passed before docs refresh. Original sample restored; QA projects removed.
 
-Gemini and Tavily are live-tested. Full live liaison still needs contacts, Gmail OAuth/provider/reply handling, useful WorkBuddy tools plus website trigger, authorised Drive and deployed checks. This completed foundation is not a claim of real autonomous email execution. Follow [remaining phase plan](2026-10-10-kawteam-implementation-plan.md).
+Gmail is locally authorised; one controlled test send has a saved provider receipt, and saved-thread reading works. Eight scoped WorkBuddy MCP tools exist and real local project/task reads pass. Actual desktop orchestration, website trigger, automated contact enrichment, live supplier quote/confirmation acceptance, Drive access and public deployment remain pending. See [integration status](../INTEGRATION_STATUS.md).

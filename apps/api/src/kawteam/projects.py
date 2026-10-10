@@ -96,6 +96,7 @@ def fresh_vendor(vendor):
             "sourceUrl",
             "evidenceExcerpt",
             "executionMode",
+            "contact",
         ]
         if k in vendor
     }

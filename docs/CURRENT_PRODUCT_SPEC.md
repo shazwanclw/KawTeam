@@ -83,7 +83,7 @@ flowchart TD
   K --> L[Secured]
 ```
 
-This diagram is the target live workflow. The UI, saved state and controlled supplier lifecycle are implemented. Real non-binding liaison, email reply processing and WorkBuddy execution are not implemented yet.
+The diagram is the target full workflow. Task-scoped non-binding Gmail enquiries and saved-thread reply ingestion now exist; grounded quote/confirmation guards are implemented and tested. Actual commercial acceptance and complete WorkBuddy orchestration/trigger remain pending.
 
 Do not pick three candidates and contact only those. Retain every discovered candidate for verification; the target is to contact the suitable verified pool, then rank final replies for human approval. Search is bounded, not an exhaustive census of every company. The current Tavily adapter runs at most two basic queries, returns at most five deduplicated source candidates and does not verify their email addresses, prices or availability. The five-result retrieval bound is separate from the removed three-supplier outreach policy. Current hostname deduplication can merge distinct businesses on a shared social platform and needs improvement for broader sourcing.
 
@@ -128,8 +128,8 @@ Connections includes suppliers with recorded communication or a legacy explicit 
 | Conversation | Gemini adapter; live reply through the website verified |
 | Discovery | Tavily adapter; live public-source results verified |
 | Project memory | Stored extraction/retrieval and Drive adapter; actual Drive reads await credentials |
-| WorkBuddy | Desktop custom MCP configured; one health tool; execution tools/trigger still missing |
-| Email | Controlled fictional supplier messages only; Gmail OAuth/provider not built |
+| WorkBuddy | Seven scoped desktop MCP tools, real local transport/project/task reads; orchestration and website trigger pending |
+| Email | Gmail locally authorised; durable send intents, provider receipts and saved-thread reading; live supplier quote/confirmation acceptance pending |
 | Hosting | Two Vercel projects planned, apps/web and apps/api; public deployment not verified |
 
 The Next.js server forwards allowlisted requests to FastAPI. Gateway/database/session secrets are server-only. Supabase tables deny direct public access; private credential-gated RPCs enforce ownership, roles and transactional writes. Seven migrations include atomic task starts, in-place case/chat completion and preservation of earlier general threads.
@@ -142,7 +142,7 @@ The team chose **Gemini for website chat plus WorkBuddy through MCP** after pers
 
 The user supplied a WorkBuddy screenshot showing 2,350 credits. Actual remaining balance, expiry and workflow consumption must be checked in that account. Credits are not API credentials and are not evidence that Enterprise API usage is included.
 
-The next integration is Gmail sending and reply reading. Personal Gmail is possible; a dedicated sender is recommended. Use Google OAuth, not a Gmail password. The user supplied `Downloads/Email API.json`; its Desktop-app OAuth client format and Google endpoints were verified without displaying credentials. Sender consent, OAuth token, enabled API and live Gmail access are not yet verified. Public-deployment authorisation and durable reply execution need their own validation.
+Gmail is locally authorised; one controlled test send has a saved provider receipt, and saved-thread reading works. Eight scoped WorkBuddy MCP tools exist and real local project/task reads pass. Actual desktop orchestration, website trigger, automated contact enrichment, live supplier quote/confirmation acceptance, Drive access and public deployment remain pending. See [integration status](INTEGRATION_STATUS.md).
 
 ## Scope and non-goals
 
@@ -150,6 +150,6 @@ Keep no login, no exposed upload form, no assistant-preference button, no top pr
 
 ## Verification and completion boundary
 
-Latest recorded verification: 71 backend tests, 43 frontend tests, Ruff, TypeScript and ESLint passed. Production build and saved-flow browser checks passed before this documentation refresh. Coverage includes tasks/retries/isolation, in-place edits, 1/10 placement queues, roles, stale terms, budget, confirmation evidence and responsive layouts. Live Gemini/Tavily checks passed; Supabase transactions and MCP health transport were verified. Temporary QA projects were removed and sample mutations restored.
+Latest verification: 100 backend tests and 43 frontend tests pass; Ruff, TypeScript and ESLint pass. Prior production build/browser evidence remains. A controlled Gmail send receipt is saved, and real local MCP project/task reads pass. The QA email project is retained for reply acceptance; earlier QA projects were removed.
 
-The current application is not a complete autonomous supplier-liaison system. Completion still needs Gmail authorisation/provider, verified contacts and replies, WorkBuddy execution/trigger, actual Drive reads, deployed end-to-end testing and submission materials. See [integration status](INTEGRATION_STATUS.md) for the next inputs and [implementation plan](plans/2026-10-10-kawteam-implementation-plan.md) for build order.
+The application is not yet a complete autonomous supplier-liaison system. Completion still needs real contact enrichment, real supplier quote/confirmation acceptance, actual WorkBuddy orchestration/website trigger, Drive credentials, public deployment and submission materials. See [integration status](INTEGRATION_STATUS.md).

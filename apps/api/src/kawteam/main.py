@@ -3,6 +3,7 @@ import copy
 import hmac
 import re
 from datetime import datetime
+from pathlib import Path
 from typing import Literal
 from uuid import NAMESPACE_URL, uuid4, uuid5
 from zoneinfo import ZoneInfo
@@ -15,9 +16,12 @@ from pydantic import BaseModel, ConfigDict, Field
 from .auth import issue_session, verify_session
 from .config import Settings
 from .drive import parse_drive_url, read_drive
+from .gmail import DEFAULT_TOKEN_PATH, Gmail
+from .liaison import Liaison
 from .memory import extract_text, facts_from_text, intake, resolve_event, retrieve
 from .projects import DEFAULT_SETTINGS, fresh_vendor, named_vendors, route, thread_id, workflow_plan
 from .providers import chat_response, discover
+from .quote_reply import extract_quote
 from .repository import SupabaseRepository, payload_hash
 from .schemas.domain import NewBrief
 from .tasks import invalidate_terms, project_name, selection_target, task_name, task_queue
@@ -57,6 +61,32 @@ class ActionBody(BaseModel):
 class EventBody(BaseModel):
     driveUrl: str | None = Field(default=None, max_length=1000)
     name: str = Field(min_length=1, max_length=100)
+
+
+class EmailContactBody(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    vendorId: str = Field(min_length=1, max_length=150)
+    email: str = Field(min_length=3, max_length=254)
+    expectedRevision: int = Field(ge=1)
+
+
+class EmailSendBody(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    vendorId: str = Field(min_length=1, max_length=150)
+    subject: str = Field(min_length=1, max_length=200)
+    body: str = Field(min_length=1, max_length=9000)
+    expectedRevision: int = Field(ge=1)
+    requestId: str = Field(min_length=1, max_length=150, pattern=r"^[A-Za-z0-9_-]+$")
+
+
+class EmailSyncBody(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    expectedRevision: int = Field(ge=1)
+
+
+class EmailQuoteBody(EmailSyncBody):
+    vendorId: str = Field(min_length=1, max_length=150)
+    providerMessageId: str = Field(min_length=1, max_length=150)
 
 
 class DriveBody(BaseModel):
@@ -105,6 +135,9 @@ def create_app(settings=None, repository=None):
     settings = settings or Settings()
     repository = repository or SupabaseRepository(settings)
     app = FastAPI(title="KawTeam API", version="0.3.0")
+
+    def email_service():
+        return Liaison(repository, Gmail.from_settings(settings))
 
     @app.exception_handler(PermissionError)
     async def denied(request, error):
@@ -159,7 +192,7 @@ def create_app(settings=None, repository=None):
 
     @app.get("/health")
     def health():
-        return {"product": "KawTeam", "status": "ok", "workbuddy": "deferred"}
+        return {"product": "KawTeam", "status": "ok", "workbuddy": "desktop_tools_available", "workbuddyTrigger": "not_connected"}
 
     @app.post("/session", dependencies=[Depends(gateway)])
     def session(body: ProfileBody, response: Response):
@@ -189,10 +222,31 @@ def create_app(settings=None, repository=None):
             "database": "connected",
             "ai": "configured" if settings.gemini_key else "setup_required",
             "search": "configured" if settings.tavily_key else "setup_required",
-            "email": "controlled_demo_only",
-            "workbuddy": "deferred",
+            "email": "configured" if settings.gmail_authorized_user_json or Path(settings.gmail_token_path or DEFAULT_TOKEN_PATH).is_file() else "setup_required",
+            "workbuddy": "desktop_tools_available",
+            "workbuddyTrigger": "not_connected",
             "model": settings.gemini_model,
         }
+
+    @app.get("/email/status")
+    def email_status(role=Depends(actor)):
+        return Gmail.from_settings(settings).profile()
+
+    @app.post("/cases/{case_id}/email/contact")
+    def email_contact(case_id: str, body: EmailContactBody, role=Depends(actor)):
+        return email_service().contact(case_id, body.vendorId, body.email, body.expectedRevision, role)
+
+    @app.post("/cases/{case_id}/email/send")
+    def email_send(case_id: str, body: EmailSendBody, role=Depends(actor)):
+        return email_service().send(case_id, body.vendorId, body.subject, body.body, body.expectedRevision, body.requestId, role)
+
+    @app.post("/cases/{case_id}/email/sync")
+    def email_sync(case_id: str, body: EmailSyncBody, role=Depends(actor)):
+        return email_service().sync(case_id, body.expectedRevision, role)
+
+    @app.post("/cases/{case_id}/email/quote")
+    def email_quote(case_id: str, body: EmailQuoteBody, role=Depends(actor)):
+        return email_service().quote(case_id, body.vendorId, body.providerMessageId, body.expectedRevision, role, lambda c, m: extract_quote(c, m, settings))
 
     @app.post("/actions")
     def action(body: ActionBody, role=Depends(actor)):
@@ -850,7 +904,7 @@ def create_app(settings=None, repository=None):
                             if mode == "liaise"
                             else "Public sources collected for the entire candidate pool; verified contact details and final quotation replies are still needed. Approval happens after liaison."
                             if settings.tavily_key
-                            else "Live vendor search and email are not connected yet; no outreach has been sent."
+                            else "Live vendor search is not connected yet; no outreach has been sent."
                         )
                     )
                 except (ValueError, httpx.HTTPError) as error:
