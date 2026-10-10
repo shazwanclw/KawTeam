@@ -18,6 +18,8 @@ class Settings:
     tavily_key: str = os.getenv("TAVILY_API_KEY", "")
     gemini_key: str = os.getenv("GEMINI_API_KEY", "")
     gemini_model: str = os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite")
+    drive_api_key: str = os.getenv("GOOGLE_DRIVE_API_KEY", "")
+    drive_service_account_json: str = os.getenv("GOOGLE_DRIVE_SERVICE_ACCOUNT_JSON", "")
     cookie_secure: bool = os.getenv("COOKIE_SECURE", "false").lower() == "true"
 
     def validate(self):

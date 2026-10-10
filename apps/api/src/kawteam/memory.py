@@ -102,17 +102,21 @@ def retrieve(event_id, query, documents):
 
 def amount(text):
     match = re.search(
-        r"(?:RM\s*([\d,]+(?:\.\d{1,2})?)|([\d,]+(?:\.\d{1,2})?)\s*RM)", text, re.IGNORECASE
+        r"(?:RM\s*([\d,]+(?:\.\d{1,2})?)\s*(k)?\b|([\d,]+(?:\.\d{1,2})?)\s*(k)?\s*RM\b)",
+        text,
+        re.IGNORECASE,
     )
-    return (
-        round(float((match.group(1) or match.group(2)).replace(",", "")) * 100) if match else None
-    )
+    if not match:
+        return None
+    number = match.group(1) or match.group(3)
+    multiplier = 1000 if match.group(2) or match.group(4) else 1
+    return round(float(number.replace(",", "")) * multiplier * 100)
 
 
 def facts_from_text(text):
     result = {}
     labelled_budget = re.search(
-        r"(?:budget|within|spend up to|maximum spend|limit)[^\n.!?]{0,35}?(?:RM\s*[\d,]+(?:\.\d{1,2})?|[\d,]+(?:\.\d{1,2})?\s*RM)",
+        r"(?:budget|within|under|less than|spend up to|maximum spend|limit)[^\n.!?]{0,35}?(?:RM\s*[\d,]+(?:\.\d{1,2})?\s*k?\b|[\d,]+(?:\.\d{1,2})?\s*k?\s*RM\b)",
         text,
         re.IGNORECASE,
     )
@@ -120,7 +124,7 @@ def facts_from_text(text):
     if budget is not None:
         result["budgetSen"] = budget
     quantity = re.search(
-        r"(\d+)\s+(?:more\s+|cotton\s+|custom\s+|printed\s+)*(?:tote(?:\s+bags)?|bags|items|units|(?:t-?)?shirts|shirts)",
+        r"(\d+)\s+(?:more\s+|cotton\s+|custom\s+|printed\s+)*(?:tote(?:\s+bags)?|bags|items|units|(?:t-?)?shirts|shirts|people|persons?|attendees|pax)",
         text,
         re.IGNORECASE,
     )
@@ -138,11 +142,48 @@ def facts_from_text(text):
             result["deadline"] = date.fromisoformat(deadline.group(1)).isoformat()
         except ValueError:
             pass
+    natural_date = re.search(
+        r"\b(?:by|deadline(?:\s+is)?|deliver(?:y)?(?:\s+by)?)\s+(\d{1,2})\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+(20\d{2})\b",
+        text,
+        re.IGNORECASE,
+    )
+    if natural_date:
+        from datetime import date
+
+        months = [
+            "january",
+            "february",
+            "march",
+            "april",
+            "may",
+            "june",
+            "july",
+            "august",
+            "september",
+            "october",
+            "november",
+            "december",
+        ]
+        try:
+            result["deadline"] = date(
+                int(natural_date.group(3)),
+                months.index(natural_date.group(2).lower()) + 1,
+                int(natural_date.group(1)),
+            ).isoformat()
+        except ValueError:
+            pass
     location = re.search(
         r"(?:location|venue|delivery location)\s*:\s*([^\n]+)", text, re.IGNORECASE
     )
     if location:
         result["location"] = location.group(1).strip()[:200]
+    else:
+        conversational_location = re.search(
+            r"\b(?:in|deliver(?:y)?\s+to|located\s+in)\s+([A-Z][A-Za-z]+(?:[ -][A-Z][A-Za-z]+){0,5})(?=[.!?,;\n]|$|\s+(?:by|before|within|for)\b)",
+            text,
+        )
+        if conversational_location:
+            result["location"] = conversational_location.group(1).strip()[:200]
     return result
 
 

@@ -1,5 +1,7 @@
 # KawTeam project workspace makeover
 
+Historical checkpoint. The current interface and Google Drive memory flow are documented in [CHAT_HOME_DRIVE_CHECKPOINT.md](CHAT_HOME_DRIVE_CHECKPOINT.md).
+
 10 October 2026. Supersedes the previous home/chat navigation in PHASE_3_7_CHECKPOINT.md. WorkBuddy and external email remain deferred.
 
 ## Product flow

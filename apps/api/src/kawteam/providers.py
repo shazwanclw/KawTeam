@@ -116,7 +116,7 @@ def discover(brief, key):
 def chat_response(message, event, context, history, settings):
     if not settings.gemini_key:
         return {
-            "reply": f"Your message is saved with {event['name']}’s event memory. The AI connection is not configured yet, so I haven’t contacted vendors or generated an AI answer. I can already keep your documents, budget context and conversation together.",
+            "reply": f"Your message is saved with {event['name']}’s event memory. The AI connection is not configured yet, so I haven’t contacted vendors or generated an AI answer. I can keep authorised Google Drive context, budget details and this conversation together.",
             "action": "none",
             "citations": [c["documentId"] for c in context],
             "provider": "setup_required",

@@ -59,6 +59,21 @@ class SupabaseRepository:
     def documents(self, event_id):
         return self.rpc("kawteam_documents", p_event=event_id)
 
+    def drive_snapshot(
+        self, event_id, expected, documents, archive_ids, facts, fact_keys, metadata, actor
+    ):
+        return self.rpc(
+            "kawteam_drive_snapshot",
+            p_event=event_id,
+            p_expected=expected,
+            p_documents=documents,
+            p_archive=archive_ids,
+            p_facts=facts,
+            p_fact_keys=fact_keys,
+            p_source=metadata,
+            p_actor=actor,
+        )
+
     def append_message(self, event_id, message, actor, case=None, task_id=None):
         return self.rpc(
             "kawteam_project_chat",

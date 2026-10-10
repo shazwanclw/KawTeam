@@ -38,7 +38,7 @@ class MemoryRepository:
         return [
             copy.deepcopy(v)
             for (k, _), v in self.rows.items()
-            if k == "document" and v["eventId"] == event_id
+            if k == "document" and v["eventId"] == event_id and v.get("status") != "archived"
         ]
 
     def upload(self, document, facts, actor):
@@ -76,6 +76,45 @@ class MemoryRepository:
                 payload_hash(event),
             )
             return {k: v for k, v in result.items() if k not in {"text", "originalBase64"}}
+        except Exception:
+            self.rows, self.requests = backup
+            raise
+
+    def drive_snapshot(
+        self, event_id, expected, documents, archive_ids, facts, fact_keys, metadata, actor
+    ):
+        from uuid import uuid4
+
+        from kawteam.repository import payload_hash
+
+        event = self.get("event", event_id)
+        if event["backendRevision"] != expected:
+            raise ValueError("Stale revision")
+        backup = copy.deepcopy((self.rows, self.requests))
+        try:
+            for document in documents:
+                old = self.get("document", document["id"])
+                self.save(
+                    "document",
+                    document,
+                    old["backendRevision"] if old else 0,
+                    actor,
+                    str(uuid4()),
+                    payload_hash(document),
+                )
+            for document_id in archive_ids:
+                document = self.get("document", document_id)
+                document["status"] = "archived"
+                self.save(
+                    "document",
+                    document,
+                    document["backendRevision"],
+                    actor,
+                    str(uuid4()),
+                    payload_hash(document),
+                )
+            event.update({"facts": facts, "documentFactKeys": fact_keys, "driveSource": metadata})
+            return self.save("event", event, expected, actor, str(uuid4()), payload_hash(event))
         except Exception:
             self.rows, self.requests = backup
             raise

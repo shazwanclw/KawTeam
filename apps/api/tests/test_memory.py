@@ -81,3 +81,33 @@ def test_event_names_match_words_and_longest_name_without_wrong_context():
     events = [{"id": "short", "name": "Tech"}, {"id": "night", "name": "Tech Night"}]
     assert resolve_event("Find vendors for Tech Night", events, "short")["id"] == "night"
     assert resolve_event("A technical question", events, "night")["id"] == "night"
+
+
+def test_natural_explicit_date_and_location_from_vendor_chat():
+    from kawteam.memory import facts_from_text
+
+    result = facts_from_text(
+        "Find shirt printing vendors for 50 shirts within RM2000 by 25 October 2026 in Subang Jaya."
+    )
+    assert result == {
+        "quantity": 50,
+        "budgetSen": 200000,
+        "deadline": "2026-10-25",
+        "location": "Subang Jaya",
+    }
+    assert "deadline" not in facts_from_text("Find vendors by 25 October in Subang Jaya")
+
+
+def test_catering_quantity_and_explicit_currency_thousands():
+    from kawteam.memory import facts_from_text
+
+    assert (
+        facts_from_text(
+            "Find catering vendors for 20 people within RM500 by 25 October 2026 in Subang Jaya."
+        )["quantity"]
+        == 20
+    )
+    assert facts_from_text("Find catering vendors for 20 pax within RM500")["quantity"] == 20
+    assert facts_from_text("Find printers for 50 shirts less than RM5k")["budgetSen"] == 500000
+    assert facts_from_text("Find printers for 50 shirts under 5k RM")["budgetSen"] == 500000
+    assert "budgetSen" not in facts_from_text("Find printers for 50 shirts under 5000")

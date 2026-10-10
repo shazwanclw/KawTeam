@@ -1,2 +1,3 @@
 import { KawTeamApp } from '@/components/kawteam';
-export default function Page() { return <KawTeamApp />; }
+import {Suspense} from 'react';
+export default function Page() { return <Suspense><KawTeamApp /></Suspense>; }

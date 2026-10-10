@@ -3,8 +3,8 @@ import "./globals.css";
 import { DemoProvider } from "@/components/kawteam";
 
 export const metadata: Metadata = {
-  title: "KawTeam — Your project workspace",
-  description: "Projects, conversations and vendor relationships. Keep the work moving, with your team making the final call.",
+  title: "KawTeam — A little less searching",
+  description: "Start a conversation. Find the right vendors, keep your projects together, and make the final call with your team.",
 };
 
 export default function RootLayout({

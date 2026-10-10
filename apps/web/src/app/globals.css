@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "./legacy.css";
 @import "./project.css";
+@import "./chat-flow.css";
 @theme inline {
  --color-background: var(--canvas);
  --color-foreground: var(--ink);

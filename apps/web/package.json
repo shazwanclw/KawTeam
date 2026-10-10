@@ -8,8 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types --test tests/domain.test.ts",
-    "test:e2e": "node tests/project-browser.mjs"
+    "test": "node --experimental-strip-types --test tests/domain.test.ts tests/activity.test.ts",
+    "test:e2e": "node tests/chat-home-browser.mjs"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",

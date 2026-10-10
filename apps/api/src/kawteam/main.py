@@ -12,6 +12,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from .auth import issue_session, verify_session
 from .config import Settings
+from .drive import parse_drive_url, read_drive
 from .memory import extract_text, facts_from_text, intake, resolve_event, retrieve
 from .projects import DEFAULT_SETTINGS, fresh_vendor, named_vendors, route, thread_id, workflow_plan
 from .providers import chat_response, discover
@@ -39,7 +40,12 @@ class ActionBody(BaseModel):
 
 
 class EventBody(BaseModel):
+    driveUrl: str | None = Field(default=None, max_length=1000)
     name: str = Field(min_length=1, max_length=100)
+
+
+class DriveBody(BaseModel):
+    url: str | None = Field(default=None, max_length=1000)
 
 
 class AssistantSettingsBody(BaseModel):
@@ -250,7 +256,17 @@ def create_app(settings=None, repository=None):
             "tasks": [],
             "assistantSettings": dict(DEFAULT_SETTINGS),
         }
-        return save("event", event, 0, role)
+        if body.driveUrl:
+            parse_drive_url(body.driveUrl)
+            event["driveSource"] = {
+                "url": body.driveUrl,
+                "status": "awaiting_access",
+                "fileCount": 0,
+                "lastSyncedAt": None,
+                "message": "Drive link saved; awaiting authorised sync.",
+            }
+        event = save("event", event, 0, role)
+        return sync_drive(event["id"], DriveBody(), role) if body.driveUrl else event
 
     @app.post("/events/{event_id}/tasks")
     def new_task(event_id: str, body: EventBody, role=Depends(actor)):
@@ -284,6 +300,107 @@ def create_app(settings=None, repository=None):
             raise ValueError("Preferred supplier must be in the saved vendor library.")
         event["assistantSettings"] = body.model_dump()
         return save("event", event, event["backendRevision"], role)
+
+    @app.post("/events/{event_id}/drive")
+    def sync_drive(event_id: str, body: DriveBody, role=Depends(actor)):
+        editable(role)
+        event = record("event", event_id)
+        url = body.url or event.get("driveSource", {}).get("url")
+        if not url:
+            raise ValueError("Add a Google Drive folder or document link first.")
+        parse_drive_url(url)
+        result = read_drive(url, settings)
+        previous = event.get("driveSource", {})
+        source_changed = previous.get("url") != url
+        succeeded = bool(result["documents"]) or result["status"] == "ready"
+        documents = []
+        for item in result["documents"]:
+            content = item["content"]
+            documents.append(
+                {
+                    "id": str(uuid5(NAMESPACE_URL, f"drive:{event_id}:{item['driveFileId']}")),
+                    "eventId": event_id,
+                    "name": item["name"],
+                    "text": item["text"],
+                    "originalBase64": base64.b64encode(content).decode(),
+                    "size": len(content),
+                    "contentDigest": payload_hash(
+                        {"event": event_id, "file": base64.b64encode(content).decode()}
+                    ),
+                    "status": "ready",
+                    "characters": len(item["text"]),
+                    "createdAt": datetime.now(ZoneInfo("Asia/Kuala_Lumpur")).isoformat(),
+                    "driveFileId": item["driveFileId"],
+                    "sourceUrl": url,
+                }
+            )
+        metadata = {
+            "url": url,
+            "status": result["status"],
+            "fileCount": len(documents)
+            if succeeded
+            else 0
+            if source_changed
+            else previous.get("fileCount", 0),
+            "lastSyncedAt": datetime.now(ZoneInfo("Asia/Kuala_Lumpur")).isoformat()
+            if succeeded
+            else None
+            if source_changed
+            else previous.get("lastSyncedAt"),
+            "message": result["message"],
+            "errors": result.get("errors", [])[:20],
+        }
+        if (
+            source_changed
+            and not succeeded
+            and (previous.get("lastSyncedAt") or previous.get("memorySource"))
+        ):
+            metadata["memorySource"] = previous.get("memorySource") or {
+                "url": previous["url"],
+                "fileCount": previous.get("fileCount", 0),
+                "lastSyncedAt": previous.get("lastSyncedAt"),
+            }
+        if not succeeded:
+            event["driveSource"] = metadata
+            return save("event", event, event["backendRevision"], role)
+        old_documents = repository.documents(event_id)
+        ids = {d["id"] for d in documents}
+        archive_ids = [
+            d["id"]
+            for d in old_documents
+            if d.get("driveFileId")
+            and (
+                d.get("sourceUrl") != url
+                or result["status"] == "ready"
+                or d.get("driveFileId") in {n["driveFileId"] for n in documents}
+            )
+            and d["id"] not in ids
+        ]
+        active_documents = [
+            d for d in old_documents if d["id"] not in ids and d["id"] not in archive_ids
+        ] + documents
+        if len(active_documents) > 20:
+            raise ValueError("Maximum 20 current project documents. Use a smaller Drive folder.")
+        current_facts = {}
+        for document in active_documents:
+            current_facts.update(facts_from_text(document["text"]))
+        # Replace previously derived keys; unrelated project facts are retained.
+        managed_keys = set(event.get("documentFactKeys", []))
+        for document in old_documents:
+            managed_keys.update(facts_from_text(document["text"]))
+        facts = {k: v for k, v in event.get("facts", {}).items() if k not in managed_keys}
+        facts.update(current_facts)
+        metadata["fileCount"] = sum(bool(d.get("driveFileId")) for d in active_documents)
+        return repository.drive_snapshot(
+            event_id,
+            event["backendRevision"],
+            documents,
+            archive_ids,
+            facts,
+            list(current_facts),
+            metadata,
+            role,
+        )
 
     @app.post("/events/{event_id}/documents")
     def upload(event_id: str, file: UploadFile = File(...), role=Depends(actor)):
@@ -327,9 +444,38 @@ def create_app(settings=None, repository=None):
         snapshot = repository.snapshot()
         event = resolve_event(body.message, snapshot["events"], body.eventId)
         if not event:
-            raise ValueError(
-                "Choose an event or mention its name. Upload its proposal and budget once to build memory."
+            if body.eventId or body.taskId:
+                raise ValueError(
+                    "Selected project or task is unavailable. Choose an existing project."
+                )
+            project_id = str(
+                uuid5(NAMESPACE_URL, f"kawteam-home:{settings.workspace}:{body.requestId}")
             )
+            event = repository.get("event", project_id)
+            if not event:
+                if len(snapshot["events"]) >= 20:
+                    raise ValueError("Maximum 20 projects in this hackathon workspace.")
+                event = {
+                    "id": project_id,
+                    "name": body.message.strip().split("\n")[0][:65] or "New project",
+                    "facts": {},
+                    "tasks": [],
+                    "assistantSettings": dict(DEFAULT_SETTINGS),
+                    "createdAt": datetime.now(ZoneInfo("Asia/Kuala_Lumpur")).isoformat(),
+                    "sample": False,
+                    "initialRequestId": body.requestId,
+                    "initialPrompt": body.message,
+                }
+                event = save(
+                    "event",
+                    event,
+                    0,
+                    role,
+                    "home-project-" + project_id,
+                    {"message": body.message, "requestId": body.requestId},
+                )
+            elif event.get("initialPrompt") != body.message:
+                raise ValueError("Idempotency key reused for a different message.")
         if body.taskId and not any(t["id"] == body.taskId for t in event.get("tasks", [])):
             raise ValueError("Task does not belong to the selected project.")
         conversation_id = thread_id(event["id"], body.taskId)
@@ -452,7 +598,7 @@ def create_app(settings=None, repository=None):
                 assistant["body"] += (
                     "\n\nI still need: "
                     + ", ".join(missing)
-                    + ". Tell me in chat or upload the relevant event details."
+                    + ". Tell me in chat or link authorised Google Drive context."
                 )
             else:
                 try:
