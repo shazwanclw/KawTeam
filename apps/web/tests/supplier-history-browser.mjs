@@ -20,6 +20,20 @@ try{
  await page.keyboard.press('Escape');
  await page.getByRole('button',{name:'Review supplier: Campus Print',exact:true}).click();
  await page.getByRole('dialog').getByRole('heading',{name:'Campus Print',exact:true}).waitFor();
+ await page.setViewportSize({width:1280,height:600});
+ await page.waitForTimeout(300);
+ const approval=page.locator('.approval-summary-dialog');
+ const layout=await approval.evaluate(el=>{
+  const body=el.querySelector('.flow-detail-body');
+  const buttons=[...el.querySelector('.flow-dialog-actions').children];
+  const rect=el.getBoundingClientRect();
+  return {outerOverflow:getComputedStyle(el).overflowY,innerOverflow:getComputedStyle(body).overflowY,innerMax:getComputedStyle(body).maxHeight,actionRows:el.querySelectorAll('.flow-dialog-actions').length,buttonTops:buttons.map(button=>button.getBoundingClientRect().top),top:rect.top,bottom:rect.bottom,height:innerHeight};
+ });
+ assert.equal(layout.outerOverflow,'auto');assert.equal(layout.innerOverflow,'visible');assert.equal(layout.innerMax,'none');
+ assert.equal(layout.actionRows,1);assert.equal(layout.buttonTops.length,3);
+ assert.ok(Math.max(...layout.buttonTops)-Math.min(...layout.buttonTops)<3);
+ assert.ok(layout.top>=0&&layout.bottom<=layout.height,JSON.stringify(layout));
+ await page.setViewportSize({width:1280,height:900});
  await page.keyboard.press('Escape');
  await page.getByRole('button',{name:'Email history: Other Printer',exact:true}).click();
  assert.equal(await page.getByRole('dialog').locator('.supplier-history-message').count(),1);
