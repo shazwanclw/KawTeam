@@ -1,0 +1,72 @@
+/* Current components use the exact reference materials and type faces, without importing its old workflow. */
+:root {
+ --glass: var(--kt-glass-fill);
+ --glass-strong: var(--kt-glass-fill-strong);
+ --glass-edge: rgba(255,255,255,.75);
+ --surface-shadow: var(--kt-glass-highlight),var(--kt-glass-shadow);
+ --flow-line: var(--kt-line);
+ --flow-soft: var(--kt-fill);
+ --sans: var(--kt-font);
+ --serif: var(--kt-font);
+}
+.flow-app::before { display:none; }
+.flow-sidebar {
+ background:var(--kt-sidebar-material);
+ border-right:var(--kt-glass-edge);
+ backdrop-filter:var(--kt-glass-blur);
+ box-shadow:inset -1px 0 0 rgba(255,255,255,.9),inset 0 1px 0 rgba(255,255,255,.95),12px 0 40px rgba(0,84,95,.06);
+}
+.flow-sidebar-brand { transform:translateY(-4px); }
+.flow-main-nav>a,.flow-main-nav>button,.flow-sidebar-bottom>a {  font-weight:400; color:var(--kt-sidebar-text-2); border-radius:14px; }
+.flow-main-nav>button,.flow-projects-heading { font-weight:700; }
+.flow-main-nav>a.active,.flow-main-nav>button.active,.flow-sidebar-bottom>a.active,.flow-project-list>div>a.active,.flow-overview-nav>a.active {
+ background:var(--kt-pale-lime);color:var(--kt-teal);font-weight:700;box-shadow:inset 0 1px 0 rgba(255,255,255,.7);
+}
+.flow-main-nav>a:hover,.flow-main-nav>button:hover,.flow-sidebar-bottom>a:hover,.flow-project-list>div>a:hover,.flow-overview-nav>a:hover {background:var(--kt-sidebar-hover);}
+.flow-overview-nav>a {justify-content:flex-start;gap:10px; color:var(--kt-text-3);}
+.flow-overview-nav>a>svg {flex-shrink:0;}
+.flow-overview-nav .flow-nav-count {margin-left:auto;}
+.flow-project-list>div>a {font-weight:700;}
+.flow-projects-heading {letter-spacing:.06em;}
+.flow-sidebar-bottom .flow-profile-label {font-weight:700!important;}
+.flow-profile-label small {font-weight:400;}
+.flow-profile>span:first-child,.menu-avatar {background:var(--kt-pale-lime);font-weight:700;}
+.flow-topbar>button {background:transparent;}
+.nav-open .flow-topbar>button {background:transparent;box-shadow:none;}
+.flow-topbar>button:hover {background:var(--kt-sidebar-hover);}
+.flow-page-heading h1,.project-flow-title h1,.task-heading h1 {font-weight:700;line-height:1.08;letter-spacing:-.03em;text-shadow:0 1px 0 rgba(255,255,255,.6);}
+.flow-page-heading p,.chat-start>p {line-height:1.5;color:var(--kt-text-3);}
+.chat-start h1,.chat-start h2 {font-weight:700;line-height:1.05;letter-spacing:-.035em;}
+.task-project .chat-start h2 {font-weight:700;}
+.chat-start h1>span {font-weight:700;}
+.chat-compose {background:var(--kt-glass-fill);border:var(--kt-glass-edge);box-shadow:var(--kt-glass-highlight),var(--kt-glass-shadow);backdrop-filter:var(--kt-glass-blur);border-radius:28px;}
+.chat-compose:hover {box-shadow:var(--kt-glass-highlight),var(--kt-glass-shadow);}
+.chat-compose:focus-within {border-color:rgba(0,84,95,.25);box-shadow:var(--kt-glass-highlight),var(--kt-glass-shadow),0 0 0 3px rgba(0,84,95,.06);}
+.chat-compose textarea {line-height:1.5;}
+.chat-project-picker {background:var(--kt-tint),var(--kt-glass-fill);border:var(--kt-glass-edge);box-shadow:var(--kt-glass-highlight),0 2px 8px rgba(0,84,95,.06);font-weight:700;color:var(--kt-text-2);}
+.chat-send {background:var(--kt-lime);color:var(--kt-teal);}
+.chat-message-body>p {line-height:1.6;}
+.chat-message.user .chat-message-body>p {background:var(--kt-pale-lime);border-color:rgba(255,255,255,.85);line-height:1.6;border-radius:22px;box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 6px 18px rgba(0,84,95,.08);}
+.chat-message-meta strong {font-weight:700;}
+.flow-section-heading h2,.task-section-title h2 {font-weight:700;line-height:1.12;}
+.flow-table th {font-weight:700;}
+.flow-row-button strong {font-weight:700;}
+.flow-type,.flow-record-count,.flow-tag {font-weight:700;}
+.flow-table-section,.project-task-row,.task-section,.project-failsafe-item {border-radius:24px;background:var(--kt-glass-fill);border-color:rgba(255,255,255,.75);box-shadow:var(--kt-glass-highlight),var(--kt-glass-shadow);}
+.project-task-name strong,.task-supplier-name strong {font-weight:700;}
+.project-task-name small,.task-supplier-name small,.task-section-description {line-height:1.5;}
+[data-slot=dropdown-menu-content] {background:var(--kt-glass-fill-strong);border:var(--kt-glass-edge);box-shadow:var(--kt-glass-highlight),var(--kt-glass-shadow);backdrop-filter:var(--kt-glass-blur);border-radius:22px;}
+[data-slot=dialog-content].kt-dialog,[data-slot=dialog-content].flow-detail-dialog,[data-slot=dialog-content].supplier-history-dialog {background:var(--kt-glass-fill-strong)!important;border:var(--kt-glass-edge)!important;border-radius:22px!important;box-shadow:var(--kt-glass-highlight),var(--kt-glass-shadow)!important;backdrop-filter:var(--kt-glass-blur);}
+[data-slot=dialog-title],.flow-detail-dialog [data-slot=dialog-title] {font-weight:700;}
+.flow-request-context dd,.flow-request-context p,.liaison-summary p,.liaison-replies p {line-height:1.5;}
+.kt-form label {font-weight:700;}
+@media(max-width:650px) {
+ .flow-sidebar-brand {transform:translateY(-6px);}
+ .flow-table {min-width:720px;}
+}
+@media(prefers-reduced-motion:reduce) { .kt-aurora,.kt-aurora>span {animation:none!important;transition:none!important;will-change:auto;} }
+@media print { .kt-aurora {display:none;} }
+
+/* Project titles are slightly larger; the rest of the compact type scale stays intact. */
+.project-flow-title h1{font-size:30px;}
+@media(max-width:650px){.project-flow-title h1{font-size:26px;}}

@@ -1,0 +1,2129 @@
+{
+  "version": 2,
+  "events": [
+    {
+      "id": "sunway-got-talent",
+      "name": "Sunway Got Talent",
+      "sample": true,
+      "demoScenarioVersion": 1,
+      "createdAt": "2026-10-01T10:00:00+08:00",
+      "memoryVersion": 1,
+      "tasks": [
+        {
+          "id": "demo-shirts",
+          "name": "T-shirt merchandise",
+          "createdAt": "2026-10-09T09:00:00+08:00"
+        }
+      ],
+      "facts": {
+        "eventDate": "2026-10-30",
+        "location": "Bandar Sunway, Selangor",
+        "attendees": 250,
+        "budgetSen": 200000
+      }
+    },
+    {
+      "id": "kampus-weekend-market",
+      "name": "Kampus Weekend Market",
+      "sample": true,
+      "demoScenarioVersion": 1,
+      "createdAt": "2026-10-01T10:00:00+08:00",
+      "memoryVersion": 1,
+      "tasks": [
+        {
+          "id": "demo-market-vendors",
+          "name": "Ten event vendors",
+          "createdAt": "2026-10-09T09:00:00+08:00"
+        }
+      ],
+      "facts": {
+        "eventDate": "2026-10-31",
+        "location": "Subang Jaya, Selangor",
+        "attendees": 600,
+        "budgetSen": 500000
+      }
+    },
+    {
+      "id": "build-together-workshop",
+      "name": "Build Together Workshop",
+      "sample": true,
+      "demoScenarioVersion": 1,
+      "createdAt": "2026-10-01T10:00:00+08:00",
+      "memoryVersion": 1,
+      "tasks": [
+        {
+          "id": "demo-workshop-lunch",
+          "name": "Workshop lunch catering",
+          "createdAt": "2026-10-07T09:00:00+08:00"
+        },
+        {
+          "id": "demo-workshop-extra-lunch",
+          "name": "Twenty extra lunch packs",
+          "createdAt": "2026-10-10T09:00:00+08:00"
+        }
+      ],
+      "facts": {
+        "eventDate": "2026-10-28",
+        "location": "Taylor's University, Subang Jaya",
+        "attendees": 70,
+        "budgetSen": 120000
+      }
+    }
+  ],
+  "cases": [
+    {
+      "id": "demo-shirts",
+      "eventId": "sunway-got-talent",
+      "taskId": "demo-shirts",
+      "title": "T-shirt merchandise",
+      "goal": "Find 50 black cotton T-shirts with our white event logo for Sunway Got Talent. Budget RM2,000 including delivery to Bandar Sunway by 24 October. Liaise with every suitable supplier and compare final terms.",
+      "quantity": 50,
+      "budgetSen": 200000,
+      "targetSen": 200000,
+      "deadline": "2026-10-24",
+      "location": "Bandar Sunway, Selangor",
+      "selectionTarget": 1,
+      "stage": "decision",
+      "selectedVendorId": null,
+      "taskWorkflowVersion": 1,
+      "sample": true,
+      "demoScenarioVersion": 1,
+      "vendors": [
+        {
+          "id": "threadcraft",
+          "name": "Threadcraft Studio",
+          "initials": "TS",
+          "location": "Bandar Sunway, Selangor",
+          "color": "sage",
+          "goodsSen": 165000,
+          "deliverySen": 5000,
+          "initialSen": 185000,
+          "arrival": "2026-10-22",
+          "quantity": 50,
+          "specsConfirmed": true,
+          "validUntil": "2026-10-20",
+          "status": "Final offer",
+          "description": "180 gsm black cotton, white one-colour screen print; digital artwork proof and size split included.",
+          "strengths": [
+            "Complete final terms received",
+            "Within the requested delivery window"
+          ],
+          "concerns": [
+            "Written artwork or setup confirmation required before fulfilment"
+          ],
+          "quoteRef": "DEMO-THREADCRAFT-FINAL",
+          "executionMode": "demo",
+          "sample": true,
+          "scenarioCaseId": "demo-shirts",
+          "liaisonStatus": "ready",
+          "contact": {
+            "email": "threadcraft@vendors.example",
+            "provenance": "simulated"
+          }
+        },
+        {
+          "id": "inkloom",
+          "name": "Inkloom Apparel",
+          "initials": "IA",
+          "location": "Bandar Sunway, Selangor",
+          "color": "sage",
+          "goodsSen": 175000,
+          "deliverySen": 5000,
+          "initialSen": 195000,
+          "arrival": "2026-10-23",
+          "quantity": 50,
+          "specsConfirmed": true,
+          "validUntil": "2026-10-20",
+          "status": "Final offer",
+          "description": "180 gsm black cotton, white one-colour screen print; digital artwork proof and size split included.",
+          "strengths": [
+            "Complete final terms received",
+            "Within the requested delivery window"
+          ],
+          "concerns": [
+            "Written artwork or setup confirmation required before fulfilment"
+          ],
+          "quoteRef": "DEMO-INKLOOM-FINAL",
+          "executionMode": "demo",
+          "sample": true,
+          "scenarioCaseId": "demo-shirts",
+          "liaisonStatus": "ready",
+          "contact": {
+            "email": "inkloom@vendors.example",
+            "provenance": "simulated"
+          }
+        },
+        {
+          "id": "campus-stitch",
+          "name": "Campus Stitch Co",
+          "initials": "CS",
+          "location": "Bandar Sunway, Selangor",
+          "color": "sage",
+          "goodsSen": 182000,
+          "deliverySen": 0,
+          "initialSen": 197000,
+          "arrival": "2026-10-22",
+          "quantity": 50,
+          "specsConfirmed": true,
+          "validUntil": "2026-10-20",
+          "status": "Final offer",
+          "description": "180 gsm black cotton, white one-colour screen print; digital artwork proof and size split included.",
+          "strengths": [
+            "Complete final terms received",
+            "Within the requested delivery window"
+          ],
+          "concerns": [
+            "Written artwork or setup confirmation required before fulfilment"
+          ],
+          "quoteRef": "DEMO-CAMPUS-STITCH-FINAL",
+          "executionMode": "demo",
+          "sample": true,
+          "scenarioCaseId": "demo-shirts",
+          "liaisonStatus": "ready",
+          "contact": {
+            "email": "campus-stitch@vendors.example",
+            "provenance": "simulated"
+          }
+        },
+        {
+          "id": "cottonlane",
+          "name": "Cottonlane Print",
+          "initials": "CP",
+          "location": "Bandar Sunway, Selangor",
+          "color": "sage",
+          "goodsSen": 185000,
+          "deliverySen": 5000,
+          "initialSen": 205000,
+          "arrival": "2026-10-24",
+          "quantity": 50,
+          "specsConfirmed": true,
+          "validUntil": "2026-10-20",
+          "status": "Final offer",
+          "description": "180 gsm black cotton, white one-colour screen print; digital artwork proof and size split included.",
+          "strengths": [
+            "Complete final terms received",
+            "Within the requested delivery window"
+          ],
+          "concerns": [
+            "Written artwork or setup confirmation required before fulfilment"
+          ],
+          "quoteRef": "DEMO-COTTONLANE-FINAL",
+          "executionMode": "demo",
+          "sample": true,
+          "scenarioCaseId": "demo-shirts",
+          "liaisonStatus": "ready",
+          "contact": {
+            "email": "cottonlane@vendors.example",
+            "provenance": "simulated"
+          }
+        },
+        {
+          "id": "formwear",
+          "name": "Formwear Collective",
+          "initials": "FC",
+          "location": "Bandar Sunway, Selangor",
+          "color": "sage",
+          "goodsSen": 192000,
+          "deliverySen": 5000,
+          "initialSen": 212000,
+          "arrival": "2026-10-23",
+          "quantity": 50,
+          "specsConfirmed": true,
+          "validUntil": "2026-10-20",
+          "status": "Final offer",
+          "description": "180 gsm black cotton, white one-colour screen print; digital artwork proof and size split included.",
+          "strengths": [
+            "Complete final terms received",
+            "Within the requested delivery window"
+          ],
+          "concerns": [
+            "Written artwork or setup confirmation required before fulfilment"
+          ],
+          "quoteRef": "DEMO-FORMWEAR-FINAL",
+          "executionMode": "demo",
+          "sample": true,
+          "scenarioCaseId": "demo-shirts",
+          "liaisonStatus": "ready",
+          "contact": {
+            "email": "formwear@vendors.example",
+            "provenance": "simulated"
+          }
+        }
+      ],
+      "messages": [
+        {
+          "id": "demo-shirts-threadcraft-0",
+          "vendorId": "threadcraft",
+          "direction": "sent",
+          "kind": "enquiry",
+          "subject": "Re: T-shirt merchandise — quotation enquiry",
+          "body": "Hello Threadcraft Studio, please quote for 50 black cotton T-shirts with a white one-colour logo, all-in ceiling RM2,000.00, delivery by 2026-10-24 at Bandar Sunway, Selangor. Include all costs, availability and specifications. This is a non-binding enquiry.",
+          "at": "2026-10-09T10:01:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-shirts-threadcraft-1",
+          "vendorId": "threadcraft",
+          "direction": "received",
+          "kind": "quote",
+          "subject": "Re: T-shirt merchandise — quotation enquiry",
+          "body": "Thank you. Our initial estimate is RM1,850.00. 180 gsm black cotton, white one-colour screen print; digital artwork proof and size split included. We can meet the date; please confirm your artwork or setup requirements.",
+          "at": "2026-10-09T11:01:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-shirts-threadcraft-2",
+          "vendorId": "threadcraft",
+          "direction": "sent",
+          "kind": "negotiation",
+          "subject": "Re: T-shirt merchandise — quotation enquiry",
+          "body": "Please confirm a final all-in price, exact scope and arrival date. Can you reduce the cost while retaining the specification? We are comparing complete offers; this is not an order.",
+          "at": "2026-10-09T12:01:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-shirts-threadcraft-3",
+          "vendorId": "threadcraft",
+          "direction": "received",
+          "kind": "final-quote",
+          "subject": "Re: T-shirt merchandise — quotation enquiry",
+          "body": "Final quotation DEMO-THREADCRAFT-FINAL: RM1,650.00 plus RM50.00 logistics; RM1,700.00 total. Scope: 50 black cotton T-shirts with a white one-colour logo, all-in ceiling RM2,000.00, delivery by 2026-10-24 at Bandar Sunway, Selangor. Arrival 2026-10-22. 180 gsm black cotton, white one-colour screen print; digital artwork proof and size split included. Valid until 20 October 2026. Awaiting your team's final selection.",
+          "at": "2026-10-09T13:01:00+08:00",
+          "executionMode": "demo",
+          "sample": true,
+          "termsHash": "68fecbead1ac9f0bdcd35a2efc9acc723af25bcafbeb2a4bad4ae4a2abb0b890"
+        },
+        {
+          "id": "demo-shirts-inkloom-0",
+          "vendorId": "inkloom",
+          "direction": "sent",
+          "kind": "enquiry",
+          "subject": "Re: T-shirt merchandise — quotation enquiry",
+          "body": "Hello Inkloom Apparel, please quote for 50 black cotton T-shirts with a white one-colour logo, all-in ceiling RM2,000.00, delivery by 2026-10-24 at Bandar Sunway, Selangor. Include all costs, availability and specifications. This is a non-binding enquiry.",
+          "at": "2026-10-09T10:02:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-shirts-inkloom-1",
+          "vendorId": "inkloom",
+          "direction": "received",
+          "kind": "quote",
+          "subject": "Re: T-shirt merchandise — quotation enquiry",
+          "body": "Thank you. Our initial estimate is RM1,950.00. 180 gsm black cotton, white one-colour screen print; digital artwork proof and size split included. We can meet the date; please confirm your artwork or setup requirements.",
+          "at": "2026-10-09T11:02:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-shirts-inkloom-2",
+          "vendorId": "inkloom",
+          "direction": "sent",
+          "kind": "negotiation",
+          "subject": "Re: T-shirt merchandise — quotation enquiry",
+          "body": "Please confirm a final all-in price, exact scope and arrival date. Can you reduce the cost while retaining the specification? We are comparing complete offers; this is not an order.",
+          "at": "2026-10-09T12:02:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-shirts-inkloom-3",
+          "vendorId": "inkloom",
+          "direction": "received",
+          "kind": "final-quote",
+          "subject": "Re: T-shirt merchandise — quotation enquiry",
+          "body": "Final quotation DEMO-INKLOOM-FINAL: RM1,750.00 plus RM50.00 logistics; RM1,800.00 total. Scope: 50 black cotton T-shirts with a white one-colour logo, all-in ceiling RM2,000.00, delivery by 2026-10-24 at Bandar Sunway, Selangor. Arrival 2026-10-23. 180 gsm black cotton, white one-colour screen print; digital artwork proof and size split included. Valid until 20 October 2026. Awaiting your team's final selection.",
+          "at": "2026-10-09T13:02:00+08:00",
+          "executionMode": "demo",
+          "sample": true,
+          "termsHash": "68c855084ed34d9e060a77c8f1d6c47a594ea63499b11102c75c357c608a8d76"
+        },
+        {
+          "id": "demo-shirts-campus-stitch-0",
+          "vendorId": "campus-stitch",
+          "direction": "sent",
+          "kind": "enquiry",
+          "subject": "Re: T-shirt merchandise — quotation enquiry",
+          "body": "Hello Campus Stitch Co, please quote for 50 black cotton T-shirts with a white one-colour logo, all-in ceiling RM2,000.00, delivery by 2026-10-24 at Bandar Sunway, Selangor. Include all costs, availability and specifications. This is a non-binding enquiry.",
+          "at": "2026-10-09T10:03:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-shirts-campus-stitch-1",
+          "vendorId": "campus-stitch",
+          "direction": "received",
+          "kind": "quote",
+          "subject": "Re: T-shirt merchandise — quotation enquiry",
+          "body": "Thank you. Our initial estimate is RM1,970.00. 180 gsm black cotton, white one-colour screen print; digital artwork proof and size split included. We can meet the date; please confirm your artwork or setup requirements.",
+          "at": "2026-10-09T11:03:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-shirts-campus-stitch-2",
+          "vendorId": "campus-stitch",
+          "direction": "sent",
+          "kind": "negotiation",
+          "subject": "Re: T-shirt merchandise — quotation enquiry",
+          "body": "Please confirm a final all-in price, exact scope and arrival date. Can you reduce the cost while retaining the specification? We are comparing complete offers; this is not an order.",
+          "at": "2026-10-09T12:03:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-shirts-campus-stitch-3",
+          "vendorId": "campus-stitch",
+          "direction": "received",
+          "kind": "final-quote",
+          "subject": "Re: T-shirt merchandise — quotation enquiry",
+          "body": "Final quotation DEMO-CAMPUS-STITCH-FINAL: RM1,820.00 plus RM0.00 logistics; RM1,820.00 total. Scope: 50 black cotton T-shirts with a white one-colour logo, all-in ceiling RM2,000.00, delivery by 2026-10-24 at Bandar Sunway, Selangor. Arrival 2026-10-22. 180 gsm black cotton, white one-colour screen print; digital artwork proof and size split included. Valid until 20 October 2026. Awaiting your team's final selection.",
+          "at": "2026-10-09T13:03:00+08:00",
+          "executionMode": "demo",
+          "sample": true,
+          "termsHash": "d34c1f7260d24f00e6418eb1bce22f5fd5f72340969032d331b52e63d3135b84"
+        },
+        {
+          "id": "demo-shirts-cottonlane-0",
+          "vendorId": "cottonlane",
+          "direction": "sent",
+          "kind": "enquiry",
+          "subject": "Re: T-shirt merchandise — quotation enquiry",
+          "body": "Hello Cottonlane Print, please quote for 50 black cotton T-shirts with a white one-colour logo, all-in ceiling RM2,000.00, delivery by 2026-10-24 at Bandar Sunway, Selangor. Include all costs, availability and specifications. This is a non-binding enquiry.",
+          "at": "2026-10-09T10:04:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-shirts-cottonlane-1",
+          "vendorId": "cottonlane",
+          "direction": "received",
+          "kind": "quote",
+          "subject": "Re: T-shirt merchandise — quotation enquiry",
+          "body": "Thank you. Our initial estimate is RM2,050.00. 180 gsm black cotton, white one-colour screen print; digital artwork proof and size split included. We can meet the date; please confirm your artwork or setup requirements.",
+          "at": "2026-10-09T11:04:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-shirts-cottonlane-2",
+          "vendorId": "cottonlane",
+          "direction": "sent",
+          "kind": "negotiation",
+          "subject": "Re: T-shirt merchandise — quotation enquiry",
+          "body": "Please confirm a final all-in price, exact scope and arrival date. Can you reduce the cost while retaining the specification? We are comparing complete offers; this is not an order.",
+          "at": "2026-10-09T12:04:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-shirts-cottonlane-3",
+          "vendorId": "cottonlane",
+          "direction": "received",
+          "kind": "final-quote",
+          "subject": "Re: T-shirt merchandise — quotation enquiry",
+          "body": "Final quotation DEMO-COTTONLANE-FINAL: RM1,850.00 plus RM50.00 logistics; RM1,900.00 total. Scope: 50 black cotton T-shirts with a white one-colour logo, all-in ceiling RM2,000.00, delivery by 2026-10-24 at Bandar Sunway, Selangor. Arrival 2026-10-24. 180 gsm black cotton, white one-colour screen print; digital artwork proof and size split included. Valid until 20 October 2026. Awaiting your team's final selection.",
+          "at": "2026-10-09T13:04:00+08:00",
+          "executionMode": "demo",
+          "sample": true,
+          "termsHash": "502fb79a52eb77d10c279d5697ecbfd4df49122ddcd767150e4554365754279c"
+        },
+        {
+          "id": "demo-shirts-formwear-0",
+          "vendorId": "formwear",
+          "direction": "sent",
+          "kind": "enquiry",
+          "subject": "Re: T-shirt merchandise — quotation enquiry",
+          "body": "Hello Formwear Collective, please quote for 50 black cotton T-shirts with a white one-colour logo, all-in ceiling RM2,000.00, delivery by 2026-10-24 at Bandar Sunway, Selangor. Include all costs, availability and specifications. This is a non-binding enquiry.",
+          "at": "2026-10-09T10:05:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-shirts-formwear-1",
+          "vendorId": "formwear",
+          "direction": "received",
+          "kind": "quote",
+          "subject": "Re: T-shirt merchandise — quotation enquiry",
+          "body": "Thank you. Our initial estimate is RM2,120.00. 180 gsm black cotton, white one-colour screen print; digital artwork proof and size split included. We can meet the date; please confirm your artwork or setup requirements.",
+          "at": "2026-10-09T11:05:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-shirts-formwear-2",
+          "vendorId": "formwear",
+          "direction": "sent",
+          "kind": "negotiation",
+          "subject": "Re: T-shirt merchandise — quotation enquiry",
+          "body": "Please confirm a final all-in price, exact scope and arrival date. Can you reduce the cost while retaining the specification? We are comparing complete offers; this is not an order.",
+          "at": "2026-10-09T12:05:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-shirts-formwear-3",
+          "vendorId": "formwear",
+          "direction": "received",
+          "kind": "final-quote",
+          "subject": "Re: T-shirt merchandise — quotation enquiry",
+          "body": "Final quotation DEMO-FORMWEAR-FINAL: RM1,920.00 plus RM50.00 logistics; RM1,970.00 total. Scope: 50 black cotton T-shirts with a white one-colour logo, all-in ceiling RM2,000.00, delivery by 2026-10-24 at Bandar Sunway, Selangor. Arrival 2026-10-23. 180 gsm black cotton, white one-colour screen print; digital artwork proof and size split included. Valid until 20 October 2026. Awaiting your team's final selection.",
+          "at": "2026-10-09T13:05:00+08:00",
+          "executionMode": "demo",
+          "sample": true,
+          "termsHash": "705a095c45a9ece0af26f1cf05afd68f7e413beb459ab21f03065d27f9f10135"
+        }
+      ],
+      "vendorDecisions": [],
+      "events": [
+        {
+          "id": "demo-shirts-milestone-0",
+          "title": "Contacted 5 suppliers",
+          "detail": "Simulated non-binding enquiries and two-way negotiations completed with all five suitable studios.",
+          "time": "10:00",
+          "occurredAt": "2026-10-09T10:00:00+08:00",
+          "kind": "mail",
+          "milestone": true
+        },
+        {
+          "id": "demo-shirts-milestone-1",
+          "title": "Five final offers compared",
+          "detail": "Threadcraft's RM1,700 all-in offer ranks first; four valid alternatives remain on the waitlist. Savings against its opening quote: RM150.",
+          "time": "13:00",
+          "occurredAt": "2026-10-10T13:00:00+08:00",
+          "kind": "offer",
+          "milestone": true
+        },
+        {
+          "id": "demo-shirts-milestone-2",
+          "title": "T-shirt supplier ready for review",
+          "detail": "One organiser approval slot is open; no supplier has been selected or secured.",
+          "time": "14:00",
+          "occurredAt": "2026-10-10T14:00:00+08:00",
+          "kind": "human",
+          "milestone": true
+        }
+      ],
+      "failsafes": [],
+      "assumptions": [],
+      "draft": {
+        "recipient": "Simulated suppliers only",
+        "subject": "T-shirt merchandise",
+        "body": "",
+        "status": "pending",
+        "revision": 1
+      }
+    },
+    {
+      "id": "demo-market-vendors",
+      "eventId": "kampus-weekend-market",
+      "taskId": "demo-market-vendors",
+      "title": "Ten event vendors",
+      "goal": "Find 10 suitable event vendors for Kampus Weekend Market, within RM5,000 total support. Confirm their setup at Subang Jaya by 30 October, product categories and any support costs. We will select the exhibitors ourselves.",
+      "quantity": 1,
+      "budgetSen": 500000,
+      "targetSen": 500000,
+      "deadline": "2026-10-30",
+      "location": "Subang Jaya, Selangor",
+      "selectionTarget": 10,
+      "stage": "decision",
+      "selectedVendorId": null,
+      "taskWorkflowVersion": 1,
+      "sample": true,
+      "demoScenarioVersion": 1,
+      "vendors": [
+        {
+          "id": "daily-brew",
+          "name": "Daily Brew Cart",
+          "initials": "DB",
+          "location": "Subang Jaya, Selangor",
+          "color": "sage",
+          "goodsSen": 25000,
+          "deliverySen": 0,
+          "initialSen": 40000,
+          "arrival": "2026-10-30",
+          "quantity": 1,
+          "specsConfirmed": true,
+          "validUntil": "2026-10-20",
+          "status": "Final offer",
+          "description": "One exhibitor placement: Coffee and cold brew. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed.",
+          "strengths": [
+            "Complete final terms received",
+            "Within the requested delivery window"
+          ],
+          "concerns": [
+            "Written artwork or setup confirmation required before fulfilment"
+          ],
+          "quoteRef": "DEMO-DAILY-BREW-FINAL",
+          "executionMode": "demo",
+          "sample": true,
+          "scenarioCaseId": "demo-market-vendors",
+          "liaisonStatus": "ready",
+          "contact": {
+            "email": "daily-brew@vendors.example",
+            "provenance": "simulated"
+          }
+        },
+        {
+          "id": "paper-petal",
+          "name": "Paper Petal Studio",
+          "initials": "PP",
+          "location": "Subang Jaya, Selangor",
+          "color": "sage",
+          "goodsSen": 26000,
+          "deliverySen": 0,
+          "initialSen": 41000,
+          "arrival": "2026-10-30",
+          "quantity": 1,
+          "specsConfirmed": true,
+          "validUntil": "2026-10-20",
+          "status": "Final offer",
+          "description": "One exhibitor placement: Stationery and illustrated prints. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed.",
+          "strengths": [
+            "Complete final terms received",
+            "Within the requested delivery window"
+          ],
+          "concerns": [
+            "Written artwork or setup confirmation required before fulfilment"
+          ],
+          "quoteRef": "DEMO-PAPER-PETAL-FINAL",
+          "executionMode": "demo",
+          "sample": true,
+          "scenarioCaseId": "demo-market-vendors",
+          "liaisonStatus": "ready",
+          "contact": {
+            "email": "paper-petal@vendors.example",
+            "provenance": "simulated"
+          }
+        },
+        {
+          "id": "crumb-club",
+          "name": "Crumb Club Bakery",
+          "initials": "CC",
+          "location": "Subang Jaya, Selangor",
+          "color": "sage",
+          "goodsSen": 27000,
+          "deliverySen": 0,
+          "initialSen": 42000,
+          "arrival": "2026-10-30",
+          "quantity": 1,
+          "specsConfirmed": true,
+          "validUntil": "2026-10-20",
+          "status": "Final offer",
+          "description": "One exhibitor placement: Packaged cookies and brownies. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed.",
+          "strengths": [
+            "Complete final terms received",
+            "Within the requested delivery window"
+          ],
+          "concerns": [
+            "Written artwork or setup confirmation required before fulfilment"
+          ],
+          "quoteRef": "DEMO-CRUMB-CLUB-FINAL",
+          "executionMode": "demo",
+          "sample": true,
+          "scenarioCaseId": "demo-market-vendors",
+          "liaisonStatus": "ready",
+          "contact": {
+            "email": "crumb-club@vendors.example",
+            "provenance": "simulated"
+          }
+        },
+        {
+          "id": "loop-lab",
+          "name": "Loop Lab Crafts",
+          "initials": "LL",
+          "location": "Subang Jaya, Selangor",
+          "color": "sage",
+          "goodsSen": 28000,
+          "deliverySen": 0,
+          "initialSen": 43000,
+          "arrival": "2026-10-30",
+          "quantity": 1,
+          "specsConfirmed": true,
+          "validUntil": "2026-10-20",
+          "status": "Final offer",
+          "description": "One exhibitor placement: Upcycled bags. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed.",
+          "strengths": [
+            "Complete final terms received",
+            "Within the requested delivery window"
+          ],
+          "concerns": [
+            "Written artwork or setup confirmation required before fulfilment"
+          ],
+          "quoteRef": "DEMO-LOOP-LAB-FINAL",
+          "executionMode": "demo",
+          "sample": true,
+          "scenarioCaseId": "demo-market-vendors",
+          "liaisonStatus": "ready",
+          "contact": {
+            "email": "loop-lab@vendors.example",
+            "provenance": "simulated"
+          }
+        },
+        {
+          "id": "plant-pocket",
+          "name": "Plant Pocket",
+          "initials": "PP",
+          "location": "Subang Jaya, Selangor",
+          "color": "sage",
+          "goodsSen": 29000,
+          "deliverySen": 0,
+          "initialSen": 44000,
+          "arrival": "2026-10-30",
+          "quantity": 1,
+          "specsConfirmed": true,
+          "validUntil": "2026-10-20",
+          "status": "Final offer",
+          "description": "One exhibitor placement: Mini plants. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed.",
+          "strengths": [
+            "Complete final terms received",
+            "Within the requested delivery window"
+          ],
+          "concerns": [
+            "Written artwork or setup confirmation required before fulfilment"
+          ],
+          "quoteRef": "DEMO-PLANT-POCKET-FINAL",
+          "executionMode": "demo",
+          "sample": true,
+          "scenarioCaseId": "demo-market-vendors",
+          "liaisonStatus": "ready",
+          "contact": {
+            "email": "plant-pocket@vendors.example",
+            "provenance": "simulated"
+          }
+        },
+        {
+          "id": "scent-house",
+          "name": "Scent House Studio",
+          "initials": "SH",
+          "location": "Subang Jaya, Selangor",
+          "color": "sage",
+          "goodsSen": 30000,
+          "deliverySen": 0,
+          "initialSen": 45000,
+          "arrival": "2026-10-30",
+          "quantity": 1,
+          "specsConfirmed": true,
+          "validUntil": "2026-10-20",
+          "status": "Final offer",
+          "description": "One exhibitor placement: Candles. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed.",
+          "strengths": [
+            "Complete final terms received",
+            "Within the requested delivery window"
+          ],
+          "concerns": [
+            "Written artwork or setup confirmation required before fulfilment"
+          ],
+          "quoteRef": "DEMO-SCENT-HOUSE-FINAL",
+          "executionMode": "demo",
+          "sample": true,
+          "scenarioCaseId": "demo-market-vendors",
+          "liaisonStatus": "ready",
+          "contact": {
+            "email": "scent-house@vendors.example",
+            "provenance": "simulated"
+          }
+        },
+        {
+          "id": "bead-bar",
+          "name": "Bead Bar Collective",
+          "initials": "BB",
+          "location": "Subang Jaya, Selangor",
+          "color": "sage",
+          "goodsSen": 31000,
+          "deliverySen": 0,
+          "initialSen": 46000,
+          "arrival": "2026-10-30",
+          "quantity": 1,
+          "specsConfirmed": true,
+          "validUntil": "2026-10-20",
+          "status": "Final offer",
+          "description": "One exhibitor placement: Handmade accessories. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed.",
+          "strengths": [
+            "Complete final terms received",
+            "Within the requested delivery window"
+          ],
+          "concerns": [
+            "Written artwork or setup confirmation required before fulfilment"
+          ],
+          "quoteRef": "DEMO-BEAD-BAR-FINAL",
+          "executionMode": "demo",
+          "sample": true,
+          "scenarioCaseId": "demo-market-vendors",
+          "liaisonStatus": "ready",
+          "contact": {
+            "email": "bead-bar@vendors.example",
+            "provenance": "simulated"
+          }
+        },
+        {
+          "id": "snap-soda",
+          "name": "Snap Soda Stand",
+          "initials": "SS",
+          "location": "Subang Jaya, Selangor",
+          "color": "sage",
+          "goodsSen": 32000,
+          "deliverySen": 0,
+          "initialSen": 47000,
+          "arrival": "2026-10-30",
+          "quantity": 1,
+          "specsConfirmed": true,
+          "validUntil": "2026-10-20",
+          "status": "Final offer",
+          "description": "One exhibitor placement: Craft soda. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed.",
+          "strengths": [
+            "Complete final terms received",
+            "Within the requested delivery window"
+          ],
+          "concerns": [
+            "Written artwork or setup confirmation required before fulfilment"
+          ],
+          "quoteRef": "DEMO-SNAP-SODA-FINAL",
+          "executionMode": "demo",
+          "sample": true,
+          "scenarioCaseId": "demo-market-vendors",
+          "liaisonStatus": "ready",
+          "contact": {
+            "email": "snap-soda@vendors.example",
+            "provenance": "simulated"
+          }
+        },
+        {
+          "id": "little-zine",
+          "name": "Little Zine Corner",
+          "initials": "LZ",
+          "location": "Subang Jaya, Selangor",
+          "color": "sage",
+          "goodsSen": 33000,
+          "deliverySen": 0,
+          "initialSen": 48000,
+          "arrival": "2026-10-30",
+          "quantity": 1,
+          "specsConfirmed": true,
+          "validUntil": "2026-10-20",
+          "status": "Final offer",
+          "description": "One exhibitor placement: Independent books. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed.",
+          "strengths": [
+            "Complete final terms received",
+            "Within the requested delivery window"
+          ],
+          "concerns": [
+            "Written artwork or setup confirmation required before fulfilment"
+          ],
+          "quoteRef": "DEMO-LITTLE-ZINE-FINAL",
+          "executionMode": "demo",
+          "sample": true,
+          "scenarioCaseId": "demo-market-vendors",
+          "liaisonStatus": "ready",
+          "contact": {
+            "email": "little-zine@vendors.example",
+            "provenance": "simulated"
+          }
+        },
+        {
+          "id": "clay-day",
+          "name": "Clay Day Ceramics",
+          "initials": "CD",
+          "location": "Subang Jaya, Selangor",
+          "color": "sage",
+          "goodsSen": 34000,
+          "deliverySen": 0,
+          "initialSen": 49000,
+          "arrival": "2026-10-30",
+          "quantity": 1,
+          "specsConfirmed": true,
+          "validUntil": "2026-10-20",
+          "status": "Final offer",
+          "description": "One exhibitor placement: Ceramic gifts. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed.",
+          "strengths": [
+            "Complete final terms received",
+            "Within the requested delivery window"
+          ],
+          "concerns": [
+            "Written artwork or setup confirmation required before fulfilment"
+          ],
+          "quoteRef": "DEMO-CLAY-DAY-FINAL",
+          "executionMode": "demo",
+          "sample": true,
+          "scenarioCaseId": "demo-market-vendors",
+          "liaisonStatus": "ready",
+          "contact": {
+            "email": "clay-day@vendors.example",
+            "provenance": "simulated"
+          }
+        },
+        {
+          "id": "woven-warmth",
+          "name": "Woven Warmth",
+          "initials": "WW",
+          "location": "Subang Jaya, Selangor",
+          "color": "sage",
+          "goodsSen": 35000,
+          "deliverySen": 0,
+          "initialSen": 50000,
+          "arrival": "2026-10-30",
+          "quantity": 1,
+          "specsConfirmed": true,
+          "validUntil": "2026-10-20",
+          "status": "Final offer",
+          "description": "One exhibitor placement: Textile gifts. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed.",
+          "strengths": [
+            "Complete final terms received",
+            "Within the requested delivery window"
+          ],
+          "concerns": [
+            "Written artwork or setup confirmation required before fulfilment"
+          ],
+          "quoteRef": "DEMO-WOVEN-WARMTH-FINAL",
+          "executionMode": "demo",
+          "sample": true,
+          "scenarioCaseId": "demo-market-vendors",
+          "liaisonStatus": "ready",
+          "contact": {
+            "email": "woven-warmth@vendors.example",
+            "provenance": "simulated"
+          }
+        },
+        {
+          "id": "sticker-society",
+          "name": "Sticker Society",
+          "initials": "SS",
+          "location": "Subang Jaya, Selangor",
+          "color": "sage",
+          "goodsSen": 36000,
+          "deliverySen": 0,
+          "initialSen": 51000,
+          "arrival": "2026-10-30",
+          "quantity": 1,
+          "specsConfirmed": true,
+          "validUntil": "2026-10-20",
+          "status": "Final offer",
+          "description": "One exhibitor placement: Stickers and postcards. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed.",
+          "strengths": [
+            "Complete final terms received",
+            "Within the requested delivery window"
+          ],
+          "concerns": [
+            "Written artwork or setup confirmation required before fulfilment"
+          ],
+          "quoteRef": "DEMO-STICKER-SOCIETY-FINAL",
+          "executionMode": "demo",
+          "sample": true,
+          "scenarioCaseId": "demo-market-vendors",
+          "liaisonStatus": "ready",
+          "contact": {
+            "email": "sticker-society@vendors.example",
+            "provenance": "simulated"
+          }
+        }
+      ],
+      "messages": [
+        {
+          "id": "demo-market-vendors-daily-brew-0",
+          "vendorId": "daily-brew",
+          "direction": "sent",
+          "kind": "enquiry",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Hello Daily Brew Cart, please quote for one exhibitor placement within our ten-exhibitor event, setup by 2026-10-30 at Subang Jaya, Selangor; quote your individual support cost within the event's RM5,000.00 aggregate support ceiling. Include all costs, availability and specifications. This is a non-binding enquiry.",
+          "at": "2026-10-09T10:01:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-daily-brew-1",
+          "vendorId": "daily-brew",
+          "direction": "received",
+          "kind": "quote",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Thank you. Our initial estimate is RM400.00. One exhibitor placement: Coffee and cold brew. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed. We can meet the date; please confirm your artwork or setup requirements.",
+          "at": "2026-10-09T11:01:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-daily-brew-2",
+          "vendorId": "daily-brew",
+          "direction": "sent",
+          "kind": "negotiation",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Please confirm a final all-in price, exact scope and arrival date. Can you reduce the cost while retaining the specification? We are comparing complete offers; this is not an order.",
+          "at": "2026-10-09T12:01:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-daily-brew-3",
+          "vendorId": "daily-brew",
+          "direction": "received",
+          "kind": "final-quote",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Final quotation DEMO-DAILY-BREW-FINAL: RM250.00 plus RM0.00 logistics; RM250.00 total. Scope: one exhibitor placement within our ten-exhibitor event, setup by 2026-10-30 at Subang Jaya, Selangor; quote your individual support cost within the event's RM5,000.00 aggregate support ceiling. Arrival 2026-10-30. One exhibitor placement: Coffee and cold brew. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed. Valid until 20 October 2026. Awaiting your team's final selection.",
+          "at": "2026-10-09T13:01:00+08:00",
+          "executionMode": "demo",
+          "sample": true,
+          "termsHash": "942edcdf9b0ea5f43c7915afd5ae9e0561378ed07271c8a701df45561d5f52f1"
+        },
+        {
+          "id": "demo-market-vendors-daily-brew-selection",
+          "vendorId": "daily-brew",
+          "direction": "sent",
+          "kind": "selection-confirmation-request",
+          "approvalId": "demo-decision-demo-market-vendors-daily-brew",
+          "termsHash": "942edcdf9b0ea5f43c7915afd5ae9e0561378ed07271c8a701df45561d5f52f1",
+          "subject": "Re: Ten event vendors — organiser selection",
+          "body": "Simulated organiser selection: our team reviewed and approved quotation DEMO-DAILY-BREW-FINAL at RM250.00 all-in. Please separately confirm the exact quoted scope and arrival 2026-10-30. This is a presentation-only message; no real order, payment or booking is being sent.",
+          "at": "2026-10-09T14:05:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-daily-brew-confirmation",
+          "vendorId": "daily-brew",
+          "direction": "received",
+          "kind": "commitment-confirmation",
+          "approvalId": "demo-decision-demo-market-vendors-daily-brew",
+          "termsHash": "942edcdf9b0ea5f43c7915afd5ae9e0561378ed07271c8a701df45561d5f52f1",
+          "subject": "Re: Ten event vendors — confirmation",
+          "body": "Simulated confirmation: Daily Brew Cart confirms the exact approved scope, RM250.00 all-in, arrival 2026-10-30. No real booking or payment exists.",
+          "at": "2026-10-09T15:00:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-paper-petal-0",
+          "vendorId": "paper-petal",
+          "direction": "sent",
+          "kind": "enquiry",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Hello Paper Petal Studio, please quote for one exhibitor placement within our ten-exhibitor event, setup by 2026-10-30 at Subang Jaya, Selangor; quote your individual support cost within the event's RM5,000.00 aggregate support ceiling. Include all costs, availability and specifications. This is a non-binding enquiry.",
+          "at": "2026-10-09T10:02:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-paper-petal-1",
+          "vendorId": "paper-petal",
+          "direction": "received",
+          "kind": "quote",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Thank you. Our initial estimate is RM410.00. One exhibitor placement: Stationery and illustrated prints. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed. We can meet the date; please confirm your artwork or setup requirements.",
+          "at": "2026-10-09T11:02:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-paper-petal-2",
+          "vendorId": "paper-petal",
+          "direction": "sent",
+          "kind": "negotiation",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Please confirm a final all-in price, exact scope and arrival date. Can you reduce the cost while retaining the specification? We are comparing complete offers; this is not an order.",
+          "at": "2026-10-09T12:02:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-paper-petal-3",
+          "vendorId": "paper-petal",
+          "direction": "received",
+          "kind": "final-quote",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Final quotation DEMO-PAPER-PETAL-FINAL: RM260.00 plus RM0.00 logistics; RM260.00 total. Scope: one exhibitor placement within our ten-exhibitor event, setup by 2026-10-30 at Subang Jaya, Selangor; quote your individual support cost within the event's RM5,000.00 aggregate support ceiling. Arrival 2026-10-30. One exhibitor placement: Stationery and illustrated prints. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed. Valid until 20 October 2026. Awaiting your team's final selection.",
+          "at": "2026-10-09T13:02:00+08:00",
+          "executionMode": "demo",
+          "sample": true,
+          "termsHash": "754d2ba2b6f9790d637b3aeddb05988eb1cf558b77eaa063d4f83a95c4625352"
+        },
+        {
+          "id": "demo-market-vendors-paper-petal-selection",
+          "vendorId": "paper-petal",
+          "direction": "sent",
+          "kind": "selection-confirmation-request",
+          "approvalId": "demo-decision-demo-market-vendors-paper-petal",
+          "termsHash": "754d2ba2b6f9790d637b3aeddb05988eb1cf558b77eaa063d4f83a95c4625352",
+          "subject": "Re: Ten event vendors — organiser selection",
+          "body": "Simulated organiser selection: our team reviewed and approved quotation DEMO-PAPER-PETAL-FINAL at RM260.00 all-in. Please separately confirm the exact quoted scope and arrival 2026-10-30. This is a presentation-only message; no real order, payment or booking is being sent.",
+          "at": "2026-10-09T14:05:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-paper-petal-confirmation",
+          "vendorId": "paper-petal",
+          "direction": "received",
+          "kind": "commitment-confirmation",
+          "approvalId": "demo-decision-demo-market-vendors-paper-petal",
+          "termsHash": "754d2ba2b6f9790d637b3aeddb05988eb1cf558b77eaa063d4f83a95c4625352",
+          "subject": "Re: Ten event vendors — confirmation",
+          "body": "Simulated confirmation: Paper Petal Studio confirms the exact approved scope, RM260.00 all-in, arrival 2026-10-30. No real booking or payment exists.",
+          "at": "2026-10-09T15:00:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-crumb-club-0",
+          "vendorId": "crumb-club",
+          "direction": "sent",
+          "kind": "enquiry",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Hello Crumb Club Bakery, please quote for one exhibitor placement within our ten-exhibitor event, setup by 2026-10-30 at Subang Jaya, Selangor; quote your individual support cost within the event's RM5,000.00 aggregate support ceiling. Include all costs, availability and specifications. This is a non-binding enquiry.",
+          "at": "2026-10-09T10:03:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-crumb-club-1",
+          "vendorId": "crumb-club",
+          "direction": "received",
+          "kind": "quote",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Thank you. Our initial estimate is RM420.00. One exhibitor placement: Packaged cookies and brownies. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed. We can meet the date; please confirm your artwork or setup requirements.",
+          "at": "2026-10-09T11:03:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-crumb-club-2",
+          "vendorId": "crumb-club",
+          "direction": "sent",
+          "kind": "negotiation",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Please confirm a final all-in price, exact scope and arrival date. Can you reduce the cost while retaining the specification? We are comparing complete offers; this is not an order.",
+          "at": "2026-10-09T12:03:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-crumb-club-3",
+          "vendorId": "crumb-club",
+          "direction": "received",
+          "kind": "final-quote",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Final quotation DEMO-CRUMB-CLUB-FINAL: RM270.00 plus RM0.00 logistics; RM270.00 total. Scope: one exhibitor placement within our ten-exhibitor event, setup by 2026-10-30 at Subang Jaya, Selangor; quote your individual support cost within the event's RM5,000.00 aggregate support ceiling. Arrival 2026-10-30. One exhibitor placement: Packaged cookies and brownies. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed. Valid until 20 October 2026. Awaiting your team's final selection.",
+          "at": "2026-10-09T13:03:00+08:00",
+          "executionMode": "demo",
+          "sample": true,
+          "termsHash": "8ef22ab4d1f0515f7ad2969ef4e63242585fcee64ffe204936cee5e5b5f39664"
+        },
+        {
+          "id": "demo-market-vendors-crumb-club-selection",
+          "vendorId": "crumb-club",
+          "direction": "sent",
+          "kind": "selection-confirmation-request",
+          "approvalId": "demo-decision-demo-market-vendors-crumb-club",
+          "termsHash": "8ef22ab4d1f0515f7ad2969ef4e63242585fcee64ffe204936cee5e5b5f39664",
+          "subject": "Re: Ten event vendors — organiser selection",
+          "body": "Simulated organiser selection: our team reviewed and approved quotation DEMO-CRUMB-CLUB-FINAL at RM270.00 all-in. Please separately confirm the exact quoted scope and arrival 2026-10-30. This is a presentation-only message; no real order, payment or booking is being sent.",
+          "at": "2026-10-09T14:05:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-loop-lab-0",
+          "vendorId": "loop-lab",
+          "direction": "sent",
+          "kind": "enquiry",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Hello Loop Lab Crafts, please quote for one exhibitor placement within our ten-exhibitor event, setup by 2026-10-30 at Subang Jaya, Selangor; quote your individual support cost within the event's RM5,000.00 aggregate support ceiling. Include all costs, availability and specifications. This is a non-binding enquiry.",
+          "at": "2026-10-09T10:04:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-loop-lab-1",
+          "vendorId": "loop-lab",
+          "direction": "received",
+          "kind": "quote",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Thank you. Our initial estimate is RM430.00. One exhibitor placement: Upcycled bags. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed. We can meet the date; please confirm your artwork or setup requirements.",
+          "at": "2026-10-09T11:04:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-loop-lab-2",
+          "vendorId": "loop-lab",
+          "direction": "sent",
+          "kind": "negotiation",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Please confirm a final all-in price, exact scope and arrival date. Can you reduce the cost while retaining the specification? We are comparing complete offers; this is not an order.",
+          "at": "2026-10-09T12:04:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-loop-lab-3",
+          "vendorId": "loop-lab",
+          "direction": "received",
+          "kind": "final-quote",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Final quotation DEMO-LOOP-LAB-FINAL: RM280.00 plus RM0.00 logistics; RM280.00 total. Scope: one exhibitor placement within our ten-exhibitor event, setup by 2026-10-30 at Subang Jaya, Selangor; quote your individual support cost within the event's RM5,000.00 aggregate support ceiling. Arrival 2026-10-30. One exhibitor placement: Upcycled bags. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed. Valid until 20 October 2026. Awaiting your team's final selection.",
+          "at": "2026-10-09T13:04:00+08:00",
+          "executionMode": "demo",
+          "sample": true,
+          "termsHash": "364f478810b84ad7b486e538dd9c9de201b6070d0dde87e571d2b9797ad9ad5c"
+        },
+        {
+          "id": "demo-market-vendors-plant-pocket-0",
+          "vendorId": "plant-pocket",
+          "direction": "sent",
+          "kind": "enquiry",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Hello Plant Pocket, please quote for one exhibitor placement within our ten-exhibitor event, setup by 2026-10-30 at Subang Jaya, Selangor; quote your individual support cost within the event's RM5,000.00 aggregate support ceiling. Include all costs, availability and specifications. This is a non-binding enquiry.",
+          "at": "2026-10-09T10:05:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-plant-pocket-1",
+          "vendorId": "plant-pocket",
+          "direction": "received",
+          "kind": "quote",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Thank you. Our initial estimate is RM440.00. One exhibitor placement: Mini plants. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed. We can meet the date; please confirm your artwork or setup requirements.",
+          "at": "2026-10-09T11:05:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-plant-pocket-2",
+          "vendorId": "plant-pocket",
+          "direction": "sent",
+          "kind": "negotiation",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Please confirm a final all-in price, exact scope and arrival date. Can you reduce the cost while retaining the specification? We are comparing complete offers; this is not an order.",
+          "at": "2026-10-09T12:05:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-plant-pocket-3",
+          "vendorId": "plant-pocket",
+          "direction": "received",
+          "kind": "final-quote",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Final quotation DEMO-PLANT-POCKET-FINAL: RM290.00 plus RM0.00 logistics; RM290.00 total. Scope: one exhibitor placement within our ten-exhibitor event, setup by 2026-10-30 at Subang Jaya, Selangor; quote your individual support cost within the event's RM5,000.00 aggregate support ceiling. Arrival 2026-10-30. One exhibitor placement: Mini plants. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed. Valid until 20 October 2026. Awaiting your team's final selection.",
+          "at": "2026-10-09T13:05:00+08:00",
+          "executionMode": "demo",
+          "sample": true,
+          "termsHash": "45d3264809db084cd221b217ae5e10b19d19173d9f391e5293bfb2c6b0db861e"
+        },
+        {
+          "id": "demo-market-vendors-scent-house-0",
+          "vendorId": "scent-house",
+          "direction": "sent",
+          "kind": "enquiry",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Hello Scent House Studio, please quote for one exhibitor placement within our ten-exhibitor event, setup by 2026-10-30 at Subang Jaya, Selangor; quote your individual support cost within the event's RM5,000.00 aggregate support ceiling. Include all costs, availability and specifications. This is a non-binding enquiry.",
+          "at": "2026-10-09T10:06:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-scent-house-1",
+          "vendorId": "scent-house",
+          "direction": "received",
+          "kind": "quote",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Thank you. Our initial estimate is RM450.00. One exhibitor placement: Candles. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed. We can meet the date; please confirm your artwork or setup requirements.",
+          "at": "2026-10-09T11:06:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-scent-house-2",
+          "vendorId": "scent-house",
+          "direction": "sent",
+          "kind": "negotiation",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Please confirm a final all-in price, exact scope and arrival date. Can you reduce the cost while retaining the specification? We are comparing complete offers; this is not an order.",
+          "at": "2026-10-09T12:06:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-scent-house-3",
+          "vendorId": "scent-house",
+          "direction": "received",
+          "kind": "final-quote",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Final quotation DEMO-SCENT-HOUSE-FINAL: RM300.00 plus RM0.00 logistics; RM300.00 total. Scope: one exhibitor placement within our ten-exhibitor event, setup by 2026-10-30 at Subang Jaya, Selangor; quote your individual support cost within the event's RM5,000.00 aggregate support ceiling. Arrival 2026-10-30. One exhibitor placement: Candles. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed. Valid until 20 October 2026. Awaiting your team's final selection.",
+          "at": "2026-10-09T13:06:00+08:00",
+          "executionMode": "demo",
+          "sample": true,
+          "termsHash": "b5de7d84e896befc20050cc13851018cbd6489fb786c071c6c1d83cef3d6a686"
+        },
+        {
+          "id": "demo-market-vendors-bead-bar-0",
+          "vendorId": "bead-bar",
+          "direction": "sent",
+          "kind": "enquiry",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Hello Bead Bar Collective, please quote for one exhibitor placement within our ten-exhibitor event, setup by 2026-10-30 at Subang Jaya, Selangor; quote your individual support cost within the event's RM5,000.00 aggregate support ceiling. Include all costs, availability and specifications. This is a non-binding enquiry.",
+          "at": "2026-10-09T10:07:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-bead-bar-1",
+          "vendorId": "bead-bar",
+          "direction": "received",
+          "kind": "quote",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Thank you. Our initial estimate is RM460.00. One exhibitor placement: Handmade accessories. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed. We can meet the date; please confirm your artwork or setup requirements.",
+          "at": "2026-10-09T11:07:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-bead-bar-2",
+          "vendorId": "bead-bar",
+          "direction": "sent",
+          "kind": "negotiation",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Please confirm a final all-in price, exact scope and arrival date. Can you reduce the cost while retaining the specification? We are comparing complete offers; this is not an order.",
+          "at": "2026-10-09T12:07:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-bead-bar-3",
+          "vendorId": "bead-bar",
+          "direction": "received",
+          "kind": "final-quote",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Final quotation DEMO-BEAD-BAR-FINAL: RM310.00 plus RM0.00 logistics; RM310.00 total. Scope: one exhibitor placement within our ten-exhibitor event, setup by 2026-10-30 at Subang Jaya, Selangor; quote your individual support cost within the event's RM5,000.00 aggregate support ceiling. Arrival 2026-10-30. One exhibitor placement: Handmade accessories. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed. Valid until 20 October 2026. Awaiting your team's final selection.",
+          "at": "2026-10-09T13:07:00+08:00",
+          "executionMode": "demo",
+          "sample": true,
+          "termsHash": "d2f793ad407aa19e63aa97ebd43df2c2b10459183ab4e4d5d98b9720da60d8e1"
+        },
+        {
+          "id": "demo-market-vendors-snap-soda-0",
+          "vendorId": "snap-soda",
+          "direction": "sent",
+          "kind": "enquiry",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Hello Snap Soda Stand, please quote for one exhibitor placement within our ten-exhibitor event, setup by 2026-10-30 at Subang Jaya, Selangor; quote your individual support cost within the event's RM5,000.00 aggregate support ceiling. Include all costs, availability and specifications. This is a non-binding enquiry.",
+          "at": "2026-10-09T10:08:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-snap-soda-1",
+          "vendorId": "snap-soda",
+          "direction": "received",
+          "kind": "quote",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Thank you. Our initial estimate is RM470.00. One exhibitor placement: Craft soda. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed. We can meet the date; please confirm your artwork or setup requirements.",
+          "at": "2026-10-09T11:08:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-snap-soda-2",
+          "vendorId": "snap-soda",
+          "direction": "sent",
+          "kind": "negotiation",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Please confirm a final all-in price, exact scope and arrival date. Can you reduce the cost while retaining the specification? We are comparing complete offers; this is not an order.",
+          "at": "2026-10-09T12:08:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-snap-soda-3",
+          "vendorId": "snap-soda",
+          "direction": "received",
+          "kind": "final-quote",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Final quotation DEMO-SNAP-SODA-FINAL: RM320.00 plus RM0.00 logistics; RM320.00 total. Scope: one exhibitor placement within our ten-exhibitor event, setup by 2026-10-30 at Subang Jaya, Selangor; quote your individual support cost within the event's RM5,000.00 aggregate support ceiling. Arrival 2026-10-30. One exhibitor placement: Craft soda. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed. Valid until 20 October 2026. Awaiting your team's final selection.",
+          "at": "2026-10-09T13:08:00+08:00",
+          "executionMode": "demo",
+          "sample": true,
+          "termsHash": "37f11729ed70b6f34fe445ef39efc1f74cf97ab48ff794d1a811535455270854"
+        },
+        {
+          "id": "demo-market-vendors-little-zine-0",
+          "vendorId": "little-zine",
+          "direction": "sent",
+          "kind": "enquiry",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Hello Little Zine Corner, please quote for one exhibitor placement within our ten-exhibitor event, setup by 2026-10-30 at Subang Jaya, Selangor; quote your individual support cost within the event's RM5,000.00 aggregate support ceiling. Include all costs, availability and specifications. This is a non-binding enquiry.",
+          "at": "2026-10-09T10:09:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-little-zine-1",
+          "vendorId": "little-zine",
+          "direction": "received",
+          "kind": "quote",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Thank you. Our initial estimate is RM480.00. One exhibitor placement: Independent books. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed. We can meet the date; please confirm your artwork or setup requirements.",
+          "at": "2026-10-09T11:09:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-little-zine-2",
+          "vendorId": "little-zine",
+          "direction": "sent",
+          "kind": "negotiation",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Please confirm a final all-in price, exact scope and arrival date. Can you reduce the cost while retaining the specification? We are comparing complete offers; this is not an order.",
+          "at": "2026-10-09T12:09:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-little-zine-3",
+          "vendorId": "little-zine",
+          "direction": "received",
+          "kind": "final-quote",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Final quotation DEMO-LITTLE-ZINE-FINAL: RM330.00 plus RM0.00 logistics; RM330.00 total. Scope: one exhibitor placement within our ten-exhibitor event, setup by 2026-10-30 at Subang Jaya, Selangor; quote your individual support cost within the event's RM5,000.00 aggregate support ceiling. Arrival 2026-10-30. One exhibitor placement: Independent books. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed. Valid until 20 October 2026. Awaiting your team's final selection.",
+          "at": "2026-10-09T13:09:00+08:00",
+          "executionMode": "demo",
+          "sample": true,
+          "termsHash": "bfa1820fb9cb68a536f8fb86f3f9fe93838ce6e6d60e65b2b15e0de9343fa376"
+        },
+        {
+          "id": "demo-market-vendors-clay-day-0",
+          "vendorId": "clay-day",
+          "direction": "sent",
+          "kind": "enquiry",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Hello Clay Day Ceramics, please quote for one exhibitor placement within our ten-exhibitor event, setup by 2026-10-30 at Subang Jaya, Selangor; quote your individual support cost within the event's RM5,000.00 aggregate support ceiling. Include all costs, availability and specifications. This is a non-binding enquiry.",
+          "at": "2026-10-09T10:10:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-clay-day-1",
+          "vendorId": "clay-day",
+          "direction": "received",
+          "kind": "quote",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Thank you. Our initial estimate is RM490.00. One exhibitor placement: Ceramic gifts. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed. We can meet the date; please confirm your artwork or setup requirements.",
+          "at": "2026-10-09T11:10:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-clay-day-2",
+          "vendorId": "clay-day",
+          "direction": "sent",
+          "kind": "negotiation",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Please confirm a final all-in price, exact scope and arrival date. Can you reduce the cost while retaining the specification? We are comparing complete offers; this is not an order.",
+          "at": "2026-10-09T12:10:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-clay-day-3",
+          "vendorId": "clay-day",
+          "direction": "received",
+          "kind": "final-quote",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Final quotation DEMO-CLAY-DAY-FINAL: RM340.00 plus RM0.00 logistics; RM340.00 total. Scope: one exhibitor placement within our ten-exhibitor event, setup by 2026-10-30 at Subang Jaya, Selangor; quote your individual support cost within the event's RM5,000.00 aggregate support ceiling. Arrival 2026-10-30. One exhibitor placement: Ceramic gifts. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed. Valid until 20 October 2026. Awaiting your team's final selection.",
+          "at": "2026-10-09T13:10:00+08:00",
+          "executionMode": "demo",
+          "sample": true,
+          "termsHash": "5faf6b8c3d7304da18be925a81a31c751a4c5502dfe14cf0f4c3a48bbfdd147e"
+        },
+        {
+          "id": "demo-market-vendors-woven-warmth-0",
+          "vendorId": "woven-warmth",
+          "direction": "sent",
+          "kind": "enquiry",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Hello Woven Warmth, please quote for one exhibitor placement within our ten-exhibitor event, setup by 2026-10-30 at Subang Jaya, Selangor; quote your individual support cost within the event's RM5,000.00 aggregate support ceiling. Include all costs, availability and specifications. This is a non-binding enquiry.",
+          "at": "2026-10-09T10:11:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-woven-warmth-1",
+          "vendorId": "woven-warmth",
+          "direction": "received",
+          "kind": "quote",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Thank you. Our initial estimate is RM500.00. One exhibitor placement: Textile gifts. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed. We can meet the date; please confirm your artwork or setup requirements.",
+          "at": "2026-10-09T11:11:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-woven-warmth-2",
+          "vendorId": "woven-warmth",
+          "direction": "sent",
+          "kind": "negotiation",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Please confirm a final all-in price, exact scope and arrival date. Can you reduce the cost while retaining the specification? We are comparing complete offers; this is not an order.",
+          "at": "2026-10-09T12:11:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-woven-warmth-3",
+          "vendorId": "woven-warmth",
+          "direction": "received",
+          "kind": "final-quote",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Final quotation DEMO-WOVEN-WARMTH-FINAL: RM350.00 plus RM0.00 logistics; RM350.00 total. Scope: one exhibitor placement within our ten-exhibitor event, setup by 2026-10-30 at Subang Jaya, Selangor; quote your individual support cost within the event's RM5,000.00 aggregate support ceiling. Arrival 2026-10-30. One exhibitor placement: Textile gifts. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed. Valid until 20 October 2026. Awaiting your team's final selection.",
+          "at": "2026-10-09T13:11:00+08:00",
+          "executionMode": "demo",
+          "sample": true,
+          "termsHash": "e1d98410bb4136bf06e92f526ace26f12683246e3ce9bdf47fa9139fe2f3f5a0"
+        },
+        {
+          "id": "demo-market-vendors-sticker-society-0",
+          "vendorId": "sticker-society",
+          "direction": "sent",
+          "kind": "enquiry",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Hello Sticker Society, please quote for one exhibitor placement within our ten-exhibitor event, setup by 2026-10-30 at Subang Jaya, Selangor; quote your individual support cost within the event's RM5,000.00 aggregate support ceiling. Include all costs, availability and specifications. This is a non-binding enquiry.",
+          "at": "2026-10-09T10:12:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-sticker-society-1",
+          "vendorId": "sticker-society",
+          "direction": "received",
+          "kind": "quote",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Thank you. Our initial estimate is RM510.00. One exhibitor placement: Stickers and postcards. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed. We can meet the date; please confirm your artwork or setup requirements.",
+          "at": "2026-10-09T11:12:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-sticker-society-2",
+          "vendorId": "sticker-society",
+          "direction": "sent",
+          "kind": "negotiation",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Please confirm a final all-in price, exact scope and arrival date. Can you reduce the cost while retaining the specification? We are comparing complete offers; this is not an order.",
+          "at": "2026-10-09T12:12:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-market-vendors-sticker-society-3",
+          "vendorId": "sticker-society",
+          "direction": "received",
+          "kind": "final-quote",
+          "subject": "Re: Ten event vendors — quotation enquiry",
+          "body": "Final quotation DEMO-STICKER-SOCIETY-FINAL: RM360.00 plus RM0.00 logistics; RM360.00 total. Scope: one exhibitor placement within our ten-exhibitor event, setup by 2026-10-30 at Subang Jaya, Selangor; quote your individual support cost within the event's RM5,000.00 aggregate support ceiling. Arrival 2026-10-30. One exhibitor placement: Stickers and postcards. Setup 30 October, 15:00–17:00; attendance 31 October, 10:00–18:00. Support includes transport and signage. Campus provides one table and power. Applicable licence and clean-up responsibilities confirmed. Valid until 20 October 2026. Awaiting your team's final selection.",
+          "at": "2026-10-09T13:12:00+08:00",
+          "executionMode": "demo",
+          "sample": true,
+          "termsHash": "9c47e8531fccdab8e717c28411e893594ca691f36615bb679fa6818c1fc7ce81"
+        }
+      ],
+      "vendorDecisions": [
+        {
+          "id": "demo-decision-demo-market-vendors-daily-brew",
+          "vendorId": "daily-brew",
+          "status": "secured",
+          "termsHash": "942edcdf9b0ea5f43c7915afd5ae9e0561378ed07271c8a701df45561d5f52f1",
+          "approvedAt": "2026-10-09T14:00:00+08:00",
+          "executionMode": "demo",
+          "actor": "organiser",
+          "confirmedAt": "2026-10-09T15:00:00+08:00",
+          "confirmationMessageId": "demo-market-vendors-daily-brew-confirmation"
+        },
+        {
+          "id": "demo-decision-demo-market-vendors-paper-petal",
+          "vendorId": "paper-petal",
+          "status": "secured",
+          "termsHash": "754d2ba2b6f9790d637b3aeddb05988eb1cf558b77eaa063d4f83a95c4625352",
+          "approvedAt": "2026-10-09T14:00:00+08:00",
+          "executionMode": "demo",
+          "actor": "organiser",
+          "confirmedAt": "2026-10-09T15:00:00+08:00",
+          "confirmationMessageId": "demo-market-vendors-paper-petal-confirmation"
+        },
+        {
+          "id": "demo-decision-demo-market-vendors-crumb-club",
+          "vendorId": "crumb-club",
+          "status": "approved",
+          "termsHash": "8ef22ab4d1f0515f7ad2969ef4e63242585fcee64ffe204936cee5e5b5f39664",
+          "approvedAt": "2026-10-09T14:00:00+08:00",
+          "executionMode": "demo",
+          "actor": "organiser"
+        }
+      ],
+      "events": [
+        {
+          "id": "demo-market-vendors-milestone-0",
+          "title": "Contacted 12 suppliers",
+          "detail": "All twelve fictional exhibitors replied with categories, setup availability and final support terms.",
+          "time": "10:00",
+          "occurredAt": "2026-10-09T10:00:00+08:00",
+          "kind": "mail",
+          "milestone": true
+        },
+        {
+          "id": "demo-market-vendors-milestone-1",
+          "title": "Two exhibitors secured",
+          "detail": "Daily Brew and Paper Petal have separate simulated confirmations matching organiser-approved terms.",
+          "time": "15:00",
+          "occurredAt": "2026-10-09T15:00:00+08:00",
+          "kind": "offer",
+          "milestone": true
+        },
+        {
+          "id": "demo-market-vendors-milestone-2",
+          "title": "Seven exhibitor approvals available",
+          "detail": "Two secured, one approved awaiting confirmation, seven open review slots and two waitlisted alternatives. RM10,000 is not implied: approved support is counted inside the RM5,000 aggregate ceiling.",
+          "time": "14:00",
+          "occurredAt": "2026-10-10T14:00:00+08:00",
+          "kind": "human",
+          "milestone": true
+        }
+      ],
+      "failsafes": [],
+      "assumptions": [],
+      "draft": {
+        "recipient": "Simulated suppliers only",
+        "subject": "Ten event vendors",
+        "body": "",
+        "status": "pending",
+        "revision": 1
+      }
+    },
+    {
+      "id": "demo-workshop-lunch",
+      "eventId": "build-together-workshop",
+      "taskId": "demo-workshop-lunch",
+      "title": "Workshop lunch catering",
+      "goal": "Find 50 vegetarian-friendly lunch packs under RM850 for Build Together Workshop. Deliver to Taylor's University by 28 October at 11:30. Include ingredient labels, no nuts and disposable cutlery.",
+      "quantity": 50,
+      "budgetSen": 85000,
+      "targetSen": 85000,
+      "deadline": "2026-10-28",
+      "location": "Taylor's University, Subang Jaya",
+      "selectionTarget": 1,
+      "stage": "decided",
+      "selectedVendorId": "green-table",
+      "taskWorkflowVersion": 1,
+      "sample": true,
+      "demoScenarioVersion": 1,
+      "vendors": [
+        {
+          "id": "green-table",
+          "name": "Green Table Kitchen",
+          "initials": "GT",
+          "location": "Taylor's University, Subang Jaya",
+          "color": "sage",
+          "goodsSen": 75000,
+          "deliverySen": 3000,
+          "initialSen": 93000,
+          "arrival": "2026-10-28",
+          "quantity": 50,
+          "specsConfirmed": true,
+          "validUntil": "2026-10-20",
+          "status": "Final offer",
+          "description": "50 vegetarian lunch packs, ingredient labels, no nuts and cutlery; delivery 11:30.",
+          "strengths": [
+            "Complete final terms received",
+            "Within the requested delivery window"
+          ],
+          "concerns": [
+            "Written artwork or setup confirmation required before fulfilment"
+          ],
+          "quoteRef": "DEMO-GREEN-TABLE-FINAL",
+          "executionMode": "demo",
+          "sample": true,
+          "scenarioCaseId": "demo-workshop-lunch",
+          "liaisonStatus": "ready",
+          "contact": {
+            "email": "green-table@vendors.example",
+            "provenance": "simulated"
+          }
+        },
+        {
+          "id": "fresh-fork",
+          "name": "Fresh Fork Catering",
+          "initials": "FF",
+          "location": "Taylor's University, Subang Jaya",
+          "color": "sage",
+          "goodsSen": 79000,
+          "deliverySen": 4000,
+          "initialSen": 98000,
+          "arrival": "2026-10-28",
+          "quantity": 50,
+          "specsConfirmed": true,
+          "validUntil": "2026-10-20",
+          "status": "Final offer",
+          "description": "50 vegetarian lunch packs, ingredient labels, no nuts and cutlery; delivery 11:30.",
+          "strengths": [
+            "Complete final terms received",
+            "Within the requested delivery window"
+          ],
+          "concerns": [
+            "Written artwork or setup confirmation required before fulfilment"
+          ],
+          "quoteRef": "DEMO-FRESH-FORK-FINAL",
+          "executionMode": "demo",
+          "sample": true,
+          "scenarioCaseId": "demo-workshop-lunch",
+          "liaisonStatus": "ready",
+          "contact": {
+            "email": "fresh-fork@vendors.example",
+            "provenance": "simulated"
+          }
+        }
+      ],
+      "messages": [
+        {
+          "id": "demo-workshop-lunch-green-table-0",
+          "vendorId": "green-table",
+          "direction": "sent",
+          "kind": "enquiry",
+          "subject": "Re: Workshop lunch catering — quotation enquiry",
+          "body": "Hello Green Table Kitchen, please quote for 50 vegetarian lunch packs with no nuts, ingredient labels and cutlery, all-in ceiling RM850.00, delivery 11:30 on 2026-10-28 at Taylor's University, Subang Jaya. Include all costs, availability and specifications. This is a non-binding enquiry.",
+          "at": "2026-10-07T10:01:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-workshop-lunch-green-table-1",
+          "vendorId": "green-table",
+          "direction": "received",
+          "kind": "quote",
+          "subject": "Re: Workshop lunch catering — quotation enquiry",
+          "body": "Thank you. Our initial estimate is RM930.00. 50 vegetarian lunch packs, ingredient labels, no nuts and cutlery; delivery 11:30. We can meet the date; please confirm your artwork or setup requirements.",
+          "at": "2026-10-07T11:01:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-workshop-lunch-green-table-2",
+          "vendorId": "green-table",
+          "direction": "sent",
+          "kind": "negotiation",
+          "subject": "Re: Workshop lunch catering — quotation enquiry",
+          "body": "Please confirm a final all-in price, exact scope and arrival date. Can you reduce the cost while retaining the specification? We are comparing complete offers; this is not an order.",
+          "at": "2026-10-07T12:01:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-workshop-lunch-green-table-3",
+          "vendorId": "green-table",
+          "direction": "received",
+          "kind": "final-quote",
+          "subject": "Re: Workshop lunch catering — quotation enquiry",
+          "body": "Final quotation DEMO-GREEN-TABLE-FINAL: RM750.00 plus RM30.00 logistics; RM780.00 total. Scope: 50 vegetarian lunch packs with no nuts, ingredient labels and cutlery, all-in ceiling RM850.00, delivery 11:30 on 2026-10-28 at Taylor's University, Subang Jaya. Arrival 2026-10-28. 50 vegetarian lunch packs, ingredient labels, no nuts and cutlery; delivery 11:30. Valid until 20 October 2026. Awaiting your team's final selection.",
+          "at": "2026-10-07T13:01:00+08:00",
+          "executionMode": "demo",
+          "sample": true,
+          "termsHash": "eadf219b06ab6c38d524ca2ce162e524637507711fcd5245df197b51cec08f91"
+        },
+        {
+          "id": "demo-workshop-lunch-green-table-selection",
+          "vendorId": "green-table",
+          "direction": "sent",
+          "kind": "selection-confirmation-request",
+          "approvalId": "demo-decision-demo-workshop-lunch-green-table",
+          "termsHash": "eadf219b06ab6c38d524ca2ce162e524637507711fcd5245df197b51cec08f91",
+          "subject": "Re: Workshop lunch catering — organiser selection",
+          "body": "Simulated organiser selection: our team reviewed and approved quotation DEMO-GREEN-TABLE-FINAL at RM780.00 all-in. Please separately confirm the exact quoted scope and arrival 2026-10-28. This is a presentation-only message; no real order, payment or booking is being sent.",
+          "at": "2026-10-07T14:05:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-workshop-lunch-green-table-confirmation",
+          "vendorId": "green-table",
+          "direction": "received",
+          "kind": "commitment-confirmation",
+          "approvalId": "demo-decision-demo-workshop-lunch-green-table",
+          "termsHash": "eadf219b06ab6c38d524ca2ce162e524637507711fcd5245df197b51cec08f91",
+          "subject": "Re: Workshop lunch catering — confirmation",
+          "body": "Simulated confirmation: Green Table Kitchen confirms the exact approved scope, RM780.00 all-in, arrival 2026-10-28. No real booking or payment exists.",
+          "at": "2026-10-07T15:00:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-workshop-lunch-fresh-fork-0",
+          "vendorId": "fresh-fork",
+          "direction": "sent",
+          "kind": "enquiry",
+          "subject": "Re: Workshop lunch catering — quotation enquiry",
+          "body": "Hello Fresh Fork Catering, please quote for 50 vegetarian lunch packs with no nuts, ingredient labels and cutlery, all-in ceiling RM850.00, delivery 11:30 on 2026-10-28 at Taylor's University, Subang Jaya. Include all costs, availability and specifications. This is a non-binding enquiry.",
+          "at": "2026-10-07T10:02:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-workshop-lunch-fresh-fork-1",
+          "vendorId": "fresh-fork",
+          "direction": "received",
+          "kind": "quote",
+          "subject": "Re: Workshop lunch catering — quotation enquiry",
+          "body": "Thank you. Our initial estimate is RM980.00. 50 vegetarian lunch packs, ingredient labels, no nuts and cutlery; delivery 11:30. We can meet the date; please confirm your artwork or setup requirements.",
+          "at": "2026-10-07T11:02:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-workshop-lunch-fresh-fork-2",
+          "vendorId": "fresh-fork",
+          "direction": "sent",
+          "kind": "negotiation",
+          "subject": "Re: Workshop lunch catering — quotation enquiry",
+          "body": "Please confirm a final all-in price, exact scope and arrival date. Can you reduce the cost while retaining the specification? We are comparing complete offers; this is not an order.",
+          "at": "2026-10-07T12:02:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-workshop-lunch-fresh-fork-3",
+          "vendorId": "fresh-fork",
+          "direction": "received",
+          "kind": "final-quote",
+          "subject": "Re: Workshop lunch catering — quotation enquiry",
+          "body": "Final quotation DEMO-FRESH-FORK-FINAL: RM790.00 plus RM40.00 logistics; RM830.00 total. Scope: 50 vegetarian lunch packs with no nuts, ingredient labels and cutlery, all-in ceiling RM850.00, delivery 11:30 on 2026-10-28 at Taylor's University, Subang Jaya. Arrival 2026-10-28. 50 vegetarian lunch packs, ingredient labels, no nuts and cutlery; delivery 11:30. Valid until 20 October 2026. Awaiting your team's final selection.",
+          "at": "2026-10-07T13:02:00+08:00",
+          "executionMode": "demo",
+          "sample": true,
+          "termsHash": "6e1f4fef08b311878fbed3c1814ca6fa6783b9e4fda1e4a7122414982af8744d"
+        }
+      ],
+      "vendorDecisions": [
+        {
+          "id": "demo-decision-demo-workshop-lunch-green-table",
+          "vendorId": "green-table",
+          "status": "secured",
+          "termsHash": "eadf219b06ab6c38d524ca2ce162e524637507711fcd5245df197b51cec08f91",
+          "approvedAt": "2026-10-07T14:00:00+08:00",
+          "executionMode": "demo",
+          "actor": "organiser",
+          "confirmedAt": "2026-10-07T15:00:00+08:00",
+          "confirmationMessageId": "demo-workshop-lunch-green-table-confirmation"
+        }
+      ],
+      "events": [
+        {
+          "id": "demo-workshop-lunch-milestone-0",
+          "title": "Lunch catering secured",
+          "detail": "Green Table's RM780 offer was approved by the organiser and separately confirmed in the simulated reply. Fresh Fork was not selected.",
+          "time": "15:00",
+          "occurredAt": "2026-10-07T15:00:00+08:00",
+          "kind": "offer",
+          "milestone": true
+        }
+      ],
+      "failsafes": [],
+      "assumptions": [],
+      "draft": {
+        "recipient": "Simulated suppliers only",
+        "subject": "Workshop lunch catering",
+        "body": "",
+        "status": "pending",
+        "revision": 1
+      }
+    },
+    {
+      "id": "demo-workshop-extra-lunch",
+      "eventId": "build-together-workshop",
+      "taskId": "demo-workshop-extra-lunch",
+      "title": "Twenty extra lunch packs",
+      "goal": "Use Green Table Kitchen again: we now need 20 more vegetarian lunch packs for Build Together Workshop. Keep the same no-nuts menu, labels and delivery slot. Budget RM360 including any additional delivery charge; request a fresh quote without researching new suppliers.",
+      "quantity": 20,
+      "budgetSen": 36000,
+      "targetSen": 36000,
+      "deadline": "2026-10-28",
+      "location": "Taylor's University, Subang Jaya",
+      "selectionTarget": 1,
+      "stage": "decided",
+      "selectedVendorId": "green-table",
+      "taskWorkflowVersion": 1,
+      "sample": true,
+      "demoScenarioVersion": 1,
+      "vendors": [
+        {
+          "id": "green-table",
+          "name": "Green Table Kitchen",
+          "initials": "GT",
+          "location": "Taylor's University, Subang Jaya",
+          "color": "sage",
+          "goodsSen": 30000,
+          "deliverySen": 0,
+          "initialSen": 45000,
+          "arrival": "2026-10-28",
+          "quantity": 20,
+          "specsConfirmed": true,
+          "validUntil": "2026-10-20",
+          "status": "Final offer",
+          "description": "20 additional vegetarian lunch packs, no nuts, ingredient labels and cutlery. Combined delivery with the original order at 11:30; no extra transport charge.",
+          "strengths": [
+            "Complete final terms received",
+            "Within the requested delivery window"
+          ],
+          "concerns": [
+            "Written artwork or setup confirmation required before fulfilment"
+          ],
+          "quoteRef": "DEMO-GREEN-TABLE-FINAL",
+          "executionMode": "demo",
+          "sample": true,
+          "scenarioCaseId": "demo-workshop-extra-lunch",
+          "liaisonStatus": "ready",
+          "contact": {
+            "email": "green-table@vendors.example",
+            "provenance": "simulated"
+          }
+        }
+      ],
+      "messages": [
+        {
+          "id": "demo-workshop-extra-lunch-green-table-0",
+          "vendorId": "green-table",
+          "direction": "sent",
+          "kind": "enquiry",
+          "subject": "Re: Twenty extra lunch packs — quotation enquiry",
+          "body": "Hello Green Table Kitchen, please quote for 20 additional vegetarian lunch packs with no nuts, ingredient labels and cutlery, all-in ceiling RM360.00, delivery 11:30 on 2026-10-28 at Taylor's University, Subang Jaya. Include all costs, availability and specifications. This is a non-binding enquiry.",
+          "at": "2026-10-10T10:01:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-workshop-extra-lunch-green-table-1",
+          "vendorId": "green-table",
+          "direction": "received",
+          "kind": "quote",
+          "subject": "Re: Twenty extra lunch packs — quotation enquiry",
+          "body": "Thank you. Our initial estimate is RM450.00. 20 additional vegetarian lunch packs, no nuts, ingredient labels and cutlery. Combined delivery with the original order at 11:30; no extra transport charge. We can meet the date; please confirm your artwork or setup requirements.",
+          "at": "2026-10-10T11:01:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-workshop-extra-lunch-green-table-2",
+          "vendorId": "green-table",
+          "direction": "sent",
+          "kind": "negotiation",
+          "subject": "Re: Twenty extra lunch packs — quotation enquiry",
+          "body": "Please confirm a final all-in price, exact scope and arrival date. Can you reduce the cost while retaining the specification? We are comparing complete offers; this is not an order.",
+          "at": "2026-10-10T12:01:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        },
+        {
+          "id": "demo-workshop-extra-lunch-green-table-3",
+          "vendorId": "green-table",
+          "direction": "received",
+          "kind": "final-quote",
+          "subject": "Re: Twenty extra lunch packs — quotation enquiry",
+          "body": "Final quotation DEMO-GREEN-TABLE-FINAL: RM300.00 plus RM0.00 logistics; RM300.00 total. Scope: 20 additional vegetarian lunch packs with no nuts, ingredient labels and cutlery, all-in ceiling RM360.00, delivery 11:30 on 2026-10-28 at Taylor's University, Subang Jaya. Arrival 2026-10-28. 20 additional vegetarian lunch packs, no nuts, ingredient labels and cutlery. Combined delivery with the original order at 11:30; no extra transport charge. Valid until 20 October 2026. Awaiting your team's final selection.",
+          "at": "2026-10-10T13:01:00+08:00",
+          "executionMode": "demo",
+          "sample": true,
+          "termsHash": "5d789796be0008da0e4d7aad5bc2bd63456a24564562762dc78240bb768c5c7a"
+        },
+        {
+          "id": "demo-workshop-extra-lunch-green-table-selection",
+          "vendorId": "green-table",
+          "direction": "sent",
+          "kind": "selection-confirmation-request",
+          "approvalId": "demo-decision-demo-workshop-extra-lunch-green-table",
+          "termsHash": "5d789796be0008da0e4d7aad5bc2bd63456a24564562762dc78240bb768c5c7a",
+          "subject": "Re: Twenty extra lunch packs — organiser selection",
+          "body": "Simulated organiser selection: our team reviewed and approved quotation DEMO-GREEN-TABLE-FINAL at RM300.00 all-in. Please separately confirm the exact quoted scope and arrival 2026-10-28. This is a presentation-only message; no real order, payment or booking is being sent.",
+          "at": "2026-10-10T14:05:00+08:00",
+          "executionMode": "demo",
+          "sample": true
+        }
+      ],
+      "vendorDecisions": [
+        {
+          "id": "demo-decision-demo-workshop-extra-lunch-green-table",
+          "vendorId": "green-table",
+          "status": "approved",
+          "termsHash": "5d789796be0008da0e4d7aad5bc2bd63456a24564562762dc78240bb768c5c7a",
+          "approvedAt": "2026-10-10T14:00:00+08:00",
+          "executionMode": "demo",
+          "actor": "organiser"
+        }
+      ],
+      "events": [
+        {
+          "id": "demo-workshop-extra-lunch-milestone-0",
+          "title": "Existing supplier reused",
+          "detail": "Green Table's saved relationship was reused; no discovery search was repeated. Fresh terms apply to the additional 20 packs.",
+          "time": "10:00",
+          "occurredAt": "2026-10-10T10:00:00+08:00",
+          "kind": "mail",
+          "milestone": true
+        },
+        {
+          "id": "demo-workshop-extra-lunch-milestone-1",
+          "title": "Extra lunch quotation approved",
+          "detail": "The organiser approved RM300 for 20 extra packs. Supplier confirmation is still pending, so these additional packs are not yet secured.",
+          "time": "14:00",
+          "occurredAt": "2026-10-10T14:00:00+08:00",
+          "kind": "human",
+          "milestone": true
+        }
+      ],
+      "failsafes": [],
+      "assumptions": [],
+      "draft": {
+        "recipient": "Simulated suppliers only",
+        "subject": "Twenty extra lunch packs",
+        "body": "",
+        "status": "pending",
+        "revision": 1
+      },
+      "workflowMode": "liaise"
+    }
+  ],
+  "threads": [
+    {
+      "id": "event-sunway-got-talent-task-demo-shirts",
+      "eventId": "sunway-got-talent",
+      "taskId": "demo-shirts",
+      "messages": [
+        {
+          "id": "demo-shirts-user",
+          "role": "user",
+          "body": "Find 50 black cotton T-shirts with our white event logo for Sunway Got Talent. Budget RM2,000 including delivery to Bandar Sunway by 24 October. Liaise with every suitable supplier and compare final terms.",
+          "time": "2026-10-09T09:00:00+08:00",
+          "caseId": "demo-shirts"
+        },
+        {
+          "id": "demo-shirts-assistant-1",
+          "role": "assistant",
+          "body": "I compared complete replies from five studios. Threadcraft is the best fit at RM1,700 including printing and delivery on 22 October. The other four offers are saved as alternatives, with the full liaison history beside each supplier. This presentation scenario uses simulated messages only.",
+          "time": "2026-10-10T16:00:00+08:00",
+          "provider": "controlled_demo",
+          "caseId": "demo-shirts",
+          "inReplyTo": "demo-shirts-user"
+        }
+      ]
+    },
+    {
+      "id": "event-kampus-weekend-market-task-demo-market-vendors",
+      "eventId": "kampus-weekend-market",
+      "taskId": "demo-market-vendors",
+      "messages": [
+        {
+          "id": "demo-market-vendors-user",
+          "role": "user",
+          "body": "Find 10 suitable event vendors for Kampus Weekend Market, within RM5,000 total support. Confirm their setup at Subang Jaya by 30 October, product categories and any support costs. We will select the exhibitors ourselves.",
+          "time": "2026-10-09T09:00:00+08:00",
+          "caseId": "demo-market-vendors"
+        },
+        {
+          "id": "demo-market-vendors-assistant-1",
+          "role": "assistant",
+          "body": "Twelve exhibitors completed liaison. Daily Brew and Paper Petal are secured in this simulated scenario; Crumb Club is approved and awaiting confirmation. Seven placements are ready for your review, with two alternatives on the waitlist. The selected categories and all-in support costs are saved with each row.",
+          "time": "2026-10-10T16:00:00+08:00",
+          "provider": "controlled_demo",
+          "caseId": "demo-market-vendors",
+          "inReplyTo": "demo-market-vendors-user"
+        }
+      ]
+    },
+    {
+      "id": "event-build-together-workshop-task-demo-workshop-lunch",
+      "eventId": "build-together-workshop",
+      "taskId": "demo-workshop-lunch",
+      "messages": [
+        {
+          "id": "demo-workshop-lunch-user",
+          "role": "user",
+          "body": "Find 50 vegetarian-friendly lunch packs under RM850 for Build Together Workshop. Deliver to Taylor's University by 28 October at 11:30. Include ingredient labels, no nuts and disposable cutlery.",
+          "time": "2026-10-07T09:00:00+08:00",
+          "caseId": "demo-workshop-lunch"
+        },
+        {
+          "id": "demo-workshop-lunch-assistant-1",
+          "role": "assistant",
+          "body": "Green Table confirmed the approved RM780 all-in terms for 50 lunch packs, arriving at 11:30 on 28 October. The ingredient labels, no-nuts specification and cutlery are included. This is a simulated booking, with no real email or payment.",
+          "time": "2026-10-07T16:00:00+08:00",
+          "provider": "controlled_demo",
+          "caseId": "demo-workshop-lunch",
+          "inReplyTo": "demo-workshop-lunch-user"
+        }
+      ]
+    },
+    {
+      "id": "event-build-together-workshop-task-demo-workshop-extra-lunch",
+      "eventId": "build-together-workshop",
+      "taskId": "demo-workshop-extra-lunch",
+      "messages": [
+        {
+          "id": "demo-workshop-extra-lunch-user",
+          "role": "user",
+          "body": "Use Green Table Kitchen again: we now need 20 more vegetarian lunch packs for Build Together Workshop. Keep the same no-nuts menu, labels and delivery slot. Budget RM360 including any additional delivery charge; request a fresh quote without researching new suppliers.",
+          "time": "2026-10-10T09:00:00+08:00",
+          "caseId": "demo-workshop-extra-lunch"
+        },
+        {
+          "id": "demo-workshop-extra-lunch-assistant-1",
+          "role": "assistant",
+          "body": "I went directly to Green Table and obtained a fresh RM300 quote for 20 additional packs, with no extra delivery fee. Your saved approval is recorded; the additional packs remain awaiting their separate confirmation. The original 50-pack order stays secured. All correspondence here is simulated.",
+          "time": "2026-10-10T16:00:00+08:00",
+          "provider": "controlled_demo",
+          "caseId": "demo-workshop-extra-lunch",
+          "inReplyTo": "demo-workshop-extra-lunch-user"
+        }
+      ]
+    }
+  ],
+  "documents": [
+    {
+      "id": "demo-sunway-got-talent-brief",
+      "eventId": "sunway-got-talent",
+      "name": "Sunway Got Talent — demo brief.md",
+      "text": "# Sunway Got Talent\n\nSIMULATED PRESENTATION CONTEXT — no real booking or email.\n\nStudent talent showcase, 250 attendees, 30 October. Merch task: 50 black cotton T-shirts, one-colour white logo, sizes XS–XXL, RM2,000 including delivery by 24 October. Organiser reviews the artwork proof. Prioritise reliable delivery, then landed cost.",
+      "originalBase64": "IyBTdW53YXkgR290IFRhbGVudAoKU0lNVUxBVEVEIFBSRVNFTlRBVElPTiBDT05URVhUIOKAlCBubyByZWFsIGJvb2tpbmcgb3IgZW1haWwuCgpTdHVkZW50IHRhbGVudCBzaG93Y2FzZSwgMjUwIGF0dGVuZGVlcywgMzAgT2N0b2Jlci4gTWVyY2ggdGFzazogNTAgYmxhY2sgY290dG9uIFQtc2hpcnRzLCBvbmUtY29sb3VyIHdoaXRlIGxvZ28sIHNpemVzIFhT4oCTWFhMLCBSTTIsMDAwIGluY2x1ZGluZyBkZWxpdmVyeSBieSAyNCBPY3RvYmVyLiBPcmdhbmlzZXIgcmV2aWV3cyB0aGUgYXJ0d29yayBwcm9vZi4gUHJpb3JpdGlzZSByZWxpYWJsZSBkZWxpdmVyeSwgdGhlbiBsYW5kZWQgY29zdC4=",
+      "mime": "text/markdown",
+      "size": 338,
+      "characters": 334,
+      "status": "ready",
+      "sample": true,
+      "createdAt": "2026-10-01T10:00:00+08:00",
+      "scope": "project"
+    },
+    {
+      "id": "demo-kampus-weekend-market-brief",
+      "eventId": "kampus-weekend-market",
+      "name": "Kampus Weekend Market — demo brief.md",
+      "text": "# Kampus Weekend Market\n\nSIMULATED PRESENTATION CONTEXT — no real booking or email.\n\nStudent market on 31 October, 10 exhibitor placements, RM5,000 total exhibitor support ceiling. Setup complete by 30 October. Campus supplies tables and power; exhibitors provide products, signage and required licences. Avoid duplicate categories. All replies are simulated.",
+      "originalBase64": "IyBLYW1wdXMgV2Vla2VuZCBNYXJrZXQKClNJTVVMQVRFRCBQUkVTRU5UQVRJT04gQ09OVEVYVCDigJQgbm8gcmVhbCBib29raW5nIG9yIGVtYWlsLgoKU3R1ZGVudCBtYXJrZXQgb24gMzEgT2N0b2JlciwgMTAgZXhoaWJpdG9yIHBsYWNlbWVudHMsIFJNNSwwMDAgdG90YWwgZXhoaWJpdG9yIHN1cHBvcnQgY2VpbGluZy4gU2V0dXAgY29tcGxldGUgYnkgMzAgT2N0b2Jlci4gQ2FtcHVzIHN1cHBsaWVzIHRhYmxlcyBhbmQgcG93ZXI7IGV4aGliaXRvcnMgcHJvdmlkZSBwcm9kdWN0cywgc2lnbmFnZSBhbmQgcmVxdWlyZWQgbGljZW5jZXMuIEF2b2lkIGR1cGxpY2F0ZSBjYXRlZ29yaWVzLiBBbGwgcmVwbGllcyBhcmUgc2ltdWxhdGVkLg==",
+      "mime": "text/markdown",
+      "size": 361,
+      "characters": 359,
+      "status": "ready",
+      "sample": true,
+      "createdAt": "2026-10-01T10:00:00+08:00",
+      "scope": "project"
+    },
+    {
+      "id": "demo-build-together-workshop-brief",
+      "eventId": "build-together-workshop",
+      "name": "Build Together Workshop — demo brief.md",
+      "text": "# Build Together Workshop\n\nSIMULATED PRESENTATION CONTEXT — no real booking or email.\n\nHands-on student workshop on 28 October, 70 attendees. The original 50 vegetarian-friendly lunch packs are confirmed with Green Table Kitchen. An additional 20 packs require a fresh quotation under RM360, using the known supplier rather than researching again. No nuts; ingredient labels and delivery at 11:30 required.",
+      "originalBase64": "IyBCdWlsZCBUb2dldGhlciBXb3Jrc2hvcAoKU0lNVUxBVEVEIFBSRVNFTlRBVElPTiBDT05URVhUIOKAlCBubyByZWFsIGJvb2tpbmcgb3IgZW1haWwuCgpIYW5kcy1vbiBzdHVkZW50IHdvcmtzaG9wIG9uIDI4IE9jdG9iZXIsIDcwIGF0dGVuZGVlcy4gVGhlIG9yaWdpbmFsIDUwIHZlZ2V0YXJpYW4tZnJpZW5kbHkgbHVuY2ggcGFja3MgYXJlIGNvbmZpcm1lZCB3aXRoIEdyZWVuIFRhYmxlIEtpdGNoZW4uIEFuIGFkZGl0aW9uYWwgMjAgcGFja3MgcmVxdWlyZSBhIGZyZXNoIHF1b3RhdGlvbiB1bmRlciBSTTM2MCwgdXNpbmcgdGhlIGtub3duIHN1cHBsaWVyIHJhdGhlciB0aGFuIHJlc2VhcmNoaW5nIGFnYWluLiBObyBudXRzOyBpbmdyZWRpZW50IGxhYmVscyBhbmQgZGVsaXZlcnkgYXQgMTE6MzAgcmVxdWlyZWQu",
+      "mime": "text/markdown",
+      "size": 408,
+      "characters": 406,
+      "status": "ready",
+      "sample": true,
+      "createdAt": "2026-10-01T10:00:00+08:00",
+      "scope": "project"
+    }
+  ]
+}

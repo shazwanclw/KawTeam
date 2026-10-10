@@ -5,12 +5,13 @@ import {useState} from 'react';
 import {ArrowDownRight,ArrowRight,CheckCircle2,ChevronRight,Clock3,FileText,Folder,MessageSquare,Plus,Search,ShieldCheck} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {Calendar} from '@/components/ui/calendar';
+import {Dialog,DialogContent,DialogDescription,DialogHeader,DialogTitle} from '@/components/ui/dialog';
 import {useDemo} from './workspace-context';
 import {money,totalCost} from '@/lib/demo';
 import type {EventMemory} from '@/lib/workspace';
 
-import {scheduledItems,scheduleForMonth,malaysiaToday} from '@/lib/schedule';
-import type {ScheduledItem} from '@/lib/schedule';
+import {scheduledItems,scheduleForMonth,malaysiaToday,summarizeSchedule} from '@/lib/schedule';
+import type {ScheduleSummary} from '@/lib/schedule';
 export {scheduledItems} from '@/lib/schedule';
 const longDate=(iso:string)=>new Date(iso+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
 const shortDate=(iso:string)=>new Date(iso+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'});
@@ -19,18 +20,21 @@ export function ProjectMark({project}:{project:EventMemory}){return <span classN
 export function Schedule({large=false}:{large?:boolean}){
   const {state}=useDemo();const dates=scheduledItems(state);const today=malaysiaToday();
   const [month,setMonth]=useState(()=>new Date(today+'T12:00:00'));const [selected,setSelected]=useState<Date>();
+  const [detail,setDetail]=useState<ScheduleSummary|null>(null);
+  const [turn,setTurn]=useState<{dir:'next'|'prev';n:number}>();
   const monthISO=`${month.getFullYear()}-${String(month.getMonth()+1).padStart(2,'0')}`;
   const selectedISO=selected?`${selected.getFullYear()}-${String(selected.getMonth()+1).padStart(2,'0')}-${String(selected.getDate()).padStart(2,'0')}`:null;
   const monthLabel=month.toLocaleDateString('en-GB',{month:'long',year:'numeric'});
   const grouped=scheduleForMonth(dates,monthISO,today,selectedISO);
-  const agenda=(items:ScheduledItem[],past=false)=><>{items.map(item=><Link href={item.href} className={`agenda-item ${past?'past':''}`} key={item.id}><span className="agenda-date"><strong>{Number(item.date.slice(8))}</strong><small>{shortDate(item.date).split(' ').at(-1)}</small></span><span><strong>{item.project}</strong><small>{item.label} · {longDate(item.date)}</small></span><ArrowRight size={14}/></Link>)}</>;
-  return <section className={`schedule-panel ${large?'large-schedule':''}`}><div className="panel-heading"><div><span className="section-caption">{monthLabel.toUpperCase()}</span><h2>{large?'Your schedule':'On the calendar'}</h2></div>{!large&&<Link href="/calendar" aria-label="Open calendar"><ArrowRight size={17}/></Link>}</div>
-    <Calendar mode="single" month={month} onMonthChange={next=>{setMonth(next);setSelected(undefined);}} selected={selected} onSelect={date=>{setSelected(date);if(date&&date.getMonth()!==month.getMonth())setMonth(new Date(date.getFullYear(),date.getMonth(),1));}} modifiers={{scheduled:dates.map(d=>new Date(d.date+'T12:00:00'))}} modifiersClassNames={{scheduled:'scheduled-day'}} className="kt-calendar"/>
+  const upcoming=summarizeSchedule(grouped.upcoming);const past=summarizeSchedule(grouped.past);
+  const agenda=(items:ScheduleSummary[],isPast=false)=><>{items.map(item=><button type="button" onClick={()=>setDetail(item)} className={`agenda-item ${isPast?'past':''}`} key={item.id}><span className="agenda-date"><strong>{Number(item.date.slice(8))}</strong><small>{shortDate(item.date).split(' ').at(-1)}</small></span><span><strong>{item.project}</strong><small>{item.items.length===1?item.items[0].label:`${item.items.length} important dates`} · {longDate(item.date)}</small></span><ArrowRight size={14}/></button>)}</>;
+  return <><section className={`schedule-panel ${large?'large-schedule':''}`}>{!large&&<div className="panel-heading"><div><h2>On the calendar</h2></div><Link href="/calendar" aria-label="Open calendar"><ArrowRight size={17}/></Link></div>}
+    <div className="schedule-calendar-column"><Calendar mode="single" month={month} onMonthChange={next=>{setTurn(previous=>({dir:next>month?'next':'prev',n:(previous?.n||0)+1}));setMonth(next);setSelected(undefined);}} selected={selected} onSelect={date=>{setSelected(date);if(date&&date.getMonth()!==month.getMonth())setMonth(new Date(date.getFullYear(),date.getMonth(),1));}} modifiers={{scheduled:dates.map(d=>new Date(d.date+'T12:00:00'))}} modifiersClassNames={{scheduled:'scheduled-day'}} data-turn={turn?`${turn.dir}-${turn.n%2?'a':'b'}`:undefined} className="kt-calendar"/><p className="schedule-note"><span className="calendar-key-dot"/>Important saved dates. Past dates have passed; project work may still be open.</p></div>
     <div className="schedule-agenda"><div className="agenda-month"><strong>{selectedISO?shortDate(selectedISO):monthLabel}</strong>{selected&&<button onClick={()=>setSelected(undefined)}>Show month</button>}</div>
-      <section aria-label="Upcoming dates" className="agenda-group"><h3>Upcoming dates<span>{grouped.upcoming.length}</span></h3>{agenda(grouped.upcoming)}{!grouped.upcoming.length&&<p className="quiet-empty">{selectedISO?'No upcoming dates on this day.':`No upcoming dates in ${monthLabel}.`}</p>}</section>
-      <section aria-label="Past dates" className="agenda-group past"><h3>Past dates<span>{grouped.past.length}</span></h3>{agenda(grouped.past,true)}{!grouped.past.length&&<p className="quiet-empty">{selectedISO?'No past dates on this day.':`No past dates in ${monthLabel}.`}</p>}</section>
-    </div><p className="schedule-note"><span className="calendar-key-dot"/>Important saved dates. Past dates have passed; project work may still be open.</p>
-  </section>;
+      <section aria-label="Upcoming dates" className="agenda-group"><h3>Upcoming dates<span>{upcoming.length}</span></h3>{agenda(upcoming)}{!upcoming.length&&<p className="quiet-empty">{selectedISO?'No upcoming dates on this day.':`No upcoming dates in ${monthLabel}.`}</p>}</section>
+      <section aria-label="Past dates" className="agenda-group past"><h3>Past dates<span>{past.length}</span></h3>{agenda(past,true)}{!past.length&&<p className="quiet-empty">{selectedISO?'No past dates on this day.':`No past dates in ${monthLabel}.`}</p>}</section>
+    </div>
+  </section><Dialog open={!!detail} onOpenChange={open=>{if(!open)setDetail(null);}}><DialogContent className="kt-dialog calendar-detail-dialog"><DialogHeader><DialogTitle>{detail?.project}</DialogTitle><DialogDescription>{detail?longDate(detail.date):''}</DialogDescription></DialogHeader><div className="calendar-detail-list">{detail?.items.map(item=><Link key={item.id} href={item.href} onClick={()=>setDetail(null)}><span><strong>{item.label}</strong><small>{item.project}</small></span><ArrowRight size={16}/></Link>)}</div></DialogContent></Dialog></>;
 }
 
 export function WorkspaceOverview({onNewProject}:{onNewProject:()=>void}){

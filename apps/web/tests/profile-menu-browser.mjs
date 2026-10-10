@@ -12,6 +12,11 @@ try{
  });
  await page.goto((process.env.KAWTEAM_TEST_URL||'http://127.0.0.1:3000')+'/');
  await page.getByRole('button',{name:'Open navigation',exact:true}).click();
+ await page.waitForTimeout(300);
+ const aligned=await page.evaluate(()=>{const logo=document.querySelector('.kawteam-wordmark').getBoundingClientRect();const toggle=document.querySelector('.flow-topbar>button').getBoundingClientRect();return Math.abs(logo.y+logo.height/2-toggle.y-toggle.height/2)<1;});
+ assert.ok(aligned,'Hamburger and official logo share one centre line');
+ await page.getByRole('button',{name:'Overview',exact:true}).click();
+ assert.equal(await page.locator('.flow-overview-nav>a>svg').count(),3);
  await page.getByRole('button',{name:/Switch profile/}).click();
  const menu=page.getByRole('menu');await menu.waitFor();
  await page.keyboard.press('Escape');

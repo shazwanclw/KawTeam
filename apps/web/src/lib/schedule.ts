@@ -2,6 +2,22 @@ import {validDate} from './demo.ts';
 import type {WorkspaceState} from './workspace.ts';
 
 export type ScheduledItem={id:string;projectId?:string;project:string;label:string;date:string;href:string};
+export type ScheduleSummary={id:string;project:string;date:string;items:ScheduledItem[]};
+/** Keep the presentation calendar readable without discarding saved milestones. */
+export function summarizeSchedule(items:ScheduledItem[]):ScheduleSummary[]{
+ const days=new Map<string,Map<string,ScheduleSummary>>();
+ for(const item of items){
+  let projects=days.get(item.date);if(!projects){projects=new Map();days.set(item.date,projects);}
+  const key=item.projectId||item.project;let summary=projects.get(key);
+  if(!summary){summary={id:`${item.date}-${key}`,project:item.project,date:item.date,items:[]};projects.set(key,summary);}
+  summary.items.push(item);
+ }
+ return [...days.values()].flatMap(projects=>{
+  const summaries=[...projects.values()];if(summaries.length<=3)return summaries;
+  const rest=summaries.slice(2);
+  return [...summaries.slice(0,2),{id:`${rest[0].date}-other-projects`,project:`${rest.length} more projects`,date:rest[0].date,items:rest.flatMap(summary=>summary.items)}];
+ });
+}
 export const malaysiaToday=()=>{
  const parts=new Intl.DateTimeFormat('en',{timeZone:'Asia/Kuala_Lumpur',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
  return ['year','month','day'].map(key=>parts.find(p=>p.type===key)!.value).join('-');

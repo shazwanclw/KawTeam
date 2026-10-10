@@ -309,7 +309,9 @@ def task_transition(original, actor, action):
             ),
         )
     elif kind == "confirm-vendor":
-        if c["id"] != "case-totes" or v.get("executionMode", "demo") != "demo":
+        from .demo_scope import controlled_demo_offer
+
+        if not controlled_demo_offer(c, v):
             raise ValueError(
                 "This action only checks a controlled demo confirmation, never live suppliers."
             )

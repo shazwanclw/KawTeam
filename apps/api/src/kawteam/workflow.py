@@ -31,7 +31,9 @@ def fit(c, v):
         return "Delivery or collection unconfirmed"
     if v.get("quantity", 300) != c["quantity"]:
         return "Quantity mismatch"
-    if v.get("executionMode", "demo") == "demo" and c["id"] != "case-totes":
+    from .demo_scope import controlled_demo_offer
+
+    if v.get("executionMode", "demo") == "demo" and not controlled_demo_offer(c, v):
         return "Sample quote for a different case"
     if total(v) is None or v["arrival"] is None:
         return "Missing terms"

@@ -1,0 +1,142 @@
+/* Exact light palette and aurora from the user-supplied SatuHati design reference. */
+:root{
+  color-scheme:light;
+  /* TeX Gyre Heros (next/font/local in layout.tsx), a Helvetica clone with 400 and 700 weights. */
+  --kt-font:var(--font-heros),"Helvetica Neue",Helvetica,Arial,sans-serif;
+  /* Display-style type scale. */
+  --kt-size-xs:13px;      /* kickers, eyebrows, badges */
+  --kt-size-sm:15px;      /* meta text, chips, small buttons */
+  --kt-size-md:18px;      /* body, inputs, nav */
+  --kt-size-msg:17.5px;   /* chat messages */
+  --kt-size-lg:21px;      /* card titles */
+  --kt-size-xl:26px;      /* section headings */
+  --kt-size-2xl:40px;     /* page titles */
+  --kt-size-display:52px; /* chat empty-state headline */
+  /* Radius scale. */
+  --kt-radius-card:24px;
+  --kt-radius-composer:28px;
+  --kt-radius-menu:22px;
+  --kt-radius-pill:999px;
+  /* Palette constants, identical in both appearances. */
+  --kt-teal:#00545f;
+  --kt-lime:#d6fb00;
+  --kt-pale-lime:#ecffb6;
+  --kt-bg:#f5f9ef;
+  /* Aurora colours: background only, never on controls. */
+  --kt-aurora-lime:#d6fb00;
+  --kt-aurora-mint:#b9f0d0;
+  --kt-aurora-emerald:#1f9a6a;
+  --kt-aurora-forest:#1f5f3a;
+  --kt-aurora-teal:#00545f;
+  /* Liquid glass material: light and fairly opaque so text on it reads cleanly. */
+  --kt-glass-fill:linear-gradient(135deg,rgba(255,255,255,.78),rgba(255,255,255,.56));
+  --kt-glass-fill-strong:linear-gradient(135deg,rgba(255,255,255,.9),rgba(255,255,255,.74));
+  /* Faint teal tint layered over glass for small surfaces that wash out on bright aurora. */
+  --kt-tint:linear-gradient(rgba(0,84,95,.08),rgba(0,84,95,.08));
+  --kt-tint-strong:linear-gradient(rgba(0,84,95,.12),rgba(0,84,95,.12));
+  --kt-glass-solid:#fbfdf8;
+  --kt-glass-blur:blur(20px) saturate(160%);
+  --kt-glass-edge:1px solid rgba(255,255,255,.75);
+  --kt-glass-highlight:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(255,255,255,.3),inset 0 0 24px rgba(255,255,255,.25);
+  --kt-glass-shadow:0 24px 60px rgba(0,84,95,.12),0 4px 12px rgba(0,84,95,.06);
+  --kt-glass-rim:linear-gradient(135deg,rgba(255,255,255,1) 0%,rgba(255,255,255,.55) 28%,rgba(255,255,255,.12) 55%,rgba(255,255,255,.4) 100%);
+  --kt-surface:#fff;
+  --kt-surface-2:#f1f6ea;
+  --kt-fill:#e9f0e1;
+  --kt-fill-strong:#dbe5d1;
+  --kt-line:#e1e9da;
+  --kt-line-strong:#c9d6c3;
+  --kt-text:#0d2b2f;
+  /* AA (4.5:1) on glass over the darkest aurora; text straight on the aurora uses --kt-text-2. */
+  --kt-text-2:#1e3f44;
+  --kt-text-3:#385659;
+  --kt-accent:var(--kt-teal);
+  --kt-accent-hover:#003f47;
+  --kt-on-accent:#fff;
+  --kt-accent-soft:var(--kt-pale-lime);
+  --kt-accent-ink:var(--kt-teal);
+  --kt-highlight:var(--kt-lime);
+  --kt-highlight-hover:#c6eb00;
+  --kt-on-highlight:var(--kt-teal);
+  --kt-warn:#8a5a12;
+  --kt-warn-soft:#fbf3e4;
+  --kt-danger:#b42318;
+  --kt-danger-soft:#fdecea;
+  --kt-material:rgba(255,255,255,.72);
+  --kt-material-solid:#fff;
+  --kt-sidebar-material:linear-gradient(180deg,rgba(255,255,255,.78),rgba(255,255,255,.62));
+  --kt-sidebar-solid:#f3f8ec;
+  --kt-sidebar-text:var(--kt-text);
+  --kt-sidebar-text-2:var(--kt-text-2);
+  --kt-sidebar-text-3:var(--kt-text-3);
+  --kt-sidebar-line:rgba(0,84,95,.1);
+  --kt-sidebar-hover:rgba(0,84,95,.06);
+  --kt-sidebar-hover-strong:rgba(0,84,95,.12);
+  --kt-scrim:rgba(0,40,46,.32);
+  --kt-shadow-sm:0 1px 2px rgba(0,58,66,.05),0 2px 8px rgba(0,58,66,.05);
+  --kt-shadow-lg:0 16px 48px rgba(0,58,66,.14),0 2px 6px rgba(0,58,66,.06);
+  --kt-focus:rgba(0,84,95,.35);
+  /* Springs sampled from Apple's damping/response model. */
+  --kt-spring:linear(0,0.058,0.181,0.321,0.456,0.574,0.672,0.751,0.813,0.861,0.897,0.924,0.945,0.96,0.971,0.979,0.985,0.989,0.992,0.994,0.996,0.997,0.998,0.999,1); /* damping 1.0, response .35s */
+  --kt-spring-duration:.5s;
+  --kt-spring-bounce:linear(0,0.052,0.171,0.316,0.464,0.598,0.712,0.805,0.875,0.927,0.964,0.988,1.003,1.011,1.014,1.015,1.014,1.012,1.01,1.008,1.006,1.004,1.003,1.002,1); /* damping .8, response .3s */
+  --kt-spring-bounce-duration:.4s;
+  /* Motion: one small overshoot, never a wobble. Animate transform and opacity only. */
+  --kt-ease-bounce:cubic-bezier(.34,1.56,.64,1); /* hover lift, pop-ins */
+  --kt-ease-spring:cubic-bezier(.22,1.2,.36,1);  /* larger surfaces */
+  --kt-ease-out:cubic-bezier(.16,1,.3,1);        /* fades, the background */
+  --kt-dur-press:120ms;
+  --kt-dur-hover:220ms;
+  --kt-dur-enter:380ms;
+  --kt-dur-bg:1200ms;
+  /* Earlier variable names used across the stylesheets. */
+  --canvas:var(--kt-bg);--paper:var(--kt-surface);--rail:var(--kt-surface-2);--ink:var(--kt-text);--muted:var(--kt-text-3);
+  --green:var(--kt-accent);--lime:var(--kt-accent-soft);--line:var(--kt-line);--amber:var(--kt-warn);--serif:var(--kt-font);--sans:var(--kt-font);
+  --background:var(--kt-surface);--foreground:var(--kt-text);--card:var(--kt-surface);--card-foreground:var(--kt-text);
+  --popover:var(--kt-surface);--popover-foreground:var(--kt-text);--primary:var(--kt-accent);--primary-foreground:var(--kt-on-accent);
+  --secondary:var(--kt-surface-2);--secondary-foreground:var(--kt-text);--accent:var(--kt-accent-soft);--accent-foreground:var(--kt-accent-ink);
+  --destructive:var(--kt-danger);--border:var(--kt-line);--input:var(--kt-line-strong);--ring:var(--kt-accent);--radius:12px;
+}
+html{background:var(--kt-bg);font-family:var(--kt-font);font-synthesis:none}
+body{background:transparent;color:var(--kt-text);font-family:var(--kt-font);font-size:14px;line-height:1.5;letter-spacing:-.006em;font-synthesis:none;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
+button,input,textarea,select,optgroup{font-family:inherit;font-synthesis:none}
+h1,h2,h3,h4{font-family:var(--kt-font);color:var(--kt-text)}
+h1{letter-spacing:-.03em;line-height:1.08}
+h2{letter-spacing:-.02em;line-height:1.12}
+h3{letter-spacing:-.01em;line-height:1.15}
+
+/* Aurora: a fixed, very soft background behind the whole app (layout.tsx), plus film grain. */
+.kt-aurora{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;background:var(--kt-bg)}
+/* The drift moves in ~0.5px steps about four times a second instead of every frame: it looks the same at this
+   speed, and the frames in between (and the blur over the aurora) are not redrawn. */
+.kt-aurora>span{position:absolute;border-radius:50%;animation:kt-drift 56s steps(120) infinite alternate}
+.kt-aurora>span:nth-child(1){width:78vmax;height:62vmax;left:-24vmax;top:-30vmax;background:radial-gradient(closest-side,color-mix(in srgb,var(--kt-aurora-lime) 42%,transparent),transparent);animation-duration:52s}
+.kt-aurora>span:nth-child(2){width:62vmax;height:70vmax;right:-22vmax;top:-12vmax;background:radial-gradient(closest-side,color-mix(in srgb,var(--kt-aurora-mint) 70%,transparent),transparent);animation-duration:64s;animation-delay:-18s}
+.kt-aurora>span:nth-child(3){width:46vmax;height:52vmax;right:-8vmax;top:30vh;background:radial-gradient(closest-side,color-mix(in srgb,var(--kt-aurora-emerald) 20%,transparent),transparent);animation-duration:47s;animation-delay:-9s}
+.kt-aurora>span:nth-child(4){width:70vmax;height:46vmax;left:-16vmax;bottom:-26vmax;background:radial-gradient(closest-side,color-mix(in srgb,var(--kt-aurora-teal) 14%,transparent),transparent);animation-duration:69s;animation-delay:-30s}
+.kt-aurora>span:nth-child(5){width:58vmax;height:42vmax;right:-14vmax;bottom:-24vmax;background:radial-gradient(closest-side,color-mix(in srgb,var(--kt-aurora-forest) 14%,transparent),transparent);animation-duration:58s;animation-delay:-41s}
+.kt-aurora::after{content:"";position:absolute;inset:0;opacity:.06;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");background-size:180px 180px}
+@keyframes kt-drift{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(4vmax,3vmax,0) scale(1.08)}100%{transform:translate3d(-3vmax,5vmax,0) scale(.96)}}
+/* The aurora reacts to navigation (aurora.tsx sets data-view). Each view moves, scales and fades the five blobs
+   through the individual translate/scale properties, so the route shift stacks on top of the kt-drift transform. */
+.kt-aurora>span{will-change:transform,translate,scale,opacity;transition:translate var(--kt-dur-bg) var(--kt-ease-spring),scale var(--kt-dur-bg) var(--kt-ease-spring),opacity 800ms var(--kt-ease-out)}
+.kt-aurora>span:nth-child(1){translate:var(--b1-x,0px) var(--b1-y,0px);scale:var(--b1-s,1);opacity:var(--b1-o,1)}
+.kt-aurora>span:nth-child(2){translate:var(--b2-x,0px) var(--b2-y,0px);scale:var(--b2-s,1);opacity:var(--b2-o,1)}
+.kt-aurora>span:nth-child(3){translate:var(--b3-x,0px) var(--b3-y,0px);scale:var(--b3-s,1);opacity:var(--b3-o,1)}
+.kt-aurora>span:nth-child(4){translate:var(--b4-x,0px) var(--b4-y,0px);scale:var(--b4-s,1);opacity:var(--b4-o,1)}
+.kt-aurora>span:nth-child(5){translate:var(--b5-x,0px) var(--b5-y,0px);scale:var(--b5-s,1);opacity:var(--b5-o,1)}
+/* chat: the resting layout (lime top left). */
+.kt-aurora[data-view=tasks]{--b1-x:6vmax;--b2-y:6vmax;--b3-x:-6vmax;--b3-s:.94}
+.kt-aurora[data-view=files]{--b1-x:4vmax;--b1-y:6vmax;--b4-y:-8vmax;--b4-s:1.1;--b5-s:1.08}
+.kt-aurora[data-view=vendors]{--b2-s:1.1;--b4-x:10vmax;--b4-y:-6vmax;--b1-o:.85}
+.kt-aurora[data-view=activity]{--b1-s:.9;--b1-o:.85;--b2-x:-10vmax;--b3-y:-10vmax}
+.kt-aurora[data-view=approvals]{--b1-x:6vmax;--b1-y:4vmax;--b1-s:1.18;--b2-o:.8;--b3-o:.7;--b5-o:.8}
+.kt-aurora[data-view=calendar]{--b1-s:.95;--b2-x:8vmax;--b3-x:10vmax;--b3-y:-4vmax;--b3-s:1.12}
+.kt-aurora[data-view=connections]{--b1-s:.9;--b1-o:.75;--b4-x:14vmax;--b4-y:-10vmax;--b4-s:1.2;--b5-x:-8vmax}
+.kt-aurora[data-view=cases]{--b1-x:10vmax;--b1-y:8vmax;--b1-s:1.08;--b2-x:-8vmax;--b2-y:6vmax;--b3-x:-6vmax;--b4-x:6vmax;--b4-y:-6vmax;--b5-x:-6vmax;--b5-y:-6vmax;--b5-s:1.08}
+/* One soft breath per route change; a/b alternate so the one-shot animation restarts without a remount. */
+.kt-aurora[data-breath=a]{animation:kt-breath-a 900ms var(--kt-ease-out)}
+.kt-aurora[data-breath=b]{animation:kt-breath-b 900ms var(--kt-ease-out)}
+@keyframes kt-breath-a{50%{scale:1.03}}
+@keyframes kt-breath-b{50%{scale:1.03}}
+

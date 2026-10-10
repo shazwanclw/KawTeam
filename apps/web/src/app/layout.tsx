@@ -1,6 +1,15 @@
 import type { Metadata } from "next";
+import localFont from "next/font/local";
 import "./globals.css";
 import { DemoProvider } from "@/components/kawteam";
+import { Aurora } from "@/components/aurora";
+
+const heros=localFont({src:[
+ {path:"./fonts/texgyreheros-regular.otf",weight:"400",style:"normal"},
+ {path:"./fonts/texgyreheros-italic.otf",weight:"400",style:"italic"},
+ {path:"./fonts/texgyreheros-bold.otf",weight:"700",style:"normal"},
+ {path:"./fonts/texgyreheros-bolditalic.otf",weight:"700",style:"italic"},
+],variable:"--font-heros",display:"swap"});
 
 export const metadata: Metadata = {
   title: "KawTeam — A little less searching",
@@ -13,8 +22,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body><DemoProvider>{children}</DemoProvider></body>
+    <html lang="en" className={heros.variable}>
+      <body><Aurora/><DemoProvider>{children}</DemoProvider></body>
     </html>
   );
 }

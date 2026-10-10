@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import {useRef,useState} from 'react';
+import {useSearchParams} from 'next/navigation';
 import {ArrowLeft,ArrowRight,CalendarDays,CheckCircle2,ChevronRight,Clock3,Handshake,History,MessageSquare} from 'lucide-react';
 import {Dialog,DialogContent,DialogDescription,DialogHeader,DialogTitle} from '@/components/ui/dialog';
 import {Button} from '@/components/ui/button';
@@ -15,27 +16,33 @@ import {SupplierHistory} from './supplier-history';
 const labels={approval_needed:'Approval needed',waitlist:'Waitlist',approved:'Awaiting confirmation',secured:'Secured',rejected:'Declined',not_selected:'Not selected',liaising:'Liaison pending',needs_terms:'Terms need attention'};
 
 export function SupplierReview({request,vendorId,onClose}:{request:ProcurementCase;vendorId:string|null;onClose:()=>void}){
+ const [showHistory,setShowHistory]=useState(false);const historyButton=useRef<HTMLButtonElement|null>(null);
  const {perform,profile,busy}=useDemo();const v=request.vendors.find(v=>v.id===vendorId);const row=request.approvalQueue?.find(r=>r.vendorId===vendorId);
  const summary=v?liaisonSummary({id:v.id,case:request,kind:'supplier',status:row?.status==='approval_needed'?'pending':'approved',vendors:[v]}):null;
  async function decide(type:'approve-vendor'|'reject-vendor'){
   if(!v)return;
   if(await perform({type,caseId:request.id,vendorId:v.id},type==='approve-vendor'?'Supplier approved. Awaiting their separate confirmation.':'Supplier declined. The waitlist has been updated.'))onClose();
  }
- return <Dialog open={!!v} onOpenChange={open=>{if(!open)onClose();}}><DialogContent className="flow-detail-dialog approval-summary-dialog">{v&&summary&&<>
+ return <><Dialog open={!!v} onOpenChange={open=>{if(!open)onClose();}}><DialogContent className="flow-detail-dialog approval-summary-dialog">{v&&summary&&<>
   <DialogHeader><DialogTitle>{v.name}</DialogTitle><DialogDescription>{request.title} · {row?(row.status==='liaising'?supplierOutreachLabel(request,v.id):labels[row.status]):'Supplier summary'}</DialogDescription></DialogHeader>
   <div className="flow-detail-body"><div className="flow-request-context"><p>{request.goal}</p><dl><div><dt>Quoted total</dt><dd>{money(totalCost(v))}</dd></div><div><dt>Delivery</dt><dd>{dateLabel(v.arrival)}</dd></div><div><dt>Quantity</dt><dd>{request.quantity??'Not specified'}</dd></div><div><dt>Task budget</dt><dd>{request.budgetSen!==null?money(request.budgetSen):request.unitBudgetSen?`${money(request.unitBudgetSen)} per item`:'Not specified'}</dd></div></dl></div>
    <section className="liaison-summary"><h3>Liaising summary</h3><p>{summary.progress}</p><p>{row?.reason}</p></section>
    <section className="liaison-replies"><h3>Latest supplier reply</h3>{summary.replies.filter(r=>r.vendorId===v.id).map(reply=><article key={reply.id}><div><strong>{reply.name}</strong>{reply.demo&&<span>Controlled demo</span>}</div><p>{reply.text}</p></article>)}{!summary.replies.some(r=>r.vendorId===v.id)&&<p className="flow-muted">No final quotation reply is recorded yet.</p>}</section>
   </div>
+  <div className="flow-dialog-actions"><button ref={historyButton} className="task-history-button" aria-label={`Email history: ${v.name}`} title="Email history" onClick={()=>setShowHistory(true)}><History size={17}/></button></div>
   {row?.status==='approval_needed'&&<div className="flow-dialog-actions"><Button variant="outline" disabled={busy||profile!=='organiser'} onClick={()=>void decide('reject-vendor')}>Reject</Button><Button className="approval-confirm" disabled={busy||profile!=='organiser'} onClick={()=>void decide('approve-vendor')}>Approved<CheckCircle2 size={15}/></Button></div>}
   <p className="flow-role-note">{profile!=='organiser'?'Only the organiser can approve suppliers.':v.executionMode!=='live'?'Illustrative demo terms. Approval is separate from supplier confirmation.':'Approval records your choice. Supplier confirmation is still required.'}</p>
- </>}</DialogContent></Dialog>;
+ </>}</DialogContent></Dialog><SupplierHistory request={request} vendorId={showHistory?vendorId:null} onClose={()=>setShowHistory(false)} onReturnFocus={()=>historyButton.current?.focus()}/></>;
 }
 
 export function TaskDetail({project,task}:{project:EventMemory;task:ProjectTask}){
- const {state,profile,busy,perform}=useDemo();const cases=taskCases(state,project.id,task.id);const request=cases.at(-1);const progress=taskProgress(cases);const dates=taskDates(cases);const [selected,setSelected]=useState<string|null>(null);const [history,setHistory]=useState<string|null>(null);const historyTrigger=useRef<HTMLButtonElement|null>(null);
+ const {state,profile,busy,perform}=useDemo();const params=useSearchParams();const cases=taskCases(state,project.id,task.id);const request=cases.find(c=>c.id===params.get('request'))||cases.at(-1);const progress=taskProgress(cases);const dates=taskDates(cases);const [selected,setSelected]=useState<string|null>(null);const [history,setHistory]=useState<string|null>(null);const historyTrigger=useRef<HTMLButtonElement|null>(null);
+ const [dismissedApproval,setDismissedApproval]=useState<string|null>(null);
+ const approvalKey=params.get('approval')==='1'?`${request?.id}:${params.get('vendor')||'first'}`:null;
+ const linkedVendor=request?.vendors.find(v=>v.id===params.get('vendor'))?.id||request?.approvalQueue?.find(r=>r.status==='approval_needed')?.vendorId;
+ const selectedVendor=selected||(approvalKey&&approvalKey!==dismissedApproval?linkedVendor:null)||null;
  const rows=request?.approvalQueue||[];const secured=rows.filter(r=>r.status==='secured');const queue=rows.filter(r=>r.status!=='secured');
- const isDemo=request?.id==='case-totes'&&request.quantity===300&&request.vendors.every(v=>v.executionMode!=='live');
+ const isDemo=!!request&&((request.id==='case-totes'&&request.quantity===300&&request.vendors.every(v=>v.executionMode!=='live'))||(request.sample===true&&request.demoScenarioVersion===1&&request.vendors.every(v=>v.executionMode==='demo'&&v.sample===true&&v.scenarioCaseId===request.id)));
  return <div className="task-page">
   <Link href={`/projects/${project.id}`} className="task-back"><ArrowLeft size={14}/>{project.name}</Link>
   <header className="task-heading"><div><h1>{task.name}</h1><p>{request?[request.quantity!==null?`${request.quantity} ${request.selectionTarget&&request.selectionTarget>1?'per supplier':'items'}`:null,request.budgetSen!==null?`${money(request.budgetSen)} task budget`:request.unitBudgetSen?`${money(request.unitBudgetSen)} per item`:null].filter(Boolean).join(' · ')||'Sourcing request':'A focused conversation, with your project context.'}</p></div><Link className="task-chat-link" href={`/projects/${project.id}?task=${task.id}`}><MessageSquare size={16}/>Continue conversation<ArrowRight size={14}/></Link></header>
@@ -56,6 +63,6 @@ export function TaskDetail({project,task}:{project:EventMemory;task:ProjectTask}
    </section>
   </div><aside className="task-dates-column"><div className="task-section-title"><h2>Upcoming events</h2><CalendarDays size={17}/></div><p className="task-section-description">Important dates for this task.</p>{dates.map(d=><div className="task-date-row" key={d.id}><span className="task-date-mark"><b>{new Date(d.date+'T12:00:00+08:00').toLocaleDateString('en-GB',{day:'numeric',timeZone:'Asia/Kuala_Lumpur'})}</b><small>{new Date(d.date+'T12:00:00+08:00').toLocaleDateString('en-GB',{month:'short',timeZone:'Asia/Kuala_Lumpur'})}</small></span><span>{d.label}<small>{dateLabel(d.date)}</small></span></div>)}{!dates.length&&<p className="task-dates-empty">No upcoming dates saved for this task.</p>}<Link href="/overview/calendar" className="flow-text-link">Open calendar<ArrowRight size={14}/></Link></aside></div>
   {request&&<SupplierHistory request={request} vendorId={history} onClose={()=>setHistory(null)} onReturnFocus={()=>historyTrigger.current?.focus()}/>}
-  {request&&<SupplierReview request={request} vendorId={selected} onClose={()=>setSelected(null)}/>}
+  {request&&<SupplierReview request={request} vendorId={selectedVendor} onClose={()=>{setSelected(null);setDismissedApproval(approvalKey);}}/>}
  </div>;
 }

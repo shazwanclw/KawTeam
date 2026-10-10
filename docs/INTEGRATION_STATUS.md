@@ -4,6 +4,14 @@ Updated 11 October 2026. Status is based on code/configuration and recorded chec
 
 ## Verified and pending
 
+### Presentation refresh — 11 October 2026
+
+The workspace's old application records and action history were backed up privately outside Git, then replaced in a single digest-checked transaction. Supabase now contains exactly **three projects, four supplier tasks, four conversations and three project briefing documents**. Workspace credentials, schema and provider configuration were retained. [Presentation scenarios](DEMO_SCENARIOS.md) cover T-shirt sourcing, ten exhibitor placements and repeat catering. Their 88 sent/received messages are explicitly simulated; no real supplier was contacted during this refresh. Earlier live Gmail test receipts are retained only in the private backup rather than the active demonstration workspace.
+
+The initial component restyle retained layout and copy, with twenty screenshot comparisons reporting no geometry differences greater than 1 px. The user's subsequent refinements explicitly requested the reference's larger Heros typography, exact gradient/material values, approval/vendor cards and a standalone calendar. Those visual changes supersede the earlier geometry baseline for the affected components. Recent Activity's duplicate inner header is removed; Overview links have icons; the official logo and stationary hamburger share a centre line. Calendar summaries are grouped by project/day with at most three per date, without deleting underlying saved dates.
+
+Remote-seeded UI checks verified eight pending approvals, nineteen searchable vendor cards, task transcripts, full email histories and separate controlled confirmation actions. Checks passed: 154 backend tests, 47 frontend tests, TypeScript, ESLint, Ruff and the compact/reference/history/profile, approval-card and grouped-calendar browser suites. These checks do not constitute live supplier or deployed acceptance.
+
 | Service | Current evidence | Remaining work |
 |---|---|---|
 | Supabase | Configured; API reads saved projects; seven migrations applied; task/chat transactions tested | Deployment environment and final deployed checks |

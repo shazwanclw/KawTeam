@@ -1,0 +1,233 @@
+/* Visual materials only. Layout, type scale, copy and workflow belong to the existing styles/components. */
+:root {
+  --flow-teal: #00545f;
+  --flow-ink: #0d2b2f;
+  --flow-muted: #385659;
+  --flow-line: rgba(0, 84, 95, .12);
+  --flow-bg: #f5f9ef;
+  --flow-soft: #edf4e8;
+  --flow-lime: #d6fb00;
+  --flow-pale: #ecffb6;
+  --canvas: var(--flow-bg);
+  --ink: var(--flow-ink);
+  --muted: var(--flow-muted);
+  --line: var(--flow-line);
+  --paper: #fbfdf8;
+  --glass: linear-gradient(135deg, rgba(255,255,255,.9), rgba(255,255,255,.72));
+  --glass-strong: linear-gradient(135deg, rgba(255,255,255,.98), rgba(251,253,248,.92));
+  --glass-edge: rgba(255,255,255,.85);
+  --surface-shadow: 0 12px 40px rgba(0,84,95,.07), 0 2px 6px rgba(0,84,95,.035), inset 0 1px 0 rgba(255,255,255,.95);
+  --control-shadow: 0 2px 7px rgba(0,84,95,.045), inset 0 1px 0 rgba(255,255,255,.9);
+  --material-ease: cubic-bezier(.16,1,.3,1);
+}
+body { background: var(--flow-bg); }
+::selection { background: #d6fb00; color: #00545f; }
+.flow-app {
+  background: transparent;
+  isolation: isolate;
+}
+.flow-app::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 1% 0%, rgba(214,251,0,.27), transparent 48%),
+    radial-gradient(ellipse at 100% 8%, rgba(185,240,208,.48), transparent 48%),
+    radial-gradient(ellipse at 98% 88%, rgba(31,154,106,.12), transparent 52%),
+    radial-gradient(ellipse at 8% 100%, rgba(0,84,95,.08), transparent 46%),
+    #f5f9ef;
+}
+.flow-app button, .flow-app a {
+  transition: background-color .22s var(--material-ease), color .22s var(--material-ease), border-color .22s var(--material-ease), box-shadow .22s var(--material-ease);
+}
+.flow-app :is(button,a):focus-visible {
+  outline: 2px solid #00545f;
+  outline-offset: 3px;
+}
+.flow-app .lucide { stroke-width: 1.65; }
+.flow-sidebar {
+  background: linear-gradient(170deg, rgba(255,255,255,.82), rgba(243,248,236,.8));
+  border-color: rgba(255,255,255,.8);
+  backdrop-filter: blur(24px) saturate(135%);
+  box-shadow: 6px 0 32px rgba(0,84,95,.045), inset -1px 0 0 rgba(0,84,95,.045);
+  color: var(--flow-ink);
+  transition: transform .22s var(--material-ease), visibility .22s;
+}
+.flow-body { transition-timing-function: var(--material-ease); }
+.flow-sidebar-brand .kawteam-wordmark { width: 154px; height: 32px; object-fit: contain; object-position: left center; }
+.flow-main-nav>a, .flow-main-nav>button, .flow-sidebar-bottom>a,
+.flow-project-list>div>a, .flow-overview-nav>a { border-radius: 12px; color: var(--flow-muted); }
+.flow-main-nav>a.active, .flow-main-nav>button.active, .flow-sidebar-bottom>a.active,
+.flow-project-list>div>a.active {
+  background: linear-gradient(120deg, rgba(236,255,182,.85), rgba(214,251,0,.23));
+  color: #00545f;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.85), 0 2px 6px rgba(0,84,95,.03);
+}
+.flow-main-nav>a:hover, .flow-main-nav>button:hover, .flow-sidebar-bottom>a:hover,
+.flow-project-list>div>a:hover, .flow-overview-nav>a:hover { background: rgba(0,84,95,.065); color: #00545f; }
+.flow-overview-nav { border-color: rgba(0,84,95,.12); }
+.flow-overview-nav>a.active { background: rgba(236,255,182,.7); color: #00545f; }
+.flow-projects-heading, .flow-project-list>div>a>svg { color: var(--flow-muted); }
+.flow-projects-heading button, .project-memory-button, .chat-tool-button, .task-history-button { border-radius: 50%; }
+.flow-projects-heading button:hover, .project-memory-button:hover, .chat-tool-button:hover, .task-history-button:hover { background: rgba(0,84,95,.07); color: #00545f; }
+.flow-project-search { border-color: var(--flow-line); background: rgba(255,255,255,.65); border-radius: 12px; box-shadow: var(--control-shadow); }
+.flow-sidebar-bottom .flow-profile { border-color: var(--flow-line); border-radius: 14px; color: var(--flow-ink); }
+.flow-sidebar-bottom .flow-profile:hover { background: rgba(255,255,255,.65); }
+.flow-profile>span:first-child, .menu-avatar { background: #e4efda; color: #00545f; box-shadow: inset 0 1px 0 #fff; }
+.flow-profile-label small { color: var(--flow-muted); }
+.flow-topbar>button { border-radius: 10px; color: #00545f; }
+.flow-topbar>button:hover { background: rgba(255,255,255,.8); box-shadow: var(--control-shadow); }
+.nav-open .flow-topbar>button { background: rgba(236,255,182,.55); }
+.hamburger-lines i { transition-timing-function: var(--material-ease); }
+.flow-nav-backdrop { background: rgba(0,40,46,.23); backdrop-filter: blur(5px); }
+.chat-start h1, .chat-start h2, .flow-page-heading h1, .project-flow-title h1, .task-heading h1 { color: var(--flow-ink); }
+.chat-start>p, .flow-page-heading p, .task-heading p { color: var(--flow-muted); }
+.chat-compose {
+  background: var(--glass);
+  border-color: var(--glass-edge);
+  border-radius: 28px;
+  box-shadow: 0 20px 60px rgba(0,84,95,.1), 0 3px 10px rgba(0,84,95,.035), inset 0 1px 0 #fff;
+  backdrop-filter: blur(20px) saturate(140%);
+  transition: border-color .22s var(--material-ease), box-shadow .22s var(--material-ease), background .22s;
+}
+.chat-compose:hover { box-shadow: 0 22px 64px rgba(0,84,95,.12), 0 3px 10px rgba(0,84,95,.04), inset 0 1px 0 #fff; }
+.chat-compose:focus-within { border-color: rgba(0,84,95,.35); box-shadow: 0 20px 60px rgba(0,84,95,.12), 0 0 0 3px rgba(0,84,95,.045), inset 0 1px 0 #fff; }
+.chat-compose textarea { color: var(--flow-ink); }
+.chat-compose textarea::placeholder { color: #52706d; }
+.chat-project-picker {
+  background: linear-gradient(135deg, rgba(255,255,255,.85), rgba(233,240,225,.75));
+  border-color: rgba(0,84,95,.08);
+  color: #00545f;
+  border-radius: 999px;
+  box-shadow: var(--control-shadow);
+}
+.chat-project-picker:hover { background: #ecffb6; border-color: rgba(0,84,95,.16); }
+.chat-tool-button { color: var(--flow-muted); }
+.chat-send { border-radius: 50%; background: #d6fb00; color: #00545f; box-shadow: 0 3px 10px rgba(0,84,95,.1), inset 0 1px 0 rgba(255,255,255,.6); }
+.chat-send:not(:disabled):hover { background: #c6eb00; color: #003f47; box-shadow: 0 4px 14px rgba(0,84,95,.16); }
+.chat-send:disabled { background: #e2eadc; color: #6c8075; box-shadow: none; }
+.with-conversation .chat-compose-area { background: linear-gradient(0deg, rgba(245,249,239,.95) 80%, rgba(245,249,239,0)); }
+.chat-message-meta>strong, .chat-message-body>p { color: var(--flow-ink); }
+.chat-message-meta>time, .chat-conversation-status { color: var(--flow-muted); }
+.chat-message-avatar, .chat-working-mark { border-radius: 10px; background: #00545f; color: #ecffb6; box-shadow: inset 0 1px 0 rgba(255,255,255,.2); }
+.chat-message.user .chat-message-avatar { background: #e5efdd; color: #00545f; }
+.chat-message.user .chat-message-body>p { background: linear-gradient(135deg, rgba(236,255,182,.65), rgba(241,246,234,.85)); border-color: rgba(255,255,255,.9); border-radius: 18px; box-shadow: var(--control-shadow); }
+.chat-working { color: var(--flow-muted); }
+.chat-reference-chips>span, .chat-citations>button { border-color: var(--flow-line); background: rgba(255,255,255,.7); color: var(--flow-muted); border-radius: 999px; }
+.chat-result, .chat-workflow-card { background: var(--glass); border-color: var(--glass-edge); border-radius: 20px; box-shadow: var(--surface-shadow); }
+.chat-result-head>span, .workflow-card-icon { background: #ecffb6; border-color: rgba(0,84,95,.08); color: #00545f; border-radius: 10px; }
+.chat-result-head p, .chat-result-steps>span, .chat-result-head>small { color: var(--flow-muted); }
+.chat-result-head>small { background: rgba(233,240,225,.8); border-radius: 999px; }
+.chat-result>a { background: rgba(236,255,182,.45); border-color: var(--flow-line); color: #00545f; }
+.chat-result>a:hover { background: rgba(236,255,182,.85); }
+.flow-table-section, .project-task-row, .task-section, .project-failsafe-item,
+.flow-page .large-schedule, .schedule-panel, .queue-card, .project-context-panel,
+.project-files, .brief-paper, .decision-card, .outcome-report, .activity-paper {
+  background: var(--glass);
+  border-color: var(--glass-edge);
+  border-radius: 22px;
+  box-shadow: var(--surface-shadow);
+}
+.flow-section-heading, .flow-table-filters { border-color: var(--flow-line); }
+.flow-section-heading h2, .flow-row-button strong { color: var(--flow-ink); }
+.flow-section-heading p, .flow-row-button span, .flow-table td, .flow-time { color: var(--flow-muted); }
+.flow-table th { background: rgba(233,240,225,.55); color: var(--flow-muted); border-color: var(--flow-line); }
+.flow-table td { border-color: rgba(0,84,95,.075); }
+.flow-table tbody tr { transition: background-color .22s var(--material-ease); }
+.flow-table tbody tr:hover { background: rgba(236,255,182,.32); }
+.flow-row-button:hover strong { color: #00545f; }
+.flow-table-filters button { border-radius: 999px; color: var(--flow-muted); }
+.flow-table-filters button:hover { background: rgba(0,84,95,.055); }
+.flow-table-filters button.active { background: #ecffb6; color: #00545f; box-shadow: var(--control-shadow); }
+.flow-record-count, .flow-type, .flow-tag, .flow-nav-count, .project-flow-tabs button>span, .project-flow-tabs a>span,
+.task-count, .task-approval-count { border-radius: 999px; background: #e9f0e1; border-color: var(--flow-line); color: #00545f; }
+.flow-type.human, .flow-type.review { background: #fbf3e4; color: #8a5a12; }
+.flow-type.mail { background: #e0f0e7; color: #00545f; }
+.project-flow-tabs { border-color: var(--flow-line); }
+.project-flow-tabs button, .project-flow-tabs a { color: var(--flow-muted); }
+.project-flow-tabs button.active, .project-flow-tabs a.active { color: #00545f; border-color: #00545f; }
+.project-task-tabs { border-color: var(--flow-line); }
+.project-task-tabs>button { color: var(--flow-muted); }
+.project-task-tabs>button>span, .task-small-count { border-radius: 999px; background: #ecffb6; color: #00545f; }
+.project-task-icon { border-radius: 12px; background: #ecffb6; box-shadow: var(--control-shadow); }
+.project-task-name small, .task-section-description, .task-supplier-name small,
+.task-date-row>span:last-child small, .task-rank, .task-secured-count small,
+.task-quiet-empty, .task-quiet-empty small { color: var(--flow-muted); }
+.task-queue-status { border-radius: 999px; background: #e9f0e1; color: var(--flow-muted); }
+.task-queue-status.needs_terms { background: #fbf3e4; color: #8a5a12; }
+.task-confirm-row span, .flow-role-note { color: var(--flow-muted); }
+.task-date-mark { background: rgba(255,255,255,.8); border-color: rgba(255,255,255,.9); border-radius: 12px; box-shadow: var(--control-shadow); }
+.project-task-row:hover { background: var(--glass-strong); border-color: rgba(0,84,95,.16); box-shadow: 0 14px 42px rgba(0,84,95,.1), inset 0 1px 0 #fff; }
+.project-task-row strong, .task-section h2, .task-supplier-row strong { color: var(--flow-ink); }
+.project-task-row p, .project-task-row small, .task-supplier-row p, .task-back, .task-dates-column p { color: var(--flow-muted); }
+.task-heading, .task-supplier-row, .task-section-heading, .task-dates-column { border-color: var(--flow-line); }
+.task-supplier-row { border-radius: 14px; }
+.task-supplier-row:hover { background: rgba(236,255,182,.35); }
+.task-history-button { color: #00545f; }
+.task-chat-link, .flow-dialog-actions button, .flow-dialog-actions a, .flow-primary, .button,
+.kt-dialog [data-slot=button] { border-radius: 999px; }
+.task-chat-link { background: rgba(255,255,255,.65); border-color: var(--flow-line); color: #00545f; box-shadow: var(--control-shadow); }
+.flow-primary, .flow-dialog-actions .flow-primary-link, .button.primary { background: #00545f; color: #fff; border-color: #00545f; box-shadow: 0 4px 10px rgba(0,84,95,.12); }
+.flow-primary:hover, .flow-dialog-actions .flow-primary-link:hover, .button.primary:hover { background: #003f47; }
+.project-failsafe-item { background: linear-gradient(135deg, #fffdf6, #fbf3e4); border-color: rgba(138,90,18,.15); }
+.flow-request-context, .approval-summary-panel, .flow-draft-preview, .flow-history-message,
+.supplier-history-message>div { background: rgba(255,255,255,.75); border-color: var(--flow-line); border-radius: 16px; box-shadow: inset 0 1px 0 #fff; }
+.flow-history-message.received, .supplier-history-message.received>div { background: rgba(236,255,182,.35); }
+.supplier-history-direction { box-shadow: var(--control-shadow); }
+.flow-vendor-initials { background: #e4efda; color: #00545f; border-radius: 10px; }
+.flow-connection-requests>div>a { border-color: var(--flow-line); border-radius: 12px; background: rgba(255,255,255,.7); }
+.flow-connection-requests>div>a:hover { background: #ecffb6; }
+.flow-empty, .flow-empty p, .flow-connection-summary, .flow-history-message p, .flow-detail-lead { color: var(--flow-muted); }
+.flow-agent-status { color: var(--flow-muted); }
+.flow-status-dot { background: #567b67; }
+.flow-agent-status.review .flow-status-dot { background: #ad7617; }
+.flow-agent-status.working .flow-status-dot { background: #00545f; }
+.flow-page .large-schedule { background: var(--glass); }
+.schedule-agenda, .agenda-item, .schedule-note { border-color: var(--flow-line); }
+.schedule-agenda small, .schedule-note, .agenda-item>span:nth-child(2)>small, .kt-form .field-help, .field-help { color: var(--flow-muted); }
+.agenda-item>span:first-child { background: #ecffb6; color: #00545f; border-radius: 12px; }
+.kt-calendar { color: var(--flow-ink); }
+.kt-calendar button:hover { background: #ecffb6; color: #00545f; }
+.kt-calendar [data-today=true] { background: #e9f0e1; color: #00545f; }
+.kt-calendar [data-selected-single=true] { background: #00545f; color: #fff; box-shadow: 0 3px 8px rgba(0,84,95,.15); }
+.kt-calendar [data-slot=button] { border-radius: 999px; }
+[data-slot=dialog-overlay] { background: rgba(0,40,46,.3); backdrop-filter: blur(6px); }
+[data-slot=dialog-content].kt-dialog, [data-slot=dialog-content].flow-detail-dialog,
+[data-slot=dialog-content].supplier-history-dialog {
+  background: var(--glass-strong) !important;
+  border-color: rgba(255,255,255,.85) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 32px 100px rgba(0,40,46,.2), 0 4px 16px rgba(0,40,46,.07), inset 0 1px 0 #fff !important;
+  color: var(--flow-ink);
+  backdrop-filter: blur(24px);
+}
+[data-slot=dialog-description], .flow-detail-dialog [data-slot=dialog-description] { color: var(--flow-muted); }
+[data-slot=dialog-close] { border-radius: 50%; color: #00545f; }
+[data-slot=dropdown-menu-content] {
+  background: var(--glass-strong);
+  border-color: rgba(255,255,255,.9);
+  border-radius: 18px;
+  box-shadow: 0 16px 48px rgba(0,58,66,.14), 0 2px 6px rgba(0,58,66,.05), inset 0 1px 0 #fff;
+  backdrop-filter: blur(20px);
+  color: var(--flow-ink);
+}
+[data-slot=dropdown-menu-item] { border-radius: 10px; color: var(--flow-ink); }
+[data-slot=dropdown-menu-item]:focus, [data-slot=dropdown-menu-item][data-highlighted] { background: #ecffb6; color: #00545f; }
+.chat-picker-menu { background: var(--glass-strong); border-color: var(--glass-edge); border-radius: 18px; }
+.chat-picker-menu [role=menuitem], .chat-picker-menu small, .chat-picker-menu [data-slot=dropdown-menu-label] { color: var(--flow-muted); }
+.kt-form :is(input,textarea,select), .project-failsafe-form :is(input,textarea) {
+  background: rgba(255,255,255,.75); border-color: rgba(0,84,95,.16); border-radius: 12px; color: var(--flow-ink); box-shadow: inset 0 1px 2px rgba(0,84,95,.035);
+}
+.kt-form :is(input,textarea,select):focus { border-color: #00545f; outline: 2px solid rgba(0,84,95,.12); outline-offset: 1px; }
+.toast { background: #00545f; color: #fff; border-color: rgba(255,255,255,.25); border-radius: 16px; box-shadow: 0 10px 30px rgba(0,84,95,.18); }
+.connection-error { background: #fbf3e4; color: #8a5a12; border-color: rgba(138,90,18,.2); border-radius: 16px; box-shadow: var(--surface-shadow); }
+@media (prefers-reduced-motion: reduce) {
+  .flow-app *, [data-slot=dialog-content], [data-slot=dropdown-menu-content] { transition: none !important; animation: none !important; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .flow-sidebar, .chat-compose, [data-slot=dropdown-menu-content], [data-slot=dialog-content].kt-dialog,
+  [data-slot=dialog-content].flow-detail-dialog, [data-slot=dialog-content].supplier-history-dialog { backdrop-filter: none; background: #fbfdf8 !important; }
+}
+@media print { .flow-app::before { display: none; } .flow-app { background: #fff; } }

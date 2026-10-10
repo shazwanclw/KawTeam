@@ -127,9 +127,9 @@ Keep immutable message identities, request IDs, expected revisions and term fing
 
 ## 10. Demo and pitch
 
-Primary controlled sample: Tech Night -> Totes for the tech crowd, 300 totes, original task budget RM1,500, deadline 25 October 2026. Run sample liaison across its three fictional suppliers; review the eligible final quote; approve as organiser; observe Approved still awaiting confirmation; Check demo confirmation then displays Secured. Sample scope prevents fabricated live replies for arbitrary tasks.
+The active presentation workspace contains three complete [simulated scenarios](docs/DEMO_SCENARIOS.md): Sunway Got Talent (50 shirts within RM2,000, five ranked final offers), Kampus Weekend Market (ten exhibitor placements, two secured and seven open review slots), and Build Together Workshop (secured original catering plus an approved repeat order awaiting confirmation). Four saved task conversations, project briefs, 88 simulated messages, dates and meaningful milestones support the walkthrough. The previous Tech Night/QA records were privately backed up and removed from the active workspace.
 
-Show a second chat request for 50 shirts, edit it to 40 in the same task, and show saved project/task history, activity, dates and approval badges. Multi-vendor target rules are covered by automated tests, including ten placements; do not pretend to have secured ten real vendors without evidence.
+Show the saved chat, ranked final offers and email-history icon; approve or reject as organiser. Approved remains awaiting confirmation until the separate controlled demo confirmation is checked. Compare the multi-placement task and the existing-supplier repeat order. All simulated confirmations remain visibly distinct from real supplier commitments. A fresh live request can demonstrate chat separately; do not represent frozen correspondence as actual provider execution.
 
 Track compliance still requires a real WorkBuddy run using useful tools beyond health. The pitch must clearly identify live Gemini/Tavily discovery, simulated supplier messages, missing email/Drive execution and deployment state. Recommend an evidence recording and backup demo, not invented success metrics.
 

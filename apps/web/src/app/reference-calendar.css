@@ -1,0 +1,52 @@
+/* Calendar presentation from the supplied reference; saved date semantics stay intact. */
+.flow-page:has(>.large-schedule){container-type:inline-size}
+.flow-page .schedule-panel.large-schedule{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:24px;row-gap:10px;align-items:start;max-width:none;padding:0;border:0;background:none;box-shadow:none;backdrop-filter:none;isolation:auto}
+.large-schedule::after{display:none}
+.flow-page .large-schedule>.panel-heading{grid-column:1/-1;margin:0;padding:0}
+.flow-page .large-schedule .schedule-calendar-column>.kt-calendar{--kt-cal-pad:18px;--cell-size:min(clamp(2.5rem,4.2vw,3.6rem),calc((100cqi * .5 - 12px - 36px)/7))!important;position:relative;isolation:isolate;width:100%;max-width:none;margin:0;padding:var(--kt-cal-pad)!important;border:1px solid rgba(255,255,255,.75);border-radius:24px;background:linear-gradient(135deg,rgba(255,255,255,.9),rgba(255,255,255,.74));box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(255,255,255,.3),inset 0 0 24px rgba(255,255,255,.25),0 24px 60px rgba(0,84,95,.12),0 4px 12px rgba(0,84,95,.06)}
+.large-schedule .schedule-calendar-column>.kt-calendar .rdp-months{max-width:calc(var(--cell-size)*7);margin-inline:auto}
+.large-schedule .schedule-calendar-column>.kt-calendar .rdp-day{padding:3px}
+.large-schedule .schedule-calendar-column>.kt-calendar [data-slot=button]{min-width:0;min-height:0;border:0;border-radius:14px;background:transparent;box-shadow:none;font-size:clamp(12px,calc(var(--cell-size)*.25),14px);font-weight:700;color:#0d2b2f}
+.large-schedule .schedule-calendar-column>.kt-calendar .rdp-outside [data-slot=button]{font-weight:400;color:#385659}
+.large-schedule .schedule-calendar-column>.kt-calendar .rdp-today{background:none}
+.large-schedule .schedule-calendar-column>.kt-calendar .rdp-today [data-slot=button]{border:2px solid #00545f}
+.large-schedule .schedule-calendar-column>.kt-calendar [data-slot=button][data-selected-single=true]{border-radius:14px;box-shadow:0 6px 14px rgba(0,84,95,.24);background:#00545f!important;color:white!important}
+.large-schedule .schedule-calendar-column>.kt-calendar .rdp-month_caption{height:44px}
+.large-schedule .schedule-calendar-column>.kt-calendar .rdp-caption_label{font-size:20px;font-weight:700;letter-spacing:-.02em;color:#0d2b2f}
+.large-schedule .schedule-calendar-column>.kt-calendar .rdp-weekday{font-size:11px;font-weight:400;letter-spacing:.06em;text-transform:uppercase;color:#1e3f44}
+.large-schedule .schedule-calendar-column>.kt-calendar .rdp-nav{height:44px}
+.large-schedule .schedule-calendar-column>.kt-calendar :is(.rdp-button_previous,.rdp-button_next){width:44px;height:44px;min-width:44px;border:1px solid rgba(255,255,255,.75);border-radius:50%;background:linear-gradient(135deg,rgba(255,255,255,.92),rgba(255,255,255,.66));box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 2px 8px rgba(0,84,95,.08);color:#0d2b2f}
+.large-schedule .schedule-calendar-column>.kt-calendar .scheduled-day [data-slot=button]::after{width:6px;height:6px;left:calc(50% - 3px);bottom:calc(var(--cell-size)*.1);background:#d14242!important;box-shadow:0 0 0 2px rgba(255,255,255,.9)}
+.flow-page .large-schedule>.schedule-agenda{grid-column:2;grid-row:1;border:0;margin:0;padding:0;min-width:0}
+.large-schedule .agenda-month{border:0;padding:0 0 12px}
+.large-schedule .agenda-month strong{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#1e3f44}
+.large-schedule .agenda-group{margin-top:12px}
+.large-schedule .agenda-group h3{font-size:11px;font-weight:700;color:#1e3f44;margin-bottom:12px}
+.large-schedule .agenda-group.past{border-top:1px solid rgba(0,84,95,.1);margin-top:24px;padding-top:20px}
+.flow-page .large-schedule .agenda-item{width:100%;text-align:left;position:relative;isolation:isolate;margin-bottom:10px;padding:14px 16px;border:1px solid rgba(255,255,255,.75);border-radius:18px;background:linear-gradient(135deg,rgba(255,255,255,.78),rgba(255,255,255,.56));box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(255,255,255,.3),inset 0 0 24px rgba(255,255,255,.25),0 6px 18px rgba(0,84,95,.07);cursor:pointer;transition:translate .22s cubic-bezier(.34,1.56,.64,1)}
+.large-schedule .agenda-date{width:48px;height:52px;border:0;border-radius:14px;background:#ecffb6!important;color:#00545f;box-shadow:inset 0 0 0 1px rgba(0,84,95,.12)}
+.large-schedule .agenda-date strong{font-size:14px;font-weight:700}
+.large-schedule .agenda-date small{font-size:11px}
+.flow-page .large-schedule .agenda-item>span:nth-child(2)>strong{font-size:14px;font-weight:700;color:#0d2b2f}
+.flow-page .large-schedule .agenda-item>span:nth-child(2)>small{font-size:12px;line-height:1.6;color:#385659}
+.large-schedule .agenda-item>svg{color:#1e3f44}
+.large-schedule .agenda-item.past .agenda-date{background:#e9f0e1!important;color:#385659}
+.flow-page .large-schedule .schedule-note{margin:10px 0 0;font-size:11px;color:#1e3f44}
+.calendar-detail-dialog{max-height:85dvh;overflow:auto}
+.calendar-detail-list{display:grid;gap:10px}
+.calendar-detail-list>a{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 16px;border:1px solid rgba(0,84,95,.1);border-radius:14px;background:rgba(255,255,255,.6)}
+.calendar-detail-list strong{display:block;font-size:12px;font-weight:700}
+.calendar-detail-list small{display:block;font-size:11px;color:#385659;margin-top:5px}
+.kt-calendar[data-turn^=next]{--calendar-turn:12px}
+.kt-calendar[data-turn^=prev]{--calendar-turn:-12px}
+.kt-calendar[data-turn$=-a] :is(.rdp-weeks,.rdp-caption_label){animation:calendar-turn-a .26s cubic-bezier(.16,1,.3,1) both}
+.kt-calendar[data-turn$=-b] :is(.rdp-weeks,.rdp-caption_label){animation:calendar-turn-b .26s cubic-bezier(.16,1,.3,1) both}
+@keyframes calendar-turn-a{from{opacity:0;transform:translateX(var(--calendar-turn))}to{opacity:1;transform:translateX(0)}}
+@keyframes calendar-turn-b{from{opacity:0;transform:translateX(var(--calendar-turn))}to{opacity:1;transform:translateX(0)}}
+@media(hover:hover){.large-schedule .agenda-item:hover{translate:0 -3px}.large-schedule .schedule-calendar-column>.kt-calendar [data-day]:hover:not(:disabled):not([data-selected-single=true]){background:rgba(255,255,255,.72);box-shadow:inset 0 0 0 1px rgba(255,255,255,.95),0 2px 8px rgba(0,84,95,.08)}}
+@media(max-width:900px){.flow-page .schedule-panel.large-schedule{grid-template-columns:minmax(0,1fr);column-gap:20px;row-gap:10px}.flow-page .large-schedule .schedule-calendar-column>.kt-calendar{--cell-size:min(3.6rem,calc((100cqi - 36px)/7))!important}.flow-page .large-schedule>.schedule-agenda{grid-column:1;grid-row:2}}
+@media(max-width:520px){.large-schedule .schedule-calendar-column>.kt-calendar .rdp-caption_label{font-size:18px}.flow-page .large-schedule .agenda-item>span:nth-child(2)>strong{font-size:11px}}
+@media(prefers-reduced-motion:reduce){.large-schedule .agenda-item{transition:none}.kt-calendar[data-turn] :is(.rdp-weeks,.rdp-caption_label){animation:none}}
+@media(prefers-reduced-transparency:reduce){.flow-page .large-schedule .schedule-calendar-column>.kt-calendar,.flow-page .large-schedule .agenda-item{background:#fbfdf8}}
+
+.large-schedule .schedule-calendar-column{min-width:0;width:100%;max-width:480px;}

@@ -1,6 +1,7 @@
 export type ProfileId = 'organiser' | 'teammate' | 'observer';
 export type Stage = 'brief' | 'research' | 'negotiation' | 'decision' | 'decided';
 export type Vendor = {
+  sample?: boolean; scenarioCaseId?: string;
   liaisonStatus?: 'discovered'|'awaiting_reply'|'negotiating'|'ready';
   id: string; name: string; initials: string; location: string; color: string;
   executionMode?: 'demo' | 'live'; sourceUrl?: string; evidenceExcerpt?: string; quantity?: number; validUntil?: string; serverFit?: string; goodsSen: number; deliverySen: number | null; initialSen: number;
@@ -12,6 +13,7 @@ export type Failsafe={id:string;code:string;title:string;detail:string;requiredF
 export type ProcurementCase = {
   failsafes?:Failsafe[];assumptions?:string[];unitBudgetSen?:number|null;
   automation?:{status:'queued'|'awaiting_replies'|'review_ready'|'needs_attention'|'paused';lastTickAt?:string;error?:string};
+  sample?: boolean; demoScenarioVersion?: number;
   taskWorkflowVersion?: number;selectionTarget?:number;
   approvalQueue?: {vendorId:string;status:'approval_needed'|'waitlist'|'approved'|'secured'|'rejected'|'not_selected'|'liaising'|'needs_terms';reason:string;rank?:number;termsHash?:string}[];
   vendorDecisions?:{id:string;vendorId:string;status:string;termsHash:string;approvedAt:string;confirmedAt?:string;confirmationMessageId?:string;executionMode:string}[];

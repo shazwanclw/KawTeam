@@ -56,7 +56,7 @@ Try: "Find vendors for 50 shirts within RM2,000 by 25 October 2026 in Subang Jay
 
 Research retains the returned candidate pool rather than selecting only three for outreach. Current search still has a bounded five-source result limit. Returned websites are provisional: no invented prices, verified contacts, sent emails or supplier commitments. Ranking uses valid final quotation evidence, landed cost and arrival, not arbitrary AI scores.
 
-To see the controlled lifecycle: open Tech Night -> Totes for the tech crowd -> Run sample liaison -> review a ready supplier -> Approved -> Check demo confirmation. The sample has three fictional suppliers, but only quotes meeting its budget/specs/date are actionable. Confirmation is independently simulated and labelled. No real supplier is contacted. Legacy exact-draft controls and `/demo` remain secondary compatibility surfaces, not the latest primary workflow.
+The prepared [presentation scenarios](docs/DEMO_SCENARIOS.md) cover Sunway Got Talent (single-supplier shirts), Kampus Weekend Market (ten exhibitor placements) and Build Together Workshop (repeat catering with the same supplier). Open a task to review ranked offers and simulated email history. Approval records remain distinct from matching supplier confirmations. All businesses, messages and bookings in these fixtures are fictional; no real supplier is contacted. The original tote sample remains a legacy compatibility fixture rather than the current presentation dataset. Remote replacement must follow the documented backup and transaction procedure; generating the JSON alone does not change Supabase. Legacy exact-draft controls and `/demo` remain secondary compatibility surfaces, not the latest primary workflow.
 
 ## Environment and connections
 

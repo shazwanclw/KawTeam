@@ -2,6 +2,11 @@
 @import "./legacy.css";
 @import "./project.css";
 @import "./chat-flow.css";
+@import "./premium.css";
+@import "./reference-materials.css";
+@import "./reference-components.css";
+@import "./approvals-reference.css";
+@import "./reference-calendar.css";
 @theme inline {
  --color-background: var(--canvas);
  --color-foreground: var(--ink);
@@ -10,7 +15,7 @@
  --color-secondary: #ecffb6;
  --color-secondary-foreground: #00545f;
  --color-muted: #f1f5f2;
- --color-muted-foreground: #728086;
+ --color-muted-foreground: #385659;
  --color-accent: #ecffb6;
  --color-accent-foreground: #00545f;
  --color-border: #e3e9e5;
