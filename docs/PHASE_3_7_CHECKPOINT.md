@@ -1,39 +1,27 @@
-# KawTeam — chat-first checkpoint
+# Phases 3-7 checkpoint: current state
 
-10 October 2026. This supersedes the former form-first Phase 2 prototype. User scope: chat by event name with uploaded proposals/plans/budget, no login, final vendor choice by a human, free hosting, WorkBuddy deferred.
+Reconciled 11 October 2026. [Current specification](CURRENT_PRODUCT_SPEC.md), [integration status](INTEGRATION_STATUS.md) and [task checkpoint](TASK_CONVERSATIONS_CHECKPOINT.md) supersede earlier form/upload/general-chat/shortlist assumptions.
 
-**Flow:** name event → upload documents once → saved event memory → conversation → scoped supplier request → configured discovery → evidence/unknown terms → approved controlled outreach → stored reply → recommendation → organiser decision.
-
-Home `/` is chat; `/events` is event memory; `/casebook` is secondary supplier work; `/brief/new` now opens chat. Supabase is the source of truth. Local storage holds only event/profile preferences in API mode.
+## Delivered and open
 
 | Phase | Delivered | Open |
 |---|---|---|
-| 3 | Three applied migrations; protected RPCs; signed profile sessions; server permissions; atomic uploads and chat/case commits; revisions/idempotency | Deployment; personal authentication intentionally excluded |
-| 4 | Event-scoped retrieval/citations; typed Gemini adapter; capped/deduplicated Tavily adapter; provenance, unknowns and eligibility | Keys, live provider verification, confirmed contacts/direct quotations |
-| 5 | Controlled supplier; edit/approve/reject; exact revision/hash; expiry; single-use send; persisted replies; three-round cap | External email/webhooks and autonomous orchestration |
-| 6 | Previous health-only feasibility scaffold preserved | WorkBuddy execution explicitly deferred |
-| 7 | Ranked outcome report; pending/no-deal states; evidence references; simulated comparable savings; print layout; explicit human choice | Final deployed print/demo QA |
+| 3 | Supabase, seven migrations, signed shared-demo roles, protected RPCs, atomic tasks/chat/cases, revisions/retries | Public deployment and deployed checks |
+| 4 | Project retrieval/citations, Drive adapter, live Gemini/Tavily, bounded candidate pool, eligibility | Actual Drive access, verified contacts and broader deduplication |
+| 5 | Controlled liaison/replies, final-quote ranked queue, one/many targets, human decisions and separate confirmation | Gmail OAuth/send/read, real final quotes/receipts, durable waits/follow-ups |
+| 6 | Desktop MCP configuration and health transport scaffold | Actual useful WorkBuddy tools, orchestration/resume and website trigger |
+| 7 | Task statuses/dates, milestone history, legacy report/pending/no-deal/simulated savings | Complete live task outcome/export and print QA |
 
-Absent keys produce an honest connection note, not fake AI execution. Public search results are unquoted candidates. Only the sample tote case has simulated offers, replies and savings. Other cases cannot load those quotes. No external email, order, payment or agreement is issued.
+Home picks projects; project chat picks tasks; new conversations create tasks; follow-ups/questions/edits stay scoped. Projects have no top tabs or upload UI. All Task / Recent Activity appear below chat; task page has Secured/Approval left and dates right. Organiser retains final control.
 
-## Persistence and access
+## Persistence and security
 
-Tables `kawteam_workspaces`, `kawteam_records`, `kawteam_actions` have RLS enabled and direct anon/authenticated privileges revoked. RPCs check a workspace-specific random backend credential against a stored SHA-256 digest. Publishable key alone gives no data access. SQL is parameterised and function search paths fixed.
+Tables deny direct public access; RPCs require a private workspace credential. Next.js forwards allowlisted requests with server gateway and signed HttpOnly role cookie. FastAPI applies role/revision/ownership checks. Shared-demo profile switching is intentional, not private tenant authentication.
 
-Next.js forwards allowlisted routes, a signed HttpOnly role cookie and a separate server gateway secret. FastAPI checks role permissions from the cookie. Production uses secure cookies. Anyone in this intentionally public demo can switch to Organiser; private user accounts are not claimed.
+Task start, initial message and legacy history copy are transactional. Case/assistant updates are atomic and revision-aware. Snapshots retain current Drive identities and preserve attributed readable memory on failures. External text is untrusted reference data. Unknown terms remain unknown; final quote/confirmation evidence hashes must match current scope.
 
-Uploads lock an event and store file plus derived memory together. Content duplicates return sanitised metadata. Chat appends against the current locked thread and commits case/assistant together; deterministic case IDs and request markers prevent duplicate work. Changed message text with the same request ID is rejected. The browser retains an unsuccessful request ID for retry and consumes successful POST state directly.
+## Evidence and boundaries
 
-Uploaded documents are untrusted reference content. The model receives selected-event excerpts, at most six chunks and recent conversation. Explicit labelled budget/deadline values override memory; incidental deposits and proposal creation dates do not. Generic or ambiguous missing terms require clarification rather than guessing.
+71 backend tests and 43 frontend tests pass; lint/type checks pass. Production build, saved browser/DB task checks and responsive layouts passed before this docs refresh. Live Gemini reply and Tavily sources verified; local MCP health works. QA records removed and original sample restored.
 
-Supabase advisors report informational no-policy notices for deliberate deny-all direct access, plus executable security-definer RPC warnings. The RPCs are intentionally secret-gated. The live check confirms wrong credentials fail. Review the [advisory guidance](https://supabase.com/docs/guides/database/database-linter?lint=0028_anon_security_definer_function_executable) before expanding this security model beyond a shared demo.
-
-## Verification
-
-Python tests cover permissions, conflicts, retries, exact/expired approvals, send consumption, replies, outcomes, memory parsing, invalid AI output and persistent chat. TypeScript tests cover human decisions, role restrictions, scope, unknown shipping and restore/date validation. Live database checks cover concurrent duplicate uploads/user messages/assistant completion, one case, sanitised metadata and invalid credentials.
-
-Production browser checks create an event, upload/preview a proposal, override budget in chat, reload, open saved request/report, switch observer permissions, and check layouts at 390/768/1280/1440px. Desktop/mobile screenshots inspected. Controlled outreach browser checks prepare/approve/send/reply, consumed approval and unchanged human selection; original sample restored afterward. Next.js production build, TypeScript, ESLint and Ruff verified. Live AI/search accounts are not verified without keys.
-
-## Remaining integrations
-
-Configure free-tier AI/search keys and run live smoke tests. Add real email with verified recipients, exact-message approval, send deduplication and validated delivery/reply receipts. When requested, implement WorkBuddy orchestration on these shared services, checkpoint/resume, automatic task planning, bounded negotiations, backup switching and actual tool-call evidence. The track's meaningful WorkBuddy execution requirement is not yet satisfied.
+No real vendor enquiry, payment, order or binding acceptance was issued. Latest target uses non-binding liaison with human approval only at final selection; legacy exact-draft demo machinery remains secondary. Real Gmail, Drive, WorkBuddy execution and deployed end-to-end verification remain required.

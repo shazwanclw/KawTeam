@@ -1,39 +1,19 @@
-# KawTeam project workspace makeover
+# Project makeover checkpoint: current reconciliation
 
-Historical checkpoint. The current interface and Google Drive memory flow are documented in [CHAT_HOME_DRIVE_CHECKPOINT.md](CHAT_HOME_DRIVE_CHECKPOINT.md).
+Updated 11 October 2026. The original overview-first/upload/optional-subproject makeover has been superseded. This file retains implementation history without prescribing the old UI. Current rules: [product specification](CURRENT_PRODUCT_SPEC.md), [task checkpoint](TASK_CONVERSATIONS_CHECKPOINT.md), [integration status](INTEGRATION_STATUS.md).
 
-10 October 2026. Supersedes the previous home/chat navigation in PHASE_3_7_CHECKPOINT.md. WorkBuddy and external email remain deferred.
+## What remains from the makeover
 
-## Product flow
+Teal/lime palette, local Jakarta typography, shadcn buttons/dialogs/dropdowns/calendar, responsive layouts, profile-based demo roles, Supabase project/task storage and compatible legacy routes. Shared project context with isolated task threads and repeat supplier identity remains useful.
 
-Overview → New project (name only) → general conversation. Upload project plans using Files, the paperclip or context panel. Tasks are optional separate conversations under a project, sharing its documents. Sidebar project names resume work. Overview contains saved activity, pending message approvals and real dates, without fabricated metrics or AI summaries.
+## What changed
 
-Assistant settings persist per project: Automatic (default), Research first or Existing vendor; shortlist size 1–3; optional preferred supplier and instructions. Automatic distinguishes new discovery from repeat orders. Explicit supplier names take precedence over preferences. Ambiguous suppliers require clarification. Implicit previous-supplier references stay in the current project/task. An explicit library choice can reuse another project's supplier identity.
+Home now starts with chat. No Files/upload UI or assistant settings button. Projects start directly at New Task/existing-task chat, not a general thread with top tabs. All Task / Recent Activity are below chat; task detail contains Secured/Approval and Upcoming events. Subprojects are replaced by task vocabulary. Overview sublinks live only in the sidebar; Connections means saved supplier relationships.
 
-Repeat orders skip discovery and clear previous price, delivery terms, deadline fit, approval and decision. Each needs fresh terms and human review. Research refresh preserves prior explicit human decisions and approved recipients. The organiser still approves exact outgoing drafts and makes the final supplier choice; nothing is automatically bought.
+New project takes name plus optional Drive link. Creation uses Projects plus and empty-picker fallback. Repeat orders skip discovery when supplier identity is explicit but require new terms. No arbitrary three-supplier outreach cap. Final human approval follows liaison; only a matching supplier confirmation creates secured. Legacy exact-draft approvals are not the primary experience.
 
-## Routes and design
+## Persistence and integration
 
-- `/`: project overview.
-- `/projects/:id`: general conversation.
-- `/projects/:id/tasks`: optional task list.
-- `/projects/:id/tasks/:taskId`: isolated task conversation.
-- `/projects/:id/files`, `/projects/:id/approvals`, `/projects/:id/vendors`: project resources.
-- `/approvals`, `/calendar`, `/vendors`, `/connections`: workspace views.
-- `/cases/:id`: supplier evidence, outreach and human decision; return link resumes its project/task conversation.
+The original project_tasks_chat migration is retained; seven total migrations now cover Drive snapshots, atomic task starts, case edits and legacy threads. Existing user records are preserved. Role/revision/ownership/retry protections remain, with deliberate shared-demo profile switching and no private authentication claim.
 
-Palette: #00545f deep teal navigation, #d6fb00 primary project action, #ecffb6 active and selected surfaces, neutral white content. Local Jakarta font, restrained outlines and spacing. No login page; the profile menu switches demo roles.
-
-The configured shadcn stdio MCP was connected using `scripts/shadcn-mcp.py`; its registry reference is recorded in `docs/shadcn-registry-reference.json`. Official shadcn Button, Dialog, DropdownMenu, Tabs and Calendar components are installed. Calendar date attributes use deterministic formatting to avoid Windows/browser locale hydration mismatch. Dependencies were fetched from the Yarn npm mirror with TLS verification enabled after the default npm registry certificate failed locally.
-
-## Persistence
-
-Applied additive migration `202610100004_project_tasks_chat.sql`. Existing records retained. Settings/task writes require an editable signed demo role. Atomic chat RPC validates task membership; tasks have independent threads. Documents remain project-wide. Supabase direct anonymous access stays denied.
-
-## Honest integration status
-
-Gemini/Tavily keys are not supplied. External email is unconnected. WorkBuddy remains deferred by the user. Settings and routing work now; live discovery, AI conversation and external outreach require their integrations. Controlled sample offers and emails remain explicitly simulated. No public deployment was created as part of this makeover.
-
-## Verification
-
-Backend: 40 tests and Ruff. Frontend: 13 domain tests, TypeScript, ESLint, production build. Production browser coverage: project creation, upload/memory, general chat, optional task isolation, persisted settings, repeat supplier route, calendar, responsive overflow and Observer permissions. Controlled outreach browser verifies exact approval, single send, reply, consumed approval and unchanged human selection, then restores the sample. Desktop and mobile screenshots reviewed. Independent frontend/backend review findings corrected. Next.js and its lint configuration updated to 16.4.0; production dependency audit reports zero vulnerabilities. Temporary QA project records removed after verification.
+Gemini and Tavily are configured/live-tested. Real Drive, Gmail and WorkBuddy useful tools/website trigger remain pending. Controlled supplier messages are simulated. Production build/browser flows previously passed; latest suites are 71 backend/43 frontend plus lint/type checks. No public deployment is verified.

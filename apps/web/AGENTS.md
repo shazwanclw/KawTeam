@@ -7,3 +7,13 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+## KawTeam project rules (updated 11 October 2026)
+
+Read [current product specification](../../docs/CURRENT_PRODUCT_SPEC.md), [integration status](../../docs/INTEGRATION_STATUS.md) and the [workspace README](../../README.md) before changes. These supersede older layout/provider assumptions.
+
+Keep chat-first home, project/task pickers, below-chat All Task / Recent Activity, task Secured/Approval/dates, sidebar-only Overview links and Connections. No login, upload UI, preferences trigger, top project tabs or Subprojects. Human final approval is separate from supplier confirmation. Preserve shared-demo role/revision/ownership checks and legacy records.
+
+Gemini/Tavily live checks pass. Actual Drive credentials, Gmail send/read, WorkBuddy execution tools/website trigger and public deployment remain pending. Gmail client JSON is supplied, but consent/token are not verified. Do not infer sent email, agent execution or secured outcomes from configured keys or health status. Never copy or print secret values into documentation, client bundles or logs.
+
+After implementation, run checks appropriate to the change using README commands. Documentation-only changes require link/content/format verification, not an unnecessary application rebuild. Keep this project section outside the generated Next.js block.

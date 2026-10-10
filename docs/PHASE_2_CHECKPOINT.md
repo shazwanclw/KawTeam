@@ -1,24 +1,15 @@
-# KawTeam Phase 2 checkpoint
+# Phase 2 checkpoint: frontend delivered and evolved
 
-Implemented locally on 10 October 2026. No application backend, real vendor research, external email or public deployment is claimed.
+Updated 11 October 2026. This file is a milestone summary, not an instruction to rebuild the original casebook. Current scope: [product specification](CURRENT_PRODUCT_SPEC.md), [task checkpoint](TASK_CONVERSATIONS_CHECKPOINT.md), [integration status](INTEGRATION_STATUS.md).
 
-## Available demo
+## Current frontend
 
-- Distinctive casebook with bundled Fraunces/Jakarta fonts and a custom tote illustration.
-- No login; profile switcher with Organiser, Teammate and Observer permissions.
-- Structured brief creation and browser persistence.
-- Seeded vendor comparison, landed-cost breakdown, evidence drawer and filtering.
-- Illustrative vendor conversations, editable draft revisions and organiser approval/rejection.
-- Explicit human vendor choice, local decision persistence, activity and printable summary.
-- Vendor library, outreach inbox, connection status and WorkBuddy setup instructions.
-- Actual MCP SDK stdio health-tool discovery and invocation; real WorkBuddy client verification remains open.
+Chat-first home, project picker, optional Drive project creation, task-based project chat/history, All Task / Recent Activity below the composer, task Secured/Approval/dates, sidebar-only Overview links, milestone tables, red-dot calendar and Connections. Existing teal/lime/Jakarta/shadcn design remains. No login, upload/intake form, assistant settings, generic metric dashboard or top project/subproject tabs.
 
-## Verification
+Profile switcher supports shared-demo Organiser/Teammate/Observer; server checks now enforce role permissions. API mode persists to Supabase, not just browser-local fixtures. Earlier `/demo`/casebook helpers remain secondary compatibility surfaces, with fictional supplier data labelled.
 
-13 frontend domain tests and 4 Python tests pass. TypeScript, ESLint, Ruff and Next.js production build pass. Playwright verifies navigation, human decision, reload persistence, role restrictions, draft approval, evidence, brief creation, mobile navigation, absence of runtime errors and overflow at 390/768/1280/1440px. Desktop, decision and mobile screenshots were inspected.
+## Verification and later delivery
 
-Review corrections include restricting tote fixtures to their sample case, rejecting invalid saved dates/records, distinguishing delivery failure from budget failure, darkening small text and hiding closed mobile navigation from keyboard focus. Native modal lifecycle was corrected and the interaction flow rechecked.
+Latest suites: 43 frontend tests, 71 backend tests, type/lint checks. Production build and saved browser flows passed before docs refresh, including task continuation/edit, approval/confirmation, roles and responsive widths. Phases 3-5 persistence/decision foundations now exist; Gemini/Tavily are live-tested.
 
-## Next phase
-
-Verify the actual WorkBuddy client connection using the provided account and credits. Then implement Phase 3 persistence/API and server-enforced demo sessions, preserving the no-login experience and human-only vendor selection. Connect research and email in their planned phases. Public deployment and submission materials remain pending.
+Actual Drive reads, Gmail provider, useful WorkBuddy execution/trigger, public deployment and submission are still open. Phase 6 is not satisfied by the health tool alone. See the root checklist for the next steps.

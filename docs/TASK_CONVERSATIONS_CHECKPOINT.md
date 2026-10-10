@@ -1,50 +1,27 @@
 # Task conversations checkpoint
 
-11 October 2026. This supersedes the earlier project tabs, optional subprojects and capped shortlist workflow. The latest user requirements are reflected in the blueprint amendment, README and checklist.
+Updated 11 October 2026. This is the delivered task redesign, reconciled with the subsequent provider setup. [Current specification](CURRENT_PRODUCT_SPEC.md) and [integration status](INTEGRATION_STATUS.md) are authoritative.
 
-## Project and task flow
+## Delivered flow
 
-Main Chat retains its project picker. A new conversation starts a task in the selected or named existing project, or creates a project using the event name in the prompt. The initial task and message are saved transactionally. Deterministic request/task identities keep retries from creating duplicates.
+Main Chat retains its project picker and creates a task for each new conversation. Named existing projects are resolved; otherwise a named project is created. First task/message writes are atomic and retry-safe. Projects open directly to New Task chat; choosing a saved task expands its transcript. Questions and edits stay scoped, and changed requirements update the case in place with old terms superseded.
 
-Projects open directly to chat with **New Task** selected. Choosing a task expands its saved conversation. Follow-up questions stay in the same task; edits update its procurement request rather than creating a second request. The only project tabs are **All Task** and **Recent Activity**, below the composer. Task rows show pending supplier approvals and link to task details. Saved legacy cases and earlier general project conversations remain accessible without removing their original records.
+Only All Task / Recent Activity appear below chat. Row boxes show approval counts and link to task detail. Secured/Approval occupy the left column; Upcoming events the right, stacking on mobile. Continue conversation selects the task. Legacy case requests and earlier project-wide threads remain resumable without deleting original records.
 
-Task detail has Secured and Approval in the wider left column, and Upcoming events in the narrower right column. On mobile the columns stack. Continue conversation returns to the project chat with that task selected. Important dates include the task deadline, relevant delivery dates and pending quote expiry. The global calendar also derives those dates from the saved task state.
+## Supplier decision lifecycle
 
-## Supplier lifecycle
+Retain all returned source candidates; no three-candidate outreach cap. Current discovery is bounded to five sources, not exhaustive. Valid complete final quote replies are ranked by landed cost, arrival and name. Item quantity and supplier/placement target are independent. Human approvals reserve remaining slots and aggregate budget; rejects advance waitlist; full target locally closes other suitable candidates.
 
-```mermaid
-flowchart LR
-  A[New conversation] --> B[Task and project context]
-  B --> C[Full candidate pool]
-  C --> D[Non-binding liaison]
-  D --> E[Matching final quotation replies]
-  E --> F[Ranked human approval queue]
-  F -->|Reject| G[Advance waitlist]
-  G --> F
-  F -->|Approve| H[Awaiting supplier confirmation]
-  H -->|Matching confirmation recorded| I[Secured]
-```
+Approved is not secured. Received confirmation must reference the same supplier, approval and current term hash. Requirement changes invalidate fresh-quote readiness and decisions, preserving history. Organiser-only server checks, revisions and retries remain enforced.
 
-Every discovered candidate is retained for verification and liaison; saved shortlist preferences no longer impose a three-supplier cap. Public source results are provisional and do not claim verified contacts, prices or outreach. Research provider retrieval bounds remain separate from the candidate pool policy.
+Run sample liaison and Check demo confirmation are restricted labelled actions for the original tote scenario. They simulate multi-supplier liaison and separate confirmation; no live supplier email was sent. Legacy exact-message approval controls remain compatibility, not the new primary checkpoint policy.
 
-`selectionTarget` is independent of item `quantity`: 50 shirts normally needs one supplier; ten event vendors needs ten placements. Final quotation messages must match a hash of the current request and supplier terms, and satisfy scope, budget, specifications, delivery and validity. Suitable offers are ranked by landed cost, arrival and supplier name. Only the remaining slot count is actionable; others wait. Rejection advances the queue. Once the target is occupied, other suitable candidates are marked not selected locally. No rejection email is invented.
+## Persistence and verification
 
-Only organisers approve/reject placements. Approval never marks a supplier secured. Secured requires a separate received confirmation with the matching approval ID and terms hash. Requirement edits clear current quotes and approvals and retain previous decisions as superseded history. Unchanged facts and ordinary questions do not invalidate terms.
+Seven applied migrations include task conversations and legacy-copy changes. Shared-demo role selection is deliberate, not private multi-user authentication. Tests cover naming/retries, continuation/edits, isolation, legacy threads, valid final quotes, one/ten targets, total budget, stale terms, confirmation proof and role restrictions.
 
-The original tote sample has an explicit **Run sample liaison** action covering all three saved suppliers in two simulated rounds. **Check demo confirmation** records a separate simulated confirmation only after approval. Both remain labelled as demo and are restricted to the original sample scope; they cannot fabricate live supplier confirmation or run on arbitrary requests.
+71 backend tests and 43 frontend tests pass, plus Ruff, TypeScript and ESLint. Production build, responsive saved browser flow and database concurrency checks passed before this documentation refresh. Original sample restored; QA projects removed. README documents read-only and opt-in checks.
 
-## Persistence and access
+## Latest integration update
 
-Two additive scoped migrations provide transactional task start, revision-aware case/chat completion and safe legacy conversation copying. All seven migrations are applied to the connected KawTeam Supabase project. Existing role checks, private backend credentials, revision conflict checks and idempotency remain active. No login, additional account flow, paid provider or deployment was introduced.
-
-## Verification
-
-Verification completed against the production preview at localhost:3000: **43 frontend tests and 71 backend tests passed**, along with TypeScript, ESLint, Ruff and the Next.js production build. Read-only project layout and chat/overview regression browser checks passed. Tests cover task naming/retry, selected-task follow-ups, requirement changes, isolation, legacy history, post-liaison ranking, one/multiple slots, ten approvals, aggregate budget, stale terms, confirmation evidence and role restrictions.
-
-The full browser acceptance passed against the production preview: named project creation, separate tasks, quantity edits in place, saved history/reload, task/global approval, rejection/waitlist advancement, independent confirmation, role restrictions and responsive widths of 390, 768 and 1280 pixels. The opt-in database check passed for simultaneous task starts, retries, observer rejection, legacy history preservation and atomic in-place case/chat updates. The original tote sample was restored, and labelled QA projects were removed; the two original projects remain.
-
-Use `npm run test:e2e` for read-only task layout checks. Use `tests/live_task_browser.py` and `tests/live_task_database.py` for the opt-in saved-data checks; their output identifies disposable QA projects. See README for commands. Screenshots stay ignored under `apps/web/test-results/`.
-
-## Live integration status
-
-The UI, persistence and decision lifecycle are implemented. Real autonomous research/liaison still requires configured AI/search, verified supplier contacts and an email execution provider. WorkBuddy remains deferred at the user's request. A Gemini/Tavily connection alone does not send email or receive supplier confirmation. Drive permissions are still required for actual document ingestion. No external supplier message was sent during this work.
+Gemini and Tavily keys are now configured and live-tested, including a saved website Gemini reply. Supabase works. WorkBuddy desktop configuration exists and local health transport passes; execution tools, verified client orchestration and website trigger remain open. Drive credentials are missing. Gmail Desktop OAuth client JSON is supplied and format-verified, but sender consent/token and send/read provider remain pending. No public deployment or full autonomous live liaison is claimed.
