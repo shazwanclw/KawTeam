@@ -130,6 +130,24 @@ def facts_from_text(text):
     )
     if quantity:
         result["quantity"] = int(quantity.group(1))
+    budget_pattern = r"(?:budget|within|under|less than|spend up to|maximum spend|limit)[^\n.!?]{0,35}?(?:RM\s*[\d,]+(?:\.\d{1,2})?\s*k?\b|[\d,]+(?:\.\d{1,2})?\s*k?\s*RM\b)"
+    total_budget = None
+    unit_budget = None
+    for match in re.finditer(budget_pattern, text, re.IGNORECASE):
+        value = amount(match.group(0))
+        if re.match(r"\s*(?:each|apiece|per\s+(?:item|unit|piece|(?:t-?)?shirt))\b", text[match.end():], re.IGNORECASE):
+            unit_budget = value
+        else:
+            total_budget = value
+    if unit_budget is not None:
+        result["unitBudgetSen"] = unit_budget
+        result.pop("budgetSen", None)
+        if total_budget is not None:
+            result["budgetSen"] = total_budget
+            result["budgetSource"] = "total"
+        elif quantity:
+            result["budgetSen"] = unit_budget * result["quantity"]
+            result["budgetSource"] = "unit"
     deadline = re.search(
         r"(?:deadline|deliver(?:y)?(?:\s+date)?|arrive(?:\s+by)?|need(?:ed)?\s+by|event\s+date)[^\n]{0,30}?\b(20\d{2}-\d{2}-\d{2})\b",
         text,
@@ -184,6 +202,8 @@ def facts_from_text(text):
         )
         if conversational_location:
             result["location"] = conversational_location.group(1).strip()[:200]
+    if "location" not in result and re.search(r"\b(?:we(?:'ll| will| can)?|I(?:'ll| will| can)?|prefer|arrange|for|by)\s+(?:self[- ]?)?(?:collect(?:ion)?|pick[- ]?up)\b|\b(?:self[- ]collection|collection only|pick[- ]?up only)\b", text, re.IGNORECASE):
+        result["location"] = "Collection from supplier (address to be confirmed)"
     return result
 
 
@@ -197,6 +217,7 @@ def intake(message, event):
         "eventId": event["id"],
         "quantity": overrides.get("quantity", facts.get("quantity")),
         "budgetSen": budget,
+        "unitBudgetSen": overrides.get("unitBudgetSen", facts.get("unitBudgetSen")),
         "targetSen": round(budget * 0.9) if budget else None,
         "deadline": overrides.get("deadline", facts.get("deadline")),
         "location": overrides.get("location", facts.get("location")),

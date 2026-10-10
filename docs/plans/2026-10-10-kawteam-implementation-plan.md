@@ -91,7 +91,7 @@ From `apps/web`: `npm test`, `npm run typecheck`, `npm run lint`, `npm run build
 
 Opt-in saved-data wrappers: `tests/live_task_browser.py`, `tests/live_task_database.py`; follow README, restore sample and remove only explicitly labelled QA records. Live provider tests consume limited quota; tests do not authorise vendor emails.
 
-Current evidence: 100 backend/43 frontend tests, lint/type checks, prior build/browser/DB acceptance, live Gemini/Tavily, real scoped MCP reads and a controlled Gmail send/reply. The new sender identity is verified; no new-account email was sent. Treat an unchecked future step as pending even if the scaffolding exists.
+Current evidence: 103 backend/44 frontend tests, lint/type checks, prior build/browser/DB acceptance, live Gemini/Tavily, real scoped MCP reads and a controlled Gmail send/reply. The new sender identity is verified; no new-account email was sent. Treat an unchecked future step as pending even if the scaffolding exists.
 
 ## Submission and later phases
 

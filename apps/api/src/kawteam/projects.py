@@ -118,7 +118,7 @@ def fresh_vendor(vendor):
     }
 
 
-def workflow_plan(mode, search_connected, shortlist):
+def workflow_plan(mode, search_connected, shortlist, email_configured=False):
     return [
         {
             "id": "context",
@@ -148,7 +148,7 @@ def workflow_plan(mode, search_connected, shortlist):
             "id": "outreach",
             "label": "Liaise with all suitable suppliers",
             "status": "blocked",
-            "detail": "Verified supplier contacts and a connected email provider are required. Non-binding enquiries only; nothing sent.",
+            "detail": "Gmail is configured. Supplier contacts need verification and automatic website outreach has not started; no email sent." if email_configured else "Verified supplier contacts and a connected email provider are required. Non-binding enquiries only; nothing sent.",
         },
         {
             "id": "quotes",

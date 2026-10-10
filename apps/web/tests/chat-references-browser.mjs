@@ -1,0 +1,71 @@
+import {chromium} from 'playwright';
+import assert from 'node:assert/strict';
+
+const browser=await chromium.launch();
+try{
+ const page=await browser.newPage({viewport:{width:1280,height:900}});
+ const plain={id:'plain',name:'Tech Night',facts:{},backendRevision:1,tasks:[]};
+ const linked={...plain,id:'linked',name:'Workshop',driveSource:{url:'https://drive.google.com/drive/folders/abcdefghijk123',status:'awaiting_access',fileCount:0,lastSyncedAt:null,message:'Access pending'}};
+ const state={version:2,profile:'organiser',events:[plain,linked],documents:[],threads:[],cases:[]};
+ let submitted;
+ await page.route('**/api/kawteam/**',async route=>{
+  const path=new URL(route.request().url()).pathname;
+  if(path.endsWith('/state'))return route.fulfill({json:state});
+  if(path.endsWith('/connections'))return route.fulfill({json:{database:'connected',ai:'configured',search:'configured',email:'configured',workbuddy:'desktop_tools_available',model:'test'}});
+  if(path.endsWith('/automation/tick'))return route.fulfill({json:{processed:false}});
+  if(path.endsWith('/session'))return route.fulfill({json:{}});
+  if(path.endsWith('/chat/references')){
+   submitted=route.request().postData();
+   assert.match(route.request().headers()['content-type'],/multipart\/form-data/);
+   assert.match(submitted,/filename="brief.txt"/);
+   assert.match(submitted,/We need 50 shirts/);
+   assert.match(submitted,/"driveUrl":"https:\/\/drive.google.com/);
+   const project={...plain,id:'new-shirts',name:'T-shirt Sourcing',tasks:[{id:'new-task',name:'T-shirt merchandise',createdAt:'2026-10-11'}]};
+   state.events.push(project);
+   const assistant={id:'reply',role:'assistant',body:'Reference read.',time:'2026-10-11T04:00:00Z'};
+   return route.fulfill({json:{eventId:project.id,taskId:'new-task',assistant,state}});
+  }
+  throw new Error(`Unexpected gateway call ${path}`);
+ });
+ const base=process.env.KAWTEAM_TEST_URL||'http://127.0.0.1:3000';
+ await page.goto(base+'/');
+ const drive=page.getByRole('button',{name:'Add Google Drive link',exact:true});
+ await drive.waitFor();
+ const hamburger=page.getByRole('button',{name:'Open navigation',exact:true});
+ const original=await hamburger.boundingBox();
+ await hamburger.click();
+ const collapse=page.getByRole('button',{name:'Collapse navigation',exact:true});
+ const expanded=await collapse.boundingBox();
+ assert.ok(Math.abs(original.x-expanded.x)<1&&Math.abs(original.y-expanded.y)<1);
+ assert.equal(await page.getByRole('button',{name:'Close navigation',exact:true}).count(),0);
+ assert.equal(await page.getByRole('button',{name:'Close menu',exact:true}).count(),0);
+ await collapse.click();
+ await page.getByRole('button',{name:'Choose project',exact:true}).click();
+ await page.getByRole('menuitem',{name:'Workshop',exact:true}).click();
+ assert.equal(await drive.count(),0);
+ await page.getByRole('button',{name:'Choose project',exact:true}).click();
+ await page.getByRole('menuitem',{name:'Tech Night',exact:true}).click();
+ await drive.waitFor();
+ await page.getByRole('button',{name:'Choose project',exact:true}).click();
+ await page.getByRole('menuitem',{name:/No project yet/}).click();
+ await drive.click();
+ await page.getByRole('textbox',{name:'Google Drive link',exact:true}).fill('https://drive.google.com/drive/folders/abcdefghijk123');
+ await page.getByRole('button',{name:'Add reference',exact:true}).click();
+ await page.getByRole('link',{name:'Drive reference',exact:true}).waitFor();
+ const picker=page.getByLabel('Attach reference files',{exact:true});
+ await picker.setInputFiles({name:'brief.txt',mimeType:'text/plain',buffer:Buffer.from('We need 50 shirts. Budget RM2000.')});
+ await page.getByRole('button',{name:'Remove brief.txt',exact:true}).click();
+ assert.equal(await page.getByRole('button',{name:'Remove brief.txt',exact:true}).count(),0);
+ await picker.setInputFiles({name:'brief.txt',mimeType:'text/plain',buffer:Buffer.from('We need 50 shirts. Budget RM2000.')});
+ await page.getByRole('textbox',{name:'Message KawTeam',exact:true}).fill('Find shirts using this reference');
+ await page.getByRole('button',{name:'Send message',exact:true}).click();
+ await page.getByRole('heading',{name:'T-shirt Sourcing',exact:true}).waitFor();
+ assert.ok(submitted);
+ await page.setViewportSize({width:390,height:844});
+ await page.getByRole('button',{name:'Open navigation',exact:true}).click();
+ const mobile=await page.getByRole('button',{name:'Collapse navigation',exact:true}).boundingBox();
+ assert.ok(mobile.x<20);
+ await page.getByRole('button',{name:'Collapse navigation',exact:true}).click();
+ assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+ console.log('PASS: stationary hamburger, no duplicate close buttons, Drive icon visibility, removable files, multipart references and mobile layout; every gateway call mocked.');
+}finally{await browser.close();}

@@ -22,7 +22,7 @@ Seven migrations now include the earlier drive_snapshot RPC plus task/legacy cha
 
 Deterministic parsing and Gemini can use project facts; essential missing terms are asked conversationally. Explicit user updates override memory and invalidate current quotes only when requirements change. Task history remains separate from other tasks. Source citations must point to actual project excerpts.
 
-Backend/frontend tests and injected Drive transports pass; real Google folder access still needs credentials. Current test counts are 100 backend/43 frontend. Production build and browser/database flows were previously verified; read-only e2e now targets task-layout-browser, not the old chat-home script.
+Backend/frontend tests and injected Drive transports pass; real Google folder access still needs credentials. Current test counts are 103 backend/44 frontend. Production build and browser/database flows were previously verified; read-only e2e now targets task-layout-browser, not the old chat-home script.
 
 ## Latest provider status
 

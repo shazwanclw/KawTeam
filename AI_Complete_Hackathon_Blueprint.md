@@ -32,10 +32,10 @@ The organiser also advised avoiding login, limiting scope to a clear demo and av
 
 - Product name KawTeam; no login. A profile menu switches shared-demo roles.
 - Chat is the main entry. No intake form, hero metric dashboard, Chat/Work toggle or model selector.
-- Projects hold context and tasks. New project asks for name and optional Drive link, not file uploads.
+- Projects hold context and tasks. New project asks for name and optional Drive link, with readable reference attachments available in chat.
 - Main Chat selects a project; project chat selects New Task or a saved task.
 - Every new conversation creates a task; subsequent messages continue the selected task.
-- Projects have no top Chat/Activity/Approval/Subproject tabs. Below chat: All Task and Recent Activity only.
+- Projects have no top Chat/Activity/Approval/Subproject tabs. Below chat: All Task, Recent Activity and Failsafe.
 - Task rows show pending approvals. Task detail puts Secured/Approval left and Upcoming events right.
 - Remove assistant preferences, quick vendor chips, Hackathon edition badge and composer footer/status clutter.
 - Sidebar contains Chat, Overview's three links, Projects plus/search and Connections. Keep it open across navigation until closed.
@@ -61,7 +61,7 @@ Choose the existing task and say "We only want 40 shirts now." Keep the task/his
 
 ### Project and overview
 
-All Task and Recent Activity sit below project chat. Open a row for task detail. Global Overview shows the latest 15 meaningful milestones, actionable approvals and saved calendar dates. Connections provides relationship history and reuse. No thought-process feed, external Google Calendar connection or background progress is claimed.
+All Task, Recent Activity and Failsafe sit below project chat. Open a row for task detail. Global Overview shows the latest 15 meaningful milestones, actionable approvals and saved calendar dates. Connections provides relationship history and reuse. No thought-process feed, external Google Calendar connection or background progress is claimed.
 
 ## 5. Shared discovery and liaison engine
 
@@ -101,7 +101,7 @@ flowchart LR
 
 Next.js 16.4 / React / TypeScript / Tailwind / shadcn; FastAPI / Pydantic / MCP Python SDK; Supabase protected RPCs and seven migrations. Web gateway and signed demo roles are server-enforced. Files/context are project-scoped, tasks have separate threads and edits update existing cases. Durable database state is implemented; a durable agent/email runner is not.
 
-Gmail is locally authorised; one controlled test send has a saved provider receipt, and saved-thread reading works. Eight scoped WorkBuddy MCP tools exist and real local project/task reads pass. Actual desktop orchestration, website trigger, automated contact enrichment, live supplier quote/confirmation acceptance, Drive access and public deployment remain pending. See [integration status](docs/INTEGRATION_STATUS.md).
+Gmail is locally authorised; one controlled test send has a saved provider receipt, and saved-thread reading works. Nine scoped WorkBuddy MCP tools exist and real local project/task reads pass. Actual desktop orchestration, website trigger, live supplier quote/confirmation acceptance, Drive access and public deployment remain pending. See [integration status](docs/INTEGRATION_STATUS.md).
 
 ## 8. Context and data contracts
 
@@ -152,7 +152,7 @@ After the core live flow works: sponsorship cash/in-kind missions; workshop part
 
 ## 13. Verification and official references
 
-100 backend tests and 43 frontend tests pass, plus lint/type checks. Prior build/browser evidence remains. Live Gemini/Tavily, Supabase and scoped local MCP reads pass; one authorised Gmail test receipt is saved. Full orchestration, final quotes/confirmation, Drive and deployment remain pending.
+131 backend tests and 44 frontend tests pass, plus lint/type checks. Prior build/browser evidence remains. Live Gemini/Tavily, Supabase and scoped local MCP reads pass; one authorised Gmail test receipt is saved. Full orchestration, final quotes/confirmation, Drive and deployment remain pending.
 
 - [WorkBuddy MCP guide](https://www.codebuddy.ai/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/MCP-Guide)
 - [WorkBuddy model configuration](https://www.workbuddy.ai/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Model)

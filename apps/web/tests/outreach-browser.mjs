@@ -1,38 +1,26 @@
 import {chromium} from 'playwright';
 import assert from 'node:assert/strict';
+
+// Isolate every gateway call: this browser test must never contact suppliers.
 const browser=await chromium.launch();
-const page=await browser.newPage({viewport:{width:1440,height:1000}});
 try{
-  await page.goto('http://127.0.0.1:3000/cases/case-totes/conversations');
-  await page.getByRole('button',{name:'Prepare enquiry',exact:true}).waitFor();
-  await page.getByRole('button',{name:'Prepare enquiry',exact:true}).click();
-  await page.getByRole('status').getByText(/Counteroffer prepared/).waitFor();
-  await page.goto('http://127.0.0.1:3000/overview/approvals?request=case-totes&checkpoint=message');
-  await page.getByRole('dialog').getByRole('heading',{name:'Summary: Totes for the tech crowd',exact:true}).waitFor();
-  await page.getByRole('dialog').getByText(/Enquiry ready for approval/).waitFor();
-  await page.screenshot({path:'test-results/project-approval-desktop.png',fullPage:true});
-  await page.setViewportSize({width:390,height:844});
-  await page.screenshot({path:'test-results/project-approval-mobile.png',fullPage:true});
-  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),JSON.stringify(await page.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth,overflow:Array.from(document.querySelectorAll('body *')).filter(e=>e.getBoundingClientRect().right>innerWidth+1).map(e=>({tag:e.tagName,class:e.className,right:e.getBoundingClientRect().right})).slice(0,15)}))));
-  await page.setViewportSize({width:1440,height:1000});
-  await page.getByRole('dialog').getByRole('button',{name:'Approved',exact:true}).click();
-  await page.getByRole('status').getByText(/Exact draft approved/).waitFor();
-  await page.goto('http://127.0.0.1:3000/cases/case-totes/conversations');
-  await page.getByRole('button',{name:'Send in demo',exact:true}).click();
-  await page.getByText('Sent to demo supplier',{exact:true}).waitFor();
-  assert.equal(await page.getByRole('button',{name:'Send in demo',exact:true}).isEnabled(),false);
-  await page.getByRole('button',{name:'Check demo reply',exact:true}).click();
-  await page.getByRole('status').getByText(/Controlled reply saved/).waitFor();
-  await page.getByText('Your approved enquiry',{exact:true}).waitFor();
-  await page.screenshot({path:'test-results/outreach-desktop.png',fullPage:true});
-  await page.goto('http://127.0.0.1:3000/connections');
-  await page.getByRole('button',{name:/View connection:/}).first().click();
-  await page.getByRole('dialog').getByRole('heading',{name:'Shared history',exact:true}).waitFor();
-  await page.getByRole('dialog').getByText('Outgoing message',{exact:true}).waitFor();
-  await page.getByRole('dialog').getByText('Supplier reply',{exact:true}).waitFor();
-  await page.screenshot({path:'test-results/connection-history-desktop.png',fullPage:true});
-  await page.getByRole('link',{name:'Start a fresh request with this supplier',exact:true}).click();
-  await page.waitForURL(/\/projects\/tech-night\?vendor=/);
-  assert.match(await page.getByLabel('Message KawTeam').inputValue(),/^I want to request a fresh quotation from /);
-  console.log('PASS: overview summary approval, one controlled send, supplier reply, consumed approval, connection history and fresh-request continuation.');
+ const page=await browser.newPage();
+ let ticks=0;
+ await page.route('**/api/kawteam/**',async route=>{
+  const path=new URL(route.request().url()).pathname;
+  if(path.endsWith('/automation/tick')){
+   assert.equal(route.request().method(),'POST');
+   assert.deepEqual(route.request().postDataJSON(),{});
+   ticks++;
+   return route.fulfill({json:{processed:false}});
+  }
+  if(path.endsWith('/state'))return route.fulfill({json:{version:2,cases:[],events:[],documents:[],threads:[],profile:'organiser',storage:'supabase'}});
+  if(path.endsWith('/connections'))return route.fulfill({json:{database:'connected',ai:'configured',search:'configured',email:'configured',workbuddy:'desktop_tools_available',model:'test'}});
+  throw new Error(`Unexpected gateway route ${path}`);
+ });
+ await page.goto(process.env.KAWTEAM_TEST_URL||'http://127.0.0.1:3000');
+ await page.getByRole('heading',{name:'What are we going to KawTeam today?'}).waitFor();
+ await page.waitForResponse(response=>response.url().endsWith('/automation/tick'),{timeout:25000});
+ assert.equal(ticks,1);
+ console.log('PASS: visible chat page executes protected outreach tick and refreshes state; all provider calls intercepted.');
 }finally{await browser.close();}

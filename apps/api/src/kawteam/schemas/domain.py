@@ -9,17 +9,17 @@ class NewBrief(BaseModel):
 
     title: str = Field(min_length=1, max_length=100)
     goal: str = Field(min_length=1, max_length=2000)
-    quantity: int = Field(gt=0, strict=True)
-    budget_sen: int = Field(alias="budgetSen", gt=0, strict=True)
-    target_sen: int = Field(alias="targetSen", gt=0, strict=True)
-    deadline: date
-    location: str = Field(min_length=1, max_length=200)
+    quantity: int | None = Field(default=None, gt=0, strict=True)
+    budget_sen: int | None = Field(default=None, alias="budgetSen", gt=0, strict=True)
+    target_sen: int | None = Field(default=None, alias="targetSen", gt=0, strict=True)
+    deadline: date | None = None
+    location: str | None = Field(default=None, min_length=1, max_length=200)
 
     @model_validator(mode="after")
     def check_boundaries(self) -> Self:
-        if self.target_sen > self.budget_sen:
+        if self.target_sen is not None and self.budget_sen is not None and self.target_sen > self.budget_sen:
             raise ValueError("Target must be within the hard budget")
-        if not all(value.strip() for value in (self.title, self.goal, self.location)):
+        if not all(value.strip() for value in (self.title, self.goal)) or (self.location is not None and not self.location.strip()):
             raise ValueError("Brief fields must not be blank")
         return self
 

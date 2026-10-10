@@ -25,8 +25,9 @@ Amounts are integer sen. Unknown delivery is null, not zero. Dates are real ISO 
 | `POST /events/{id}/tasks` | Compatible explicit task creation; primary UI creates from chat |
 | `POST /events/{id}/settings` | Legacy assistant settings; preferences UI removed; shortlist setting no longer controls pool |
 | `POST /events/{id}/drive` | Authorised bounded Drive refresh/snapshot |
-| `POST /events/{id}/documents`, `GET /documents/{id}` | Legacy document compatibility; no current upload UI |
-| `POST /chat` | New/resumed task chat with eventId/taskId/requestId and message |
+| `POST /events/{id}/documents`, `GET /documents/{id}` | Project document compatibility and saved reference previews |
+| `POST /chat/references` | Multipart payload plus up to three readable files / 3 MB combined; saves task-scoped context before replying |
+| `POST /chat` | New/resumed task chat with eventId/taskId/requestId and message, plus optional driveUrl |
 | `POST /actions` | Revision/idempotency-aware case actions |
 | `GET /cases/{id}/report` | Legacy case outcome report |
 
@@ -62,7 +63,7 @@ Seven applied migrations protect `kawteam_workspaces`, `kawteam_records`, `kawte
 
 ## MCP and current routes
 
-MCP exposes eight scoped stdio tools: health, project list, task/context, research, sender identity, non-binding enquiry, saved-thread reply sync and quote/confirmation interpretation. No final-decision tool exists. See [WorkBuddy guide](../integration/workbuddy.md).
+MCP exposes nine scoped stdio tools: health, project list, task/context, research, sender identity, non-binding enquiry, saved-thread reply sync and quote/confirmation interpretation. No final-decision tool exists. See [WorkBuddy guide](../integration/workbuddy.md).
 
 Primary UI routes: `/`, `/projects/{id}`, `/projects/{id}?task={taskId}`, `/projects/{id}/tasks/{taskId}`, `/overview/activity`, `/overview/approvals`, `/overview/calendar`, `/connections`. Catch-all routing retains older project/case links; old URLs do not reinstate removed top project tabs. `/demo` and legacy case/report views remain secondary.
 
@@ -74,3 +75,6 @@ Gemini/Tavily are live-tested; Gmail consent and controlled send are verified, a
 All routes require the gateway and signed demo profile. `GET /email/status` verifies the configured Gmail sender. `POST /cases/{caseId}/email/contact` accepts vendorId/email/expectedRevision and is organiser-only; this registers a human-verified contact, not a final supplier choice. `POST /cases/{caseId}/email/send` accepts vendorId/subject/body/expectedRevision/requestId and is editable-profile-only, non-binding. `POST /cases/{caseId}/email/sync` accepts expectedRevision and is editable-profile-only. `POST /cases/{caseId}/email/quote` accepts vendorId/providerMessageId/expectedRevision and interprets only the latest saved supplier reply. Unknown fields are rejected.
 
 Recipients must be real task suppliers with organiser-registered contacts. No arbitrary inbox, payment, booking or final-approval MCP capability. Intents are saved before send; identical request retries return a saved receipt, changed content fails, and ambiguous/reserved sends block retry. Provider IDs and received raw evidence are retained. Quote interpretation requires verbatim evidence, supported prices and explicit dates. Confirmation requires a current organiser decision, exact matching terms and provider receipt after that approval. Raw replies alone never imply final readiness or Secured.
+
+
+`POST /automation/tick` accepts `{caseId?: string}` with the same gateway/session boundary; observers are rejected. Without a case ID it selects one queued task. Each call executes at most one supplier step, except bounded saved-thread sync. Case records carry `automation` (request hash, authorising role, status, last check and active lease); supplier records preserve contact provenance or an outreachBlock reason. No background thread or binding-acceptance action is implied.

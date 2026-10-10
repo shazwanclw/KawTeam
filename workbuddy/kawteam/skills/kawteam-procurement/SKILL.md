@@ -9,9 +9,9 @@ Updated 11 October 2026. Current product rules: `docs/CURRENT_PRODUCT_SPEC.md`; 
 
 ## Current installed capability
 
-Eight tools exist: `kawteam_health`, `kawteam_projects`, `kawteam_task`, `kawteam_research`, `kawteam_email_status`, `kawteam_send_enquiry`, `kawteam_sync_replies`, `kawteam_interpret_quote`. Reconnect the desktop server to refresh discovery. Health is connection evidence only. Real local MCP discovery and saved project/task reads pass; actual WorkBuddy orchestration is not yet captured.
+Nine tools exist: `kawteam_health`, `kawteam_projects`, `kawteam_task`, `kawteam_research`, `kawteam_email_status`, `kawteam_send_enquiry`, `kawteam_sync_replies`, `kawteam_interpret_quote`, `kawteam_outreach_step`. Reconnect the desktop server to refresh discovery. Health is connection evidence only. Real local MCP discovery and saved project/task reads pass; actual WorkBuddy orchestration is not yet captured.
 
-List projects, read the chosen case and use its current backendRevision for mutations. Research persists bounded public candidates; it does not verify contacts or prices. Only the organiser can register verified contacts through KawTeam's protected contact endpoint; no agent contact-verification tool exists. Never invent addresses.
+List projects, read the chosen case and use its current backendRevision for mutations. Research persists bounded public candidates; it does not verify contacts or prices. The organiser can register a known contact. The bounded outreach step can verify literal public addresses on the supplier's own site with grounded service evidence; no invented addresses or directory contacts. Never invent addresses.
 
 Enquiries are non-binding. Reuse request_id with identical content for retries; reserved/uncertain intents require manual reconciliation, not a new request ID. Limits: four emails per supplier, 60 per task, 20 saved threads per sync and 30 messages per thread. No arbitrary inbox access. Never send orders, bookings, payments or final acceptance. Use `kawteam_interpret_quote` on the latest saved supplier reply. It validates quoted evidence and terms; unsupported quotes remain pending. Secured requires a current human approval, exact terms and a later matching confirmation. Never bypass validation. No extra test sends or supplier outreach without authorised task scope.
 

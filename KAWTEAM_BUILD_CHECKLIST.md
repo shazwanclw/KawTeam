@@ -98,7 +98,7 @@ Checked means implemented or verified as stated. A provider key alone does not c
 
 ## Verified evidence
 
-100 backend tests, 43 frontend tests, Ruff, TypeScript and ESLint pass. Production build and browser task/overview flows passed before the docs refresh, including responsive widths, saved continuation/edit, rejection, approval and separate confirmation. Live Gemini/Tavily succeeded; Supabase transactional checks and MCP health transport succeeded. QA data was cleaned and original samples restored.
+131 backend tests, 44 frontend tests, Ruff, TypeScript and ESLint pass. Production build and browser task/overview flows passed before the docs refresh, including responsive widths, saved continuation/edit, rejection, approval and separate confirmation. Live Gemini/Tavily succeeded; Supabase transactional checks and MCP health transport succeeded. QA data was cleaned and original samples restored.
 
 ## Future product, not hackathon blockers
 

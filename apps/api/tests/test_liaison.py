@@ -6,6 +6,22 @@ from test_api import MemoryRepository
 from kawteam.liaison import Liaison
 
 
+def test_ordinary_acknowledgement_after_approval_preserves_terms_and_future_confirmation():
+    from kawteam.liaison import request_token
+    from kawteam.tasks import term_token
+    repo, _mail, service = setup()
+    case = repo.rows[("case", "live-task")]
+    vendor = case["vendors"][0]
+    original_price = vendor["goodsSen"]
+    case["vendorDecisions"] = [{"id": "decision", "vendorId": vendor["id"], "status": "approved", "termsHash": term_token(case, vendor), "approvedAt": "2026-10-11T00:00:00+00:00"}]
+    case["messages"] = [{"id": "ack", "vendorId": vendor["id"], "direction": "received", "executionMode": "live", "requestHash": request_token(case), "providerMessageId": "ack", "receivedAtMs": 1791676800001, "body": "We are checking availability."}]
+    data = {"final": False, "confirmation": False, "quantity": None, "goodsSen": None, "deliverySen": None, "arrival": None, "specsConfirmed": False, "validUntil": None, "evidence": {}}
+    result = service.quote("live-task", vendor["id"], "ack", 2, "teammate", lambda *args: data)
+    assert result["messages"][-1]["quoteInterpretation"]["confirmation"] is False
+    assert result["vendorDecisions"][0]["status"] == "approved"
+    assert result["vendors"][0]["goodsSen"] == original_price
+
+
 class Mail:
     def __init__(self):
         self.sender = "sender@gmail.com"

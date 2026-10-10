@@ -2,29 +2,41 @@ import base64
 import copy
 import hmac
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Literal
 from uuid import NAMESPACE_URL, uuid4, uuid5
 from zoneinfo import ZoneInfo
 
 import httpx
-from fastapi import Depends, FastAPI, File, HTTPException, Request, Response, UploadFile
+from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, Response, UploadFile
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field
 
 from .auth import issue_session, verify_session
+from .automation import Automation
 from .config import Settings
+from .contacts import contact_valid, discover_contact
 from .drive import parse_drive_url, read_drive
+from .enquiries import enquiry_body
+from .failsafes import open_failsafe, refresh_context_failsafes, resolve_failsafe
 from .gmail import DEFAULT_TOKEN_PATH, Gmail
-from .liaison import Liaison
+from .liaison import Liaison, request_token
 from .memory import extract_text, facts_from_text, intake, resolve_event, retrieve
+from .progress import save_progress
 from .projects import DEFAULT_SETTINGS, fresh_vendor, named_vendors, route, thread_id, workflow_plan
 from .providers import chat_response, discover
 from .quote_reply import extract_quote
 from .repository import SupabaseRepository, payload_hash
 from .schemas.domain import NewBrief
-from .tasks import invalidate_terms, project_name, selection_target, task_name, task_queue
+from .tasks import (
+    current_decisions,
+    invalidate_terms,
+    project_name,
+    selection_target,
+    task_name,
+    task_queue,
+)
 from .workflow import fit, log, outcome, transition
 
 
@@ -84,6 +96,11 @@ class EmailSyncBody(BaseModel):
     expectedRevision: int = Field(ge=1)
 
 
+class AutomationBody(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    caseId: str | None = Field(default=None, min_length=1, max_length=150)
+
+
 class EmailQuoteBody(EmailSyncBody):
     vendorId: str = Field(min_length=1, max_length=150)
     providerMessageId: str = Field(min_length=1, max_length=150)
@@ -102,6 +119,7 @@ class AssistantSettingsBody(BaseModel):
 
 
 class ChatBody(BaseModel):
+    driveUrl: str | None = Field(default=None, max_length=1000)
     message: str = Field(min_length=1, max_length=5000)
     eventId: str | None = Field(default=None, max_length=150)
     taskId: str | None = Field(default=None, max_length=150)
@@ -109,6 +127,12 @@ class ChatBody(BaseModel):
 
 
 def create_case(brief, id, event_id=None):
+    brief = dict(brief)
+    assumed_deadline = not brief.get("deadline")
+    if assumed_deadline:
+        brief["deadline"] = (datetime.now(ZoneInfo("Asia/Kuala_Lumpur")).date() + timedelta(days=14)).isoformat()
+    if not brief.get("targetSen") and brief.get("budgetSen"):
+        brief["targetSen"] = brief["budgetSen"]
     b = NewBrief.model_validate(brief)
     if b.deadline <= datetime.now(ZoneInfo("Asia/Kuala_Lumpur")).date():
         raise ValueError("Delivery date must be in the future.")
@@ -116,6 +140,8 @@ def create_case(brief, id, event_id=None):
         **b.model_dump(mode="json", by_alias=True),
         "id": id,
         "eventId": event_id,
+        "assumptions": ["deadline"] if assumed_deadline else [],
+        "failsafes": [],
         "stage": "brief",
         "selectedVendorId": None,
         "vendors": [],
@@ -138,6 +164,9 @@ def create_app(settings=None, repository=None):
 
     def email_service():
         return Liaison(repository, Gmail.from_settings(settings))
+
+    def email_configured():
+        return bool(settings.gmail_sender and (settings.gmail_authorized_user_json or Path(settings.gmail_token_path or DEFAULT_TOKEN_PATH).is_file()))
 
     @app.exception_handler(PermissionError)
     async def denied(request, error):
@@ -222,7 +251,8 @@ def create_app(settings=None, repository=None):
             "database": "connected",
             "ai": "configured" if settings.gemini_key else "setup_required",
             "search": "configured" if settings.tavily_key else "setup_required",
-            "email": "configured" if settings.gmail_authorized_user_json or Path(settings.gmail_token_path or DEFAULT_TOKEN_PATH).is_file() else "setup_required",
+            "email": "configured" if email_configured() else "setup_required",
+            "websiteOutreach": "available",
             "workbuddy": "desktop_tools_available",
             "workbuddyTrigger": "not_connected",
             "model": settings.gemini_model,
@@ -231,6 +261,38 @@ def create_app(settings=None, repository=None):
     @app.get("/email/status")
     def email_status(role=Depends(actor)):
         return Gmail.from_settings(settings).profile()
+
+    @app.post("/automation/tick")
+    def automation_tick(body: AutomationBody, role=Depends(actor)):
+        editable(role)
+        if not email_configured():
+            return {"processed": False, "reason": "Email is not configured."}
+        if body.caseId:
+            case = record("case", body.caseId)
+        else:
+            candidates = [c for c in repository.snapshot()["cases"] if c.get("automation", {}).get("status") in {"queued", "awaiting_replies"} or (c.get("automation", {}).get("status") == "review_ready" and any(d["status"] == "approved" for d in current_decisions(c)))]
+            candidates.sort(key=lambda c: c["automation"].get("lastTickAt", ""))
+            case = candidates[0] if candidates else None
+        if not case:
+            return {"processed": False}
+        last_tick = case.get("automation", {}).get("lastTickAt")
+        if last_tick and (datetime.now(ZoneInfo("Asia/Kuala_Lumpur")) - datetime.fromisoformat(last_tick)).total_seconds() < 12:
+            return {"processed": False, "reason": "Task step already running or recently checked."}
+        engine = Automation(email_service(), lambda vendor, case: discover_contact(vendor, case, settings), lambda case, message: extract_quote(case, message, settings))
+        try:
+            result = engine.tick(case["id"], role)
+            if any(f["code"] == "provider_connection" and f["status"] == "open" for f in result.get("failsafes", [])):
+                resolve_failsafe(result, "provider_connection")
+                result = email_service().save(result, role)
+        except (ValueError, RuntimeError, httpx.HTTPError) as error:
+            if isinstance(error, ValueError) and ("Stale" in str(error) or "authoris" in str(error) or "changed" in str(error)):
+                raise
+            current = record("case", case["id"])
+            current["automation"].update(status="needs_attention", error=str(error)[:500] if isinstance(error, ValueError) else "Provider step unavailable. Saved task data is retained.")
+            open_failsafe(current, "provider_connection", "Outreach needs attention", current["automation"]["error"], [])
+            result = email_service().save(current, role)
+        save_progress(repository, result, role)
+        return {"processed": True, "caseId": result["id"], "status": result["automation"]["status"]}
 
     @app.post("/cases/{case_id}/email/contact")
     def email_contact(case_id: str, body: EmailContactBody, role=Depends(actor)):
@@ -280,7 +342,7 @@ def create_app(settings=None, repository=None):
                 c["shortlistVendorIds"] = [v["id"] for v in fresh_candidates]
                 c["outreachVendorIds"] = list(c["shortlistVendorIds"])
                 c["workflowMode"] = "research"
-                c["workflowPlan"] = workflow_plan("research", True, c["shortlistVendorIds"])
+                c["workflowPlan"] = workflow_plan("research", True, c["shortlistVendorIds"], email_configured())
                 if c.get("selectedVendorId"):
                     c["workflowPlan"][-1].update(
                         {
@@ -448,11 +510,13 @@ def create_app(settings=None, repository=None):
             raise ValueError("Maximum 20 current project documents. Use a smaller Drive folder.")
         current_facts = {}
         for document in active_documents:
-            current_facts.update(facts_from_text(document["text"]))
+            if not document.get("taskId"):
+                current_facts.update(facts_from_text(document["text"]))
         # Replace previously derived keys; unrelated project facts are retained.
         managed_keys = set(event.get("documentFactKeys", []))
         for document in old_documents:
-            managed_keys.update(facts_from_text(document["text"]))
+            if not document.get("taskId"):
+                managed_keys.update(facts_from_text(document["text"]))
         facts = {k: v for k, v in event.get("facts", {}).items() if k not in managed_keys}
         facts.update(current_facts)
         metadata["fileCount"] = sum(bool(d.get("driveFileId")) for d in active_documents)
@@ -505,7 +569,38 @@ def create_app(settings=None, repository=None):
 
     @app.post("/chat")
     def chat(body: ChatBody, role=Depends(actor)):
+        return execute_chat(body, role)
+
+    @app.post("/chat/references")
+    def chat_references(payload: str = Form(...), files: list[UploadFile] = File(default=[]), role=Depends(actor)):
         editable(role)
+        try:
+            body = ChatBody.model_validate_json(payload)
+        except ValueError as error:
+            raise ValueError("Invalid chat request. Check your message.") from error
+        if len(files) > 3:
+            raise ValueError("Attach up to three files, with a combined size of 3 MB.")
+        references = []
+        total_size = 0
+        for file in files:
+            content = file.file.read(3 * 1024 * 1024 + 1)
+            total_size += len(content)
+            if total_size > 3 * 1024 * 1024:
+                raise ValueError("Attached files must total 3 MB or less.")
+            name = (file.filename or "document.txt").replace(chr(92), "/").split("/")[-1][:150]
+            try:
+                text = extract_text(name, content)
+            except Exception as error:
+                raise ValueError(str(error) if isinstance(error, ValueError) else "Could not read this file. Use a readable document.") from error
+            references.append({"name": name, "text": text, "originalBase64": base64.b64encode(content).decode(), "size": len(content), "characters": len(text), "status": "ready"})
+        return execute_chat(body, role, references)
+
+    def execute_chat(body, role, references=None):
+        editable(role)
+        references = references or []
+        if body.driveUrl:
+            parse_drive_url(body.driveUrl)
+        reference_hash = payload_hash({"drive": body.driveUrl, "files": [{"name": r["name"], "content": r["originalBase64"]} for r in references]}) if references or body.driveUrl else None
         snapshot = repository.snapshot()
         event = resolve_event(body.message, snapshot["events"], body.eventId)
         if not event:
@@ -562,7 +657,12 @@ def create_app(settings=None, repository=None):
         )
         if body.taskId and not task and not legacy_case and not legacy_thread:
             raise ValueError("Task does not belong to the selected project.")
+        for reference in references:
+            digest = payload_hash({"task": task_id, "content": reference["originalBase64"]})
+            reference.update(id=str(uuid5(NAMESPACE_URL, "chat-reference:" + digest)), contentDigest=digest, eventId=event["id"], taskId=task_id, source="chat", createdAt=datetime.now(ZoneInfo("Asia/Kuala_Lumpur")).isoformat())
         user_message = {
+            "referenceHash": reference_hash,
+            "attachments": [{"id": r["id"], "name": r["name"]} for r in references],
             "id": body.requestId,
             "role": "user",
             "body": body.message,
@@ -587,7 +687,7 @@ def create_app(settings=None, repository=None):
             "backendRevision": 0,
         }
         previous_user = next((m for m in thread["messages"] if m["id"] == body.requestId), None)
-        if previous_user and previous_user["body"] != body.message:
+        if previous_user and (previous_user["body"] != body.message or previous_user.get("referenceHash") != reference_hash):
             raise ValueError("Idempotency key reused for a different message.")
         existing = next(
             (m for m in thread["messages"] if m.get("inReplyTo") == body.requestId), None
@@ -601,20 +701,20 @@ def create_app(settings=None, repository=None):
             }
         if len(thread["messages"]) >= 150:
             raise ValueError("Conversation limit reached for this hackathon workspace.")
-        documents = repository.documents(event["id"])
+        if body.driveUrl and event.get("driveSource", {}).get("url") != body.driveUrl:
+            event = sync_drive(event["id"], DriveBody(url=body.driveUrl), role)
+        for reference in references:
+            repository.upload(reference, {}, role)
+        event = repository.get("event", event["id"])
+        documents = [d for d in repository.documents(event["id"]) if not d.get("taskId") or d["taskId"] == task_id]
+        task_facts = {}
+        for document in documents:
+            if document.get("taskId") == task_id:
+                task_facts.update(facts_from_text(document["text"]))
+        event = {**event, "facts": {**event.get("facts", {}), **task_facts}}
         context = retrieve(event["id"], body.message, documents)
         if not any(m["id"] == body.requestId for m in thread["messages"]):
-            thread = repository.append_message(
-                event["id"],
-                {
-                    "id": body.requestId,
-                    "role": "user",
-                    "body": body.message,
-                    "time": datetime.now(ZoneInfo("Asia/Kuala_Lumpur")).isoformat(),
-                },
-                role,
-                task_id=task_id,
-            )
+            thread = repository.append_message(event["id"], user_message, role, task_id=task_id)
         try:
             provider_event = {
                 **event,
@@ -625,6 +725,15 @@ def create_app(settings=None, repository=None):
                     if c.get("eventId") == event["id"]
                     and (c.get("taskId") == task_id or c["id"] == task_id)
                 ],
+            }
+            active_requests = provider_event["activeRequests"]
+            provider_event["executionStatus"] = {
+                "email": "configured" if email_configured() else "setup_required",
+                "websiteOutreach": "available",
+                "workbuddy": "desktop_tools_available",
+                "suppliersFound": sum(len(c["vendors"]) for c in active_requests),
+                "verifiedContacts": sum(contact_valid(v) for c in active_requests for v in c["vendors"]),
+                "emailsSent": sum(m.get("direction") == "sent" and m.get("executionMode") == "live" for c in active_requests for m in c.get("messages", [])),
             }
             answer = chat_response(
                 body.message, provider_event, context, thread["messages"], settings
@@ -738,7 +847,9 @@ def create_app(settings=None, repository=None):
             )
         ):
             requested = True
-        if current_case and not updated_requirements and not pending:
+        if current_case and not current_case.get("vendors") and known_vendor:
+            requested = True
+        if current_case and not updated_requirements and not pending and not (known_vendor and not current_case.get("vendors")):
             requested = False
             if answer["provider"] == "setup_required" and re.search(
                 r"\b(?:what|current|budget|summary|status|summarise|summarize)\b",
@@ -747,15 +858,41 @@ def create_app(settings=None, repository=None):
             ):
                 assistant["provider"] = "saved_context"
                 assistant["body"] = (
-                    f"Saved task details: {current_case['quantity']} items; budget RM{current_case['budgetSen'] / 100:,.2f}; deadline {current_case['deadline']}; location {current_case['location']}. Live supplier liaison is not connected."
+                    f"Budget: {'RM' + format(current_case['budgetSen'] / 100, ',.2f') if current_case.get('budgetSen') else 'not specified'}. This task has {len(current_case.get('vendors', []))} supplier sources and {sum(m.get('direction') == 'sent' and m.get('executionMode') == 'live' for m in current_case.get('messages', []))} real enquiries recorded."
                 )
         resulting_case = None
+        pause_outreach = bool(re.search(r"\b(?:do\s+not|don't|dont|never|stop|pause|cancel|no)\b.{0,40}\b(?:email|send|contact|outreach|liais\w*)\b|\b(?:research|search)\s+only\b|\bonly\s+(?:research|search)\b", body.message, re.IGNORECASE) or (current_case and re.match(r"\s*(?:stop|pause|cancel)\b", body.message, re.IGNORECASE)))
+        if pause_outreach and current_case and not updated_requirements:
+            requested = False
+            resulting_case = copy.deepcopy(current_case)
+            resulting_case["automation"] = {"requestHash": request_token(resulting_case), "authorisedBy": role, "status": "paused"}
+            assistant["body"] = "Supplier outreach is paused. I won't start any further enquiries or clarifications for this task. Previously sent emails remain in its history."
+            assistant["caseId"] = resulting_case["id"]
+        explicit_outreach = bool(not pause_outreach and current_case and not updated_requirements and re.match(r"\s*(?:(?:okay|ok|yes|then|now|please|just|go\s+ahead(?:\s+and)?)[, ]+)*(?:(?:can|could|would|will)\s+you\s+)?(?:please\s+)?(?:email\s+(?:them|vendors?|suppliers?|these|those|all|the)\b|send\s+(?:(?:an?|the|them)\s+)?(?:emails?|enquir(?:y|ies)|quotation\s+requests?)\b|contact\s+(?:them|vendors?|suppliers?|the|all|these|those)\b|reach\s+out\b|(?:start|resume|continue)\s+(?:the\s+)?(?:outreach|liaison)\b)", body.message, re.IGNORECASE))
+        if explicit_outreach:
+            resulting_case = copy.deepcopy(current_case)
+            resulting_case["automation"] = {"requestHash": request_token(resulting_case), "authorisedBy": role, "status": "queued"}
+            for vendor in resulting_case["vendors"]:
+                vendor.pop("outreachBlock", None)
+            assistant["body"] = "Outreach is queued for this task. I'll verify the suppliers' public contact details, send non-binding enquiries, and check replies while KawTeam is open."
+            assistant["caseId"] = resulting_case["id"]
+        retry_requested = bool(current_case and re.match(r"\s*(?:retry|try again|resume)\b", body.message, re.IGNORECASE))
+        if retry_requested:
+            if not current_case.get("vendors"):
+                requested = True
+            else:
+                resulting_case = copy.deepcopy(current_case)
+                resulting_case["automation"] = {"requestHash": request_token(resulting_case), "authorisedBy": role, "status": "queued"}
+                for vendor in resulting_case["vendors"]:
+                    vendor.pop("outreachBlock", None)
+                assistant["body"] = "I'm trying the available supplier routes again and will keep you updated."
+                assistant["caseId"] = resulting_case["id"]
         if requested:
             brief = {
                 **intake(request_message, event),
                 **(
                     {
-                        k: current_case[k]
+                        k: current_case.get(k)
                         for k in [
                             "title",
                             "goal",
@@ -770,7 +907,7 @@ def create_app(settings=None, repository=None):
                     else {}
                 ),
                 **(pending.get("brief", {}) if pending else {}),
-                **(answer.get("brief") or {}),
+                **{k: v for k, v in (answer.get("brief") or {}).items() if v is not None},
             }
             # Explicit new user values take priority over model output and document memory.
             brief.update(facts_from_text(request_message))
@@ -792,123 +929,133 @@ def create_app(settings=None, repository=None):
                 brief["targetSen"] = min(
                     brief.get("targetSen") or brief["budgetSen"], brief["budgetSen"]
                 )
-            missing = [
-                k for k in ["quantity", "budgetSen", "deadline", "location"] if not brief.get(k)
-            ]
-            if mode == "liaise" and not known_vendor and not current_case:
-                assistant["body"] += (
-                    "\n\nWhich vendor should I contact? Name a supplier from this project or use Connections to start a fresh enquiry."
+            try:
+                c = create_case(
+                    {
+                        k: brief.get(k)
+                        for k in [
+                            "title",
+                            "goal",
+                            "quantity",
+                            "budgetSen",
+                            "targetSen",
+                            "deadline",
+                            "location",
+                        ]
+                    },
+                    str(
+                        uuid5(
+                            NAMESPACE_URL,
+                            f"kawteam:{event['id']}:{task_id}:{body.requestId}",
+                        )
+                    ),
+                    event["id"],
                 )
-                assistant["pendingRequest"] = {"message": request_message, "brief": brief}
-            elif missing:
-                assistant["pendingRequest"] = {"message": request_message, "brief": brief}
-                assistant["missingFacts"] = missing
-                assistant["body"] += (
-                    "\n\nI still need: "
-                    + ", ".join(missing)
-                    + ". Tell me in chat or link authorised Google Drive context."
-                )
-            else:
-                try:
-                    c = create_case(
+                if current_case:
+                    updated_brief = {
+                        k: c[k]
+                        for k in [
+                            "title",
+                            "goal",
+                            "quantity",
+                            "budgetSen",
+                            "targetSen",
+                            "deadline",
+                            "location",
+                        ]
+                    }
+                    # Preserve historical messages/decisions but invalidate prior scope and quote commitments.
+                    c = copy.deepcopy(current_case)
+                    invalidate_terms(c)
+                    c.update(updated_brief)
+                    log(
+                        c,
+                        "Task requirements updated",
+                        "Fresh supplier terms and new approval are required. Previous decisions are retained as superseded history.",
+                        "human",
+                    )
+                    c["events"][-1]["milestone"] = True
+                if current_case:
+                    c["assumptions"] = [] if overrides.get("deadline") else current_case.get("assumptions", [])
+                explicit_total = "budgetSen" in overrides and overrides.get("budgetSource") != "unit"
+                unit_budget = None if explicit_total and "unitBudgetSen" not in overrides else brief.get("unitBudgetSen") or (current_case or {}).get("unitBudgetSen")
+                if explicit_total:
+                    c.pop("unitBudgetSen", None)
+                    c["budgetSource"] = "total"
+                elif overrides.get("budgetSource"):
+                    c["budgetSource"] = overrides["budgetSource"]
+                if unit_budget:
+                    c["unitBudgetSen"] = unit_budget
+                    if c.get("quantity") and not explicit_total and (c.get("budgetSource") == "unit" or not c.get("budgetSen")):
+                        c["budgetSen"] = unit_budget * c["quantity"]
+                        c["targetSen"] = c["budgetSen"]
+                c.update(taskWorkflowVersion=1, selectionTarget=target)
+                c.setdefault("vendorDecisions", [])
+                c["sourceDocumentIds"] = [d["id"] for d in documents]
+                c["taskId"] = task_id
+                c["workflowMode"] = mode
+                if mode == "liaise" and known_vendor and (not current_case or not c["vendors"]):
+                    c["vendors"] = [fresh_vendor(known_vendor)]
+                    c["stage"] = "negotiation"
+                    c["draft"].update(
                         {
-                            k: brief[k]
-                            for k in [
-                                "title",
-                                "goal",
-                                "quantity",
-                                "budgetSen",
-                                "targetSen",
-                                "deadline",
-                                "location",
-                            ]
-                        },
-                        str(
-                            uuid5(
-                                NAMESPACE_URL,
-                                f"kawteam:{event['id']}:{task_id}:{body.requestId}",
-                            )
-                        ),
-                        event["id"],
-                    )
-                    if current_case:
-                        updated_brief = {
-                            k: c[k]
-                            for k in [
-                                "title",
-                                "goal",
-                                "quantity",
-                                "budgetSen",
-                                "targetSen",
-                                "deadline",
-                                "location",
-                            ]
+                            "vendorId": known_vendor["id"],
+                            "recipient": known_vendor["name"]
+                            + " (contact verification required)",
+                            "body": enquiry_body(c),
                         }
-                        # Preserve historical messages/decisions but invalidate prior scope and quote commitments.
-                        c = copy.deepcopy(current_case)
-                        invalidate_terms(c)
-                        c.update(updated_brief)
-                        log(
-                            c,
-                            "Task requirements updated",
-                            "Fresh supplier terms and new approval are required. Previous decisions are retained as superseded history.",
-                            "human",
-                        )
-                        c["events"][-1]["milestone"] = True
-                    c.update(taskWorkflowVersion=1, selectionTarget=target)
-                    c.setdefault("vendorDecisions", [])
-                    c["sourceDocumentIds"] = [d["id"] for d in documents]
-                    c["taskId"] = task_id
-                    c["workflowMode"] = mode
-                    if mode == "liaise" and known_vendor and not current_case:
-                        c["vendors"] = [fresh_vendor(known_vendor)]
-                        c["stage"] = "negotiation"
-                        c["draft"].update(
-                            {
-                                "vendorId": known_vendor["id"],
-                                "recipient": known_vendor["name"]
-                                + " (contact verification required)",
-                                "body": f"Hello {known_vendor['name']}, please provide a fresh, non-binding quotation for {c['quantity']} units: {c['goal']}. Budget ceiling RM{c['budgetSen'] / 100:.2f}; delivery to {c['location']} by {c['deadline']}. Confirm specifications, delivery charges and validity. This enquiry is not an order or agreement.",
-                            }
-                        )
-                        log(
-                            c,
-                            "Existing supplier reused",
-                            "Research skipped. Prior quotation and approval cleared; fresh terms required.",
-                            "negotiation",
-                        )
-                    elif current_case:
-                        # Already-discovered identities are retained; edits need fresh quotes, not stale confirmations.
-                        pass
-                    elif settings.tavily_key:
-                        c["vendors"] = discover(c, settings.tavily_key)
-                        c["stage"] = "research"
-                    else:
-                        log(
-                            c,
-                            "Research connection needed",
-                            "Request saved from chat; live search is not configured. No vendors contacted.",
-                            "research",
-                        )
-                    c["shortlistVendorIds"] = [v["id"] for v in c["vendors"]]
-                    c["outreachVendorIds"] = list(c["shortlistVendorIds"])
-                    c["workflowPlan"] = workflow_plan(
-                        mode, bool(settings.tavily_key), c["shortlistVendorIds"]
                     )
-                    resulting_case = c
-                    assistant["caseId"] = c["id"]
-                    assistant["body"] += (
-                        "\n\nYour supplier request is saved with the event context. "
-                        + (
-                            "Existing supplier reused; a fresh enquiry is drafted. No message has been sent."
-                            if mode == "liaise"
-                            else "Public sources collected for the entire candidate pool; verified contact details and final quotation replies are still needed. Approval happens after liaison."
-                            if settings.tavily_key
-                            else "Live vendor search is not connected yet; no outreach has been sent."
-                        )
+                    log(
+                        c,
+                        "Existing supplier reused",
+                        "Research skipped. Prior quotation and approval cleared; fresh terms required.",
+                        "negotiation",
                     )
-                except (ValueError, httpx.HTTPError) as error:
-                    assistant["body"] += "\n\n" + str(error)
+                elif current_case and c["vendors"]:
+                    # Retain known identities; an exhausted empty search can try again after edits.
+                    pass
+                elif mode == "liaise":
+                    open_failsafe(c, "vendor_identity", "Which supplier should I use?", "The supplier reference is ambiguous. Name the business so I can continue the existing relationship.", ["vendor"])
+                elif settings.tavily_key:
+                    c["vendors"] = discover(c, settings.tavily_key)
+                    c["stage"] = "research"
+                else:
+                    log(
+                        c,
+                        "Research connection needed",
+                        "Request saved from chat; live search is not configured. No vendors contacted.",
+                        "research",
+                    )
+                c["shortlistVendorIds"] = [v["id"] for v in c["vendors"]]
+                c["outreachVendorIds"] = list(c["shortlistVendorIds"])
+                c["workflowPlan"] = workflow_plan(
+                    mode, bool(settings.tavily_key), c["shortlistVendorIds"], email_configured()
+                )
+                resulting_case = c
+                c["automation"] = {"requestHash": request_token(c), "authorisedBy": role, "status": "paused" if pause_outreach or (mode == "liaise" and not c["vendors"]) else "queued"}
+                for vendor in c["vendors"]:
+                    vendor.pop("outreachBlock", None)
+                assistant["caseId"] = c["id"]
+                refresh_context_failsafes(c)
+                if not c["vendors"] and mode != "liaise":
+                    open_failsafe(c, "research_unavailable", "No supplier source is available yet", "Live search is not connected." if not settings.tavily_key else "Search returned no supplier candidates. Add a known business or refine the request so I can try another route.", [])
+                elif c["vendors"]:
+                    resolve_failsafe(c, "research_unavailable")
+                assistant["body"] = (
+                    "Research saved; outreach is paused as requested."
+                    if pause_outreach else
+                    "The task is saved. Add the supplier's name in Failsafe so I can contact the right business."
+                    if mode == "liaise" and not c["vendors"] else
+                    "I'm preparing a fresh enquiry for the existing supplier and will check their replies."
+                    if mode == "liaise" else
+                    f"Found {len(c['vendors'])} supplier sources. I'm checking their business contacts next, then I'll send enquiries and follow up on replies. No emails have been sent yet."
+                    if settings.tavily_key and email_configured() else
+                    f"Found {len(c['vendors'])} supplier sources. Email isn't connected yet, so the enquiries haven't been sent."
+                    if settings.tavily_key else
+                    "Your task is saved. Live supplier search isn't connected yet."
+                )
+            except (ValueError, httpx.HTTPError) as error:
+                assistant["body"] += "\n\n" + str(error)
         thread = repository.append_message(
             event["id"], assistant, role, resulting_case, task_id=task_id
         )

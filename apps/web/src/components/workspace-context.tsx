@@ -21,6 +21,7 @@ export function DemoProvider({children}:{children:ReactNode}) {
   const [toast,setToast]=useState('');const [loading,setLoading]=useState(isApi);const [busy,setBusy]=useState(false);
   const [connectionError,setConnectionError]=useState('');const [connections,setConnections]=useState<Connections|null>(null);
   const running=useRef(false);
+  const automationRunning=useRef(false);
   async function refresh(){
     if(!isApi)return;
     const value=await api<WorkspaceState & {profile:ProfileId}>('state');
@@ -45,7 +46,14 @@ export function DemoProvider({children}:{children:ReactNode}) {
       finally{if(alive)setLoading(false);}
     }
     void boot();
-    const timer=setInterval(()=>{if(isApi && !running.current && document.visibilityState==='visible')void refresh().catch(()=>{});},15000);
+    const timer=setInterval(()=>{
+      if(!isApi || running.current || automationRunning.current || document.visibilityState!=='visible')return;
+      automationRunning.current=true;
+      void (async()=>{
+        try{await api('automation/tick',{});}catch{/* Provider failures are saved on the task; keep workspace reads available. */}
+        finally{await refresh().catch(()=>{});automationRunning.current=false;}
+      })();
+    },15000);
     return()=>{alive=false;clearInterval(timer);};
     // Bootstrap once; subsequent refreshes and role changes are explicit.
     // eslint-disable-next-line react-hooks/exhaustive-deps

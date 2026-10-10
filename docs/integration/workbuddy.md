@@ -40,9 +40,9 @@ Tencent documents Enterprise Managed Agents/ADK APIs, but the user's personal Go
 
 ## Implemented tools and limits
 
-Eight tools are implemented in `apps/api/src/kawteam/mcp/server.py`: `kawteam_health`, `kawteam_projects`, `kawteam_task`, `kawteam_research`, `kawteam_email_status`, `kawteam_send_enquiry`, `kawteam_sync_replies`, `kawteam_interpret_quote`. Reconnect/restart the KawTeam MCP entry to refresh discovery. They use shared backend services directly; FastAPI need not be running, but server environment, Supabase and provider access must work.
+Nine tools are implemented in `apps/api/src/kawteam/mcp/server.py`: `kawteam_health`, `kawteam_projects`, `kawteam_task`, `kawteam_research`, `kawteam_email_status`, `kawteam_send_enquiry`, `kawteam_sync_replies`, `kawteam_interpret_quote`, `kawteam_outreach_step`. Reconnect/restart the KawTeam MCP entry to refresh discovery. They use shared backend services directly; FastAPI need not be running, but server environment, Supabase and provider access must work.
 
-List projects, read a saved task, then use its current backendRevision. Research saves bounded public candidates without verifying contacts or quotes. Only organiser-registered contacts can receive non-binding enquiries. Limits: four per supplier, 60 per task, 20 saved threads per sync and 30 messages per thread. Sends reserve an intent before Gmail; uncertain outcomes cannot be automatically repeated. No arbitrary inbox read, final approve/reject, payment or booking tool exists. The interpretation tool validates quoted evidence and exact terms; Secured additionally requires current human approval and a later matching reply. Real commercial acceptance still needs testing.
+List projects, read a saved task, then use its current backendRevision. Research saves bounded public candidates without verifying contacts or quotes. Human-verified contacts or literal addresses on a relevant supplier's own website can receive non-binding enquiries. Limits: four per supplier, 60 per task, 20 saved threads per sync and 30 messages per thread. Sends reserve an intent before Gmail; uncertain outcomes cannot be automatically repeated. No arbitrary inbox read, final approve/reject, payment or booking tool exists. The interpretation tool validates quoted evidence and exact terms; Secured additionally requires current human approval and a later matching reply. Real commercial acceptance still needs testing.
 
 The real stdio test verifies discovery and health calls. A live local MCP client also read Supabase projects and the QA task containing one actual Gmail receipt and zero human supplier decisions. This is service/tool evidence, not actual WorkBuddy orchestration. [Workflow skill](../../workbuddy/kawteam/skills/kawteam-procurement/SKILL.md) loading into the actual client still needs verification.
 
@@ -50,7 +50,7 @@ The real stdio test verifies discovery and health calls. A live local MCP client
 
 1. Capture actual WorkBuddy health call evidence.
 2. Exercise the implemented project/task/context/search/email tools in the actual desktop client.
-3. Complete contact enrichment, final-quote interpretation and follow-up orchestration.
+3. Verify the bounded outreach step against actual commercial supplier replies; contact verification, interpretation and clarification are implemented.
 4. Keep human final approval outside agent tools; require current quotes and separate supplier confirmation.
 5. Verify retries, budget/round limits, concurrent runs, waits and resume.
 6. Resolve supported website start/resume. Desktop initiation must be labelled if automatic triggering is unavailable.

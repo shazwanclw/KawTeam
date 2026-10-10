@@ -1,12 +1,27 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {initialState} from '../src/lib/demo.ts';
-import {projectTasks, taskCases, taskProgress, taskDates} from '../src/lib/tasks.ts';
+import {initialState,fitReason,restoreState} from '../src/lib/demo.ts';
+import {projectTasks, taskCases, taskProgress, taskDates,supplierOutreachLabel} from '../src/lib/tasks.ts';
 import {agentStatus,approvalItems} from '../src/lib/activity.ts';
 import {scheduledItems} from '../src/lib/schedule.ts';
 import type {WorkspaceState} from '../src/lib/workspace.ts';
 
 const state=():WorkspaceState=>({...initialState(),events:[{id:'tech-night',name:'Tech Night',facts:{},backendRevision:1,tasks:[{id:'shirts',name:'Shirts',createdAt:'2026-10-11'}]}],documents:[],threads:[]});
+
+test('sparse tasks preserve unknown values and cannot qualify a final choice',()=>{
+ const saved=initialState();const c=saved.cases[0];c.quantity=null;c.budgetSen=null;c.targetSen=null;c.location=null;
+ assert.equal(fitReason(c,c.vendors[2]),'Task details needed');
+ const restored=restoreState(JSON.stringify(saved));
+ assert.equal(restored.cases[0].quantity,null);assert.equal(restored.cases[0].budgetSen,null);assert.equal(restored.cases[0].location,null);
+});
+
+test('discovered suppliers remain not contacted until an actual send is recorded',()=>{
+ const c=initialState().cases[0];c.messages=[];
+ assert.equal(supplierOutreachLabel(c,'campus'),'Not contacted');
+ c.messages.push({id:'send',vendorId:'campus',direction:'sent',body:'Enquiry',time:'2026-10-11T03:00:00+08:00',executionMode:'live'});
+ assert.equal(supplierOutreachLabel(c,'campus'),'Awaiting reply');
+ assert.equal(supplierOutreachLabel(c,'willow'),'Not contacted');
+});
 
 test('saved tasks and legacy requests become distinct project task rows',()=>{
  const s=state();s.cases[0].eventId='tech-night';

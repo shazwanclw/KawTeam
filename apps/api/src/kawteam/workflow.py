@@ -23,6 +23,12 @@ def total(v):
 
 
 def fit(c, v):
+    if not c.get("quantity"):
+        return "User quantity unconfirmed"
+    if not c.get("budgetSen"):
+        return "Spending limit unconfirmed"
+    if not c.get("location"):
+        return "Delivery or collection unconfirmed"
     if v.get("quantity", 300) != c["quantity"]:
         return "Quantity mismatch"
     if v.get("executionMode", "demo") == "demo" and c["id"] != "case-totes":
@@ -31,6 +37,8 @@ def fit(c, v):
         return "Missing terms"
     if total(v) > c["budgetSen"]:
         return "Above budget"
+    if c.get("unitBudgetSen") and v["goodsSen"] > c["unitBudgetSen"] * c["quantity"]:
+        return "Above item price limit"
     if v["arrival"] > c["deadline"]:
         return "Arrives too late"
     if not v["specsConfirmed"]:

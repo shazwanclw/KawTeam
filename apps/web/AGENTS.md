@@ -12,7 +12,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 Read [current product specification](../../docs/CURRENT_PRODUCT_SPEC.md), [integration status](../../docs/INTEGRATION_STATUS.md) and the [workspace README](../../README.md) before changes. These supersede older layout/provider assumptions.
 
-Keep chat-first home, project/task pickers, below-chat All Task / Recent Activity, task Secured/Approval/dates, sidebar-only Overview links and Connections. No login, upload UI, preferences trigger, top project tabs or Subprojects. Human final approval is separate from supplier confirmation. Preserve shared-demo role/revision/ownership checks and legacy records.
+Keep chat-first home, project/task pickers, below-chat All Task / Recent Activity / Failsafe, task Secured/Approval/dates, sidebar-only Overview links and Connections. Support task-scoped chat reference attachments and the Drive-link icon; keep the hamburger stationary without duplicate close buttons. No login, preferences trigger, top project tabs or Subprojects. Human final approval is separate from supplier confirmation. Preserve shared-demo role/revision/ownership checks and legacy records.
 
 Gemini/Tavily live checks pass. Gmail is locally authorised with a controlled test receipt, and eight WorkBuddy MCP tools are implemented. Real supplier quote/confirmation acceptance, actual WorkBuddy orchestration/website trigger, Drive access and deployment remain pending. Never infer completed outcomes from configured keys or health, or expose secrets in docs/client/logs.
 

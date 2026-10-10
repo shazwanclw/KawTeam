@@ -15,15 +15,31 @@ def now():
 
 def project_name(message):
     match = re.search(
-        r'\b(?:for\s+(?:the\s+)?(?:event|project)|(?:event|project)\s+(?:called|named))\s+["\']?([^\n.!?"\']+)',
-        message,
-        re.IGNORECASE,
+        r"\b(?:for\s+(?:(?:the|my|our)\s+)?(?:event|project)|(?:event|project)\s+(?:called|named|is))\s+[\"']?([^\n.!?\"']+)",
+        message, re.IGNORECASE,
     )
     if match:
-        return re.split(
-            r"\s+(?:with|within|by|under|in|budget)\b", match.group(1), flags=re.IGNORECASE
-        )[0].strip()[:100]
-    return message.strip().split("\n")[0][:65] or "New project"
+        name = re.split(r"\s+(?:with|within|by|under|in|budget|and|that)\b|,", match.group(1), flags=re.IGNORECASE)[0].strip()
+        if name:
+            return name[:100]
+    for pattern, label in [
+        (r"\b(?:(?:t[- ]?)?shirts?|shirt printing)\b", "T-shirt Sourcing"),
+        (r"\b(?:totes?|bags?)\b", "Merchandise Sourcing"),
+        (r"\b(?:catering|caterers?|food)\b", "Catering & Food"),
+        (r"\b(?:venues?|halls?)\b", "Venue Sourcing"),
+        (r"\b(?:photograph\w*|videograph\w*)\b", "Photography & Video"),
+        (r"\b(?:sponsors?|sponsorship)\b", "Sponsorship Outreach"),
+        (r"\b(?:scholarships?)\b", "Scholarship Outreach"),
+        (r"\b(?:workshops?)\b", "Workshop Planning"),
+        (r"\b(?:bazaars?|stallholders?|exhibitors?)\b", "Bazaar & Event Vendors"),
+        (r"\b(?:equipment|sound|lighting|speakers)\b", "Event Equipment"),
+        (r"\b(?:printing|banners?|posters?)\b", "Print & Production"),
+        (r"\b(?:transport|buses?|coaches?)\b", "Event Transport"),
+        (r"\b(?:vendors?|suppliers?|businesses|companies)\b", "Supplier Sourcing"),
+    ]:
+        if re.search(pattern, message, re.IGNORECASE):
+            return label
+    return "Project Planning"
 
 
 def task_name(message):
@@ -102,6 +118,7 @@ def current_decisions(c):
 
 
 def task_queue(c):
+    from .contacts import contact_valid
     from .workflow import fit, total
 
     decisions = {d["vendorId"]: d for d in current_decisions(c)}
@@ -113,7 +130,7 @@ def task_queue(c):
         for v in c["vendors"]
         if decisions.get(v["id"], {}).get("status") in {"approved", "secured"}
     ]
-    remaining_budget = c["budgetSen"] - sum(total(v) or 0 for v in occupied)
+    remaining_budget = (c.get("budgetSen") or 0) - sum(total(v) or 0 for v in occupied)
     slots = max(0, c.get("selectionTarget", 1) - len(occupied))
     ready, other = [], []
     for v in c["vendors"]:
@@ -138,8 +155,16 @@ def task_queue(c):
                 if v.get("liaisonStatus") == "ready" and reason != "Meets your brief"
                 else "liaising"
             )
+            sent = any(m.get("vendorId") == v["id"] and m.get("direction") == "sent" for m in c.get("messages", []))
+            replied = any(m.get("vendorId") == v["id"] and m.get("direction") == "received" for m in c.get("messages", []))
             row["reason"] = (
-                reason if row["status"] == "needs_terms" else "Final quotation reply required"
+                v["outreachBlock"] if v.get("outreachBlock")
+                else reason if row["status"] == "needs_terms"
+                else "Reply received; final quotation needs validation" if replied
+                else "Enquiry sent; awaiting supplier reply" if sent
+                else "Contact details need verification; no email sent" if v.get("executionMode") == "live" and not contact_valid(v)
+                else "Not contacted yet" if v.get("executionMode") == "live"
+                else "Final quotation reply required"
             )
             other.append(row)
     by_id = {v["id"]: v for v in c["vendors"]}

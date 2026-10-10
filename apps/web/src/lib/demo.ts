@@ -8,13 +8,16 @@ export type Vendor = {
   strengths: string[]; concerns: string[]; quoteRef: string;
 };
 export type Activity = { id: string; title: string; detail: string; time: string; kind: 'research' | 'mail' | 'offer' | 'human' };
+export type Failsafe={id:string;code:string;title:string;detail:string;requiredFields:string[];status:'open'|'resolved';createdAt:string;resolvedAt?:string};
 export type ProcurementCase = {
+  failsafes?:Failsafe[];assumptions?:string[];unitBudgetSen?:number|null;
+  automation?:{status:'queued'|'awaiting_replies'|'review_ready'|'needs_attention'|'paused';lastTickAt?:string;error?:string};
   taskWorkflowVersion?: number;selectionTarget?:number;
   approvalQueue?: {vendorId:string;status:'approval_needed'|'waitlist'|'approved'|'secured'|'rejected'|'not_selected'|'liaising'|'needs_terms';reason:string;rank?:number;termsHash?:string}[];
   vendorDecisions?:{id:string;vendorId:string;status:string;termsHash:string;approvedAt:string;confirmedAt?:string;confirmationMessageId?:string;executionMode:string}[];
   taskId?:string|null;workflowMode?:'research'|'liaise';workflowPlan?:{id:string;label:string;status:string;detail:string}[];shortlistVendorIds?:string[];
-  backendRevision?: number; eventId?: string; messages?: {id:string;vendorId:string;direction:string;body:string;time:string;executionMode:string}[]; id: string; title: string; goal: string; quantity: number; budgetSen: number; targetSen: number;
-  deadline: string; location: string; stage: Stage; selectedVendorId: string | null;
+  backendRevision?: number; eventId?: string; messages?: {id:string;vendorId:string;direction:string;body:string;time?:string;at?:string;receivedAtMs?:string|number;subject?:string;executionMode:string}[]; id: string; title: string; goal: string; quantity: number|null; budgetSen: number|null; targetSen: number|null;
+  deadline: string; location: string|null; stage: Stage; selectedVendorId: string | null;
   vendors: Vendor[]; events: Activity[];
   draft: { recipient: string; subject: string; body: string; status: 'pending' | 'approved' | 'rejected' | 'sent'; vendorId?: string; sentId?: string; revision: number };
 };
@@ -40,6 +43,7 @@ export const dateLabel = (date: string | null) => date ? new Intl.DateTimeFormat
 export const totalCost = (offer: { executionMode?: 'demo' | 'live'; sourceUrl?: string; evidenceExcerpt?: string; quantity?: number; validUntil?: string; serverFit?: string; goodsSen: number; deliverySen: number | null }): number | null => offer.deliverySen === null ? null : offer.goodsSen + offer.deliverySen;
 export const validDate = (value: string) => /^\d{4}-\d{2}-\d{2}$/.test(value) && Number.isFinite(Date.parse(value)) && new Date(value).toISOString().slice(0,10) === value;
 export function fitReason(brief: ProcurementCase, vendor: Vendor): string {
+  if(brief.quantity===null||brief.budgetSen===null)return 'Task details needed';
   if(vendor.serverFit) return vendor.serverFit;
   if(vendor.quantity && vendor.quantity!==brief.quantity) return 'Quantity mismatch';
   const cost=totalCost(vendor);
@@ -114,8 +118,8 @@ export function restoreState(raw: string | null): DemoState {
     const parsed = JSON.parse(raw) as DemoState;
     if (parsed.version !== 2 || !Array.isArray(parsed.cases) || !parsed.cases.length) return initialState();
     for (const c of parsed.cases) {
-      if (typeof c.id !== 'string' || typeof c.title !== 'string' || typeof c.goal !== 'string' || !Number.isSafeInteger(c.budgetSen) || !Number.isSafeInteger(c.quantity) || !validDate(c.deadline) || !Array.isArray(c.vendors) || !Array.isArray(c.events) || !c.draft || typeof c.draft.body !== 'string') return initialState();
-      if(typeof c.location!=='string' || !Number.isSafeInteger(c.targetSen) || c.targetSen<=0 || c.targetSen>c.budgetSen || c.quantity<=0 || c.budgetSen<=0 || !['brief','research','negotiation','decision','decided'].includes(c.stage) || !['pending','approved','rejected','sent'].includes(c.draft.status) || !Number.isSafeInteger(c.draft.revision) || c.draft.revision<1 || typeof c.draft.subject!=='string' || typeof c.draft.recipient!=='string') return initialState();
+      if (typeof c.id !== 'string' || typeof c.title !== 'string' || typeof c.goal !== 'string' || !(c.budgetSen===null||Number.isSafeInteger(c.budgetSen)) || !(c.quantity===null||Number.isSafeInteger(c.quantity)) || !validDate(c.deadline) || !Array.isArray(c.vendors) || !Array.isArray(c.events) || !c.draft || typeof c.draft.body !== 'string') return initialState();
+      if(!(c.location===null||typeof c.location==='string') || !(c.targetSen===null||Number.isSafeInteger(c.targetSen)) || (c.targetSen!==null&&(c.targetSen<=0||(c.budgetSen!==null&&c.targetSen>c.budgetSen))) || (c.quantity!==null&&c.quantity<=0) || (c.budgetSen!==null&&c.budgetSen<=0) || !['brief','research','negotiation','decision','decided'].includes(c.stage) || !['pending','approved','rejected','sent'].includes(c.draft.status) || !Number.isSafeInteger(c.draft.revision) || c.draft.revision<1 || typeof c.draft.subject!=='string' || typeof c.draft.recipient!=='string') return initialState();
       for(const e of c.events) if(!e || !['id','title','detail','time'].every(k=>typeof e[k as keyof Activity]==='string') || !['research','mail','offer','human'].includes(e.kind)) return initialState();
       if(c.selectedVendorId!==null && (typeof c.selectedVendorId!=='string' || !c.vendors.some(v=>v.id===c.selectedVendorId && eligible(c,v)))) return initialState();
       if((c.stage==='decided') !== (c.selectedVendorId!==null)) return initialState();

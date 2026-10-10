@@ -8,7 +8,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from mcp.server import MCPServer
 
+from kawteam.automation import Automation
 from kawteam.config import Settings
+from kawteam.contacts import discover_contact
 from kawteam.gmail import Gmail
 from kawteam.liaison import Liaison
 from kawteam.memory import retrieve
@@ -45,6 +47,7 @@ def kawteam_health(request_id: str) -> HealthResult:
             "non-binding-email",
             "saved-thread-replies",
             "quote-interpretation",
+            "task-outreach-step",
         ],
         "phase": "scoped-execution-tools",
     }
@@ -134,10 +137,18 @@ def kawteam_email_status() -> dict[str, Any]:
 
 
 @mcp.tool(structured_output=True)
+def kawteam_outreach_step(case_id: str) -> dict[str, Any]:
+    """Execute one bounded step for a task whose user requested outreach in KawTeam chat. Verify a source-backed business contact, send a non-binding enquiry, read saved threads, interpret a reply or clarify missing terms. Never approves/selects suppliers or sends orders. Repeated steps resume saved progress; uncertain sends stay blocked."""
+    settings, _repository, liaison = services()
+    engine = Automation(liaison, lambda vendor, case: discover_contact(vendor, case, settings), lambda case, message: extract_quote(case, message, settings))
+    return engine.tick(case_id, "teammate")
+
+
+@mcp.tool(structured_output=True)
 def kawteam_send_enquiry(
     case_id: str, vendor_id: str, subject: str, body: str, expected_revision: int, request_id: str
 ) -> dict[str, Any]:
-    """Send a non-binding enquiry/clarification to an organiser-verified contact in this task. Persist intent first. Reuse request_id for retries; uncertain sends block resending. Never use for orders, bookings, payment or final acceptance. Limits: four messages per supplier, 60 per task."""
+    """Send a non-binding enquiry/clarification to a human-verified or source-backed business contact in this task. Persist intent first. Reuse request_id for retries; uncertain sends block resending. Never use for orders, bookings, payment or final acceptance. Limits: four messages per supplier, 60 per task."""
     _settings, _repository, liaison = services()
     return liaison.send(
         case_id, vendor_id, subject, body, expected_revision, request_id, "teammate"

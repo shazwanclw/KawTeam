@@ -3,13 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --webpack",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "test": "node --experimental-strip-types --test tests/domain.test.ts tests/activity.test.ts tests/schedule.test.ts tests/tasks.test.ts",
-    "test:e2e": "node tests/task-layout-browser.mjs"
+    "test:e2e": "node tests/task-layout-browser.mjs",
+    "test:compact": "node tests/compact-chat-browser.mjs",
+    "test:references": "node tests/chat-references-browser.mjs",
+    "test:history": "node tests/supplier-history-browser.mjs"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",

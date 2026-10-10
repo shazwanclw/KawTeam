@@ -22,6 +22,6 @@ Task start, initial message and legacy history copy are transactional. Case/assi
 
 ## Evidence and boundaries
 
-100 backend tests and 43 frontend tests pass; lint/type checks pass. Production build, saved browser/DB task checks and responsive layouts passed before this docs refresh. Live Gemini reply and Tavily sources verified; local MCP health works. QA records removed and original sample restored.
+103 backend tests and 44 frontend tests pass; lint/type checks pass. Production build, saved browser/DB task checks and responsive layouts passed before this docs refresh. Live Gemini reply and Tavily sources verified; local MCP health works. QA records removed and original sample restored.
 
 Gmail is locally authorised; one controlled test send has a saved provider receipt, and saved-thread reading works. Eight scoped WorkBuddy MCP tools exist and real local project/task reads pass. Actual desktop orchestration, website trigger, automated contact enrichment, live supplier quote/confirmation acceptance, Drive access and public deployment remain pending. See [integration status](INTEGRATION_STATUS.md).

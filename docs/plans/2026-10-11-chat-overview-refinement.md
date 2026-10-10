@@ -12,6 +12,6 @@ Activity includes up to 15 useful saved milestones, not thoughts/parsing/plannin
 
 ## Implementation and verification
 
-Activity/schedule helpers, overview views, chat, sidebar and browser checks delivered. Current suites: 43 frontend/71 backend; lint/type checks pass. Prior build and read-only task/refinement browser acceptance passed. Agent statuses require evidence, not fake background work.
+Activity/schedule helpers, overview views, chat, sidebar and browser checks delivered. Current suites: 44 frontend/71 backend; lint/type checks pass. Prior build and read-only task/refinement browser acceptance passed. Agent statuses require evidence, not fake background work.
 
 Gmail is locally authorised; one controlled test send has a saved provider receipt, and saved-thread reading works. Eight scoped WorkBuddy MCP tools exist and real local project/task reads pass. Actual desktop orchestration, website trigger, automated contact enrichment, live supplier quote/confirmation acceptance, Drive access and public deployment remain pending. See [integration status](../INTEGRATION_STATUS.md).

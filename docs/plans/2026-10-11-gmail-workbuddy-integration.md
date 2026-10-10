@@ -18,4 +18,4 @@ Google consent, identity, one labelled test send and one matching reply passed f
 
 Eight scoped MCP tools are implemented, including grounded quote/confirmation interpretation. Complete final quotes require supported source fragments and explicit amounts/dates. Secured requires a current human approval, exact matching terms and a later provider timestamp. These guards pass automated tests; actual commercial supplier acceptance remains unverified. The real test acknowledgement was correctly excluded from final quote approval by Gemini.
 
-Current verification: 100 backend tests, 43 frontend tests, Ruff, TypeScript and ESLint. Actual WorkBuddy desktop orchestration/website trigger, automatic contact enrichment, Drive access and public deployment remain pending.
+Current verification: 103 backend tests, 44 frontend tests, Ruff, TypeScript and ESLint. Actual WorkBuddy desktop orchestration/website trigger, automatic contact enrichment, Drive access and public deployment remain pending.

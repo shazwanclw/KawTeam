@@ -10,9 +10,9 @@ The main headline is **What are we going to KawTeam today?** The product is chat
 
 ## Navigation and design
 
-Use a light neutral canvas, deep teal `#00545f`, restrained lime `#d6fb00` and pale lime `#ecffb6`. Keep Jakarta typography, generous spacing, clear hierarchy, row-based task lists and consistent shadcn dialogs/dropdowns/calendar. Do not restore generic metric cards, a login screen, duplicate creation controls, a model picker or assistant-preference controls.
+Use a light neutral canvas, deep teal `#00545f`, restrained lime `#d6fb00` and pale lime `#ecffb6`. Keep Jakarta typography, compact page spacing, clear hierarchy, row-based task lists and consistent shadcn dialogs/dropdowns/calendar. Do not restore generic metric cards, a login screen, duplicate creation controls, a model picker or assistant-preference controls.
 
-The hamburger starts closed. Once opened, it stays open across navigation until the user closes it; a full reload starts closed. The sidebar contains:
+The top rail contains only a stationary hamburger that toggles the sidebar from the same screen position; separate sidebar close buttons are removed. Its three lines retain their hamburger shape and subtly change width, with a background that blends into the opening sidebar; reduced-motion preferences disable the transition. Breadcrumbs, brand repetition, profile chip and page eyebrows are removed. The profile switcher lives at the bottom of the sidebar. The hamburger starts closed. Once opened, it stays open across navigation until the user closes it; a full reload starts closed. Navigation and Escape used to dismiss a dialog/menu do not close the sidebar. The sidebar contains:
 
 - **Chat**: the main entry page.
 - **Overview**: sidebar-only links for Recent Activity, Approval and Calendar. Do not repeat those navigation tabs inside overview pages.
@@ -23,7 +23,7 @@ There is no login. The profile menu selects Organiser, Teammate or Observer in a
 
 ## Project creation and memory
 
-Creation asks for a project name and optional Google Drive folder/document link. Files are not uploaded through the current product UI. Existing upload endpoints and legacy documents remain compatible internally.
+Creation asks for a project name and optional Google Drive folder/document link. Chat also accepts readable reference files (PDF, DOCX, XLSX, TXT, Markdown and CSV), up to three files and 3 MB combined. Files are extracted before the assistant responds and saved with task scope. Task attachment facts do not become shared project facts, including during Drive sync.
 
 Project memory stores authorised extracted content, source identities and derived facts in Supabase. A selected task shares its parent project's memory but has its own conversation and supplier request. Relevant excerpts and document citations are provided to Gemini; this is stored/retrieved context, not model training or access to the user's whole Drive.
 
@@ -31,11 +31,11 @@ Drive ingestion code exists, but neither supported Drive credential is configure
 
 ## Main Chat
 
-The main composer selects a **project**, not an AI model. Sending a new conversation creates a task in that project. Without a selection, the backend resolves a named existing project or creates one from the prompt, then saves the task and initial message transactionally.
+The main composer selects a **project**, not an AI model. Its Drive-link icon is visible until the selected project has a saved Drive link, and is available before a project is chosen. A separate paperclip icon stages removable file references. Staged Drive links become shared project context; file references remain with the task. Sending a new conversation creates a task in that project. Without a selection, the backend resolves a named existing project or creates one from the prompt, then saves the task and initial message transactionally.
 
-Example: "Find 50 shirts within RM2,000 by 25 October 2026 in Subang Jaya for event Sunway Got Talent." The backend uses or creates Sunway Got Talent and creates a task such as T-shirt merchandise. The resulting conversation opens in that project with its task selected. Missing essential facts are clarified in chat, not a procurement form.
+Example: "Find 50 shirts within RM2,000 by 25 October 2026 in Subang Jaya for event Sunway Got Talent." The backend uses or creates Sunway Got Talent and creates a task such as T-shirt merchandise. The resulting conversation opens in that project with its task selected. Research and non-binding enquiries proceed with available context. Unknown quantity remains unknown and enquiries request minimum quantities/pricing tiers; unknown delivery destination is omitted. An absent deadline defaults to a provisional 14 days and is recorded as an assumption. Truly necessary unresolved facts appear in Failsafe rather than blocking the initial chat.
 
-Project-name and task-name inference currently use bounded heuristics. Do not promise perfect interpretation of every ambiguous event reference. Retries with the same request identity must not create duplicate projects, tasks or messages.
+An explicit event/project name is preserved. Otherwise new projects receive concise purpose-based names such as T-shirt Sourcing, Catering & Food or Venue Sourcing, rather than copied prompts. Project-name and task-name inference currently use bounded heuristics. Do not promise perfect interpretation of every ambiguous event reference. Retries with the same request identity must not create duplicate projects, tasks or messages.
 
 ## Project Chat and task list
 
@@ -49,7 +49,9 @@ Opening a project starts directly at its chat composer. Remove the former top Ch
 
 Example continuation: "We only want 40 shirts now." This updates the selected 50-shirt task, retains its history and requires fresh quotes. It does not create a second supplier request or reuse the previous price.
 
-Below the composer, show only **All Task** and **Recent Activity**. All Task uses row boxes, not a data table. Each row links to task details and shows the number of actionable supplier approvals. Tasks replace optional Subprojects in the product vocabulary. Earlier project-wide conversations and legacy case requests remain resumable as tasks.
+Below the composer, show **All Task**, **Recent Activity** and **Failsafe** with an unresolved-count badge. Failsafe appears only while the project has open issues; resolving the last issue removes the tab and returns its panel to All Task. Failsafe groups last-resort task attention items and accepts a focused reply in the existing task conversation. Optional missing initial destination and ordinary reply waits do not trigger attention. Unknown quantity does; final offers cannot be approved without confirmed scope and fit. All Task uses row boxes, not a data table. Each row links to task details and shows the number of actionable supplier approvals. Tasks replace optional Subprojects in the product vocabulary. Earlier project-wide conversations and legacy case requests remain resumable as tasks.
+
+The user prompt appears immediately with an accessible Thinking indicator. Replies state actual sourcing progress without repeating approval reminders. Later chat updates count recorded current-request messages and replies; internal reasoning is never shown as activity.
 
 ## Task page
 
@@ -62,7 +64,7 @@ The left side contains:
 
 The right side contains **Upcoming events**: task deadlines, relevant proposed/confirmed delivery dates and quote expiries that still matter. Dates must come from saved records, not invented scheduling.
 
-Supplier review opens a concise summary of scope, landed cost, delivery, conditions and final replies. Keep detailed evidence available without placing raw email headers or a full email conversation in the primary approval modal. Only the organiser can approve/reject. Continue conversation returns to the project with the task selected.
+Supplier review opens a concise summary of scope, landed cost, delivery, conditions and final replies. Keep detailed evidence available without placing raw email headers or a full email conversation in the primary approval modal. Each supplier row has a separate history icon opening the saved sent/received email timeline for that supplier and task, including prior revisions. Subjects, timestamps and message bodies are plain text; missing history is clearly empty and demo messages are labelled. Only the organiser can approve/reject. Continue conversation returns to the project with the task selected.
 
 ## Supplier workflow and final control
 
@@ -128,7 +130,7 @@ Connections includes suppliers with recorded communication or a legacy explicit 
 | Conversation | Gemini adapter; live reply through the website verified |
 | Discovery | Tavily adapter; live public-source results verified |
 | Project memory | Stored extraction/retrieval and Drive adapter; actual Drive reads await credentials |
-| WorkBuddy | Seven scoped desktop MCP tools, real local transport/project/task reads; orchestration and website trigger pending |
+| WorkBuddy | Nine scoped desktop MCP tools, real local transport/project/task reads; orchestration and website trigger pending |
 | Email | Gmail locally authorised; durable send intents, provider receipts and saved-thread reading; live supplier quote/confirmation acceptance pending |
 | Hosting | Two Vercel projects planned, apps/web and apps/api; public deployment not verified |
 
@@ -142,14 +144,25 @@ The team chose **Gemini for website chat plus WorkBuddy through MCP** after pers
 
 The user supplied a WorkBuddy screenshot showing 2,350 credits. Actual remaining balance, expiry and workflow consumption must be checked in that account. Credits are not API credentials and are not evidence that Enterprise API usage is included.
 
-Gmail is locally authorised; one controlled test send has a saved provider receipt, and saved-thread reading works. Eight scoped WorkBuddy MCP tools exist and real local project/task reads pass. Actual desktop orchestration, website trigger, automated contact enrichment, live supplier quote/confirmation acceptance, Drive access and public deployment remain pending. See [integration status](INTEGRATION_STATUS.md).
+Gmail is locally authorised; one controlled test send has a saved provider receipt, and saved-thread reading works. Nine scoped WorkBuddy MCP tools exist and real local project/task reads pass. Actual desktop orchestration, website trigger, live supplier quote/confirmation acceptance, Drive access and public deployment remain pending. See [integration status](INTEGRATION_STATUS.md).
 
 ## Scope and non-goals
 
-Keep no login, no exposed upload form, no assistant-preference button, no top project tabs and no optional Subproject feature. No agent final choice, checkout, payment, signature, fabricated supplier confirmation, fabricated savings or silent social messaging. Real private multi-account access, verified social integrations, automatic background Drive sync and external calendar invites are future features.
+Keep no login, no separate procurement/upload page, no assistant-preference button, no top project tabs and no optional Subproject feature. No agent final choice, checkout, payment, signature, fabricated supplier confirmation, fabricated savings or silent social messaging. Real private multi-account access, verified social integrations, automatic background Drive sync and external calendar invites are future features.
 
 ## Verification and completion boundary
 
-Latest verification: 100 backend tests and 43 frontend tests pass; Ruff, TypeScript and ESLint pass. Prior production build/browser evidence remains. A controlled Gmail send receipt is saved, and real local MCP project/task reads pass. The QA email project is retained for reply acceptance; earlier QA projects were removed.
+Latest verification: 131 backend tests and 44 frontend tests pass; Ruff, TypeScript and ESLint pass. Prior production build/browser evidence remains. A controlled Gmail send receipt is saved, and real local MCP project/task reads pass. The QA email project is retained for reply acceptance; earlier QA projects were removed.
 
-The application is not yet a complete autonomous supplier-liaison system. Completion still needs real contact enrichment, real supplier quote/confirmation acceptance, actual WorkBuddy orchestration/website trigger, Drive credentials, public deployment and submission materials. See [integration status](INTEGRATION_STATUS.md).
+The application is not yet a complete autonomous supplier-liaison system. Completion still needs real supplier quote/confirmation acceptance, actual WorkBuddy orchestration/website trigger, Drive credentials, public deployment and submission materials. See [integration status](INTEGRATION_STATUS.md).
+
+
+## Automatic website outreach (11 October 2026)
+
+Chat supplier requests now persist an authorised task-scoped outreach queue. The visible website runs one bounded step approximately every 15 seconds: verify a public supplier business contact, send a non-binding enquiry, sync saved Gmail threads, interpret a current reply, or request missing/revised terms. Only a literal address from the supplier's own site is used, with grounded service evidence; ambiguous contacts and provider failures remain visible on the task. All discovered candidates stay in the pool; unrelated sources are not emailed.
+
+Email receipts, request hashes, deterministic send IDs, compare-and-swap writes and a 180-second step lease prevent duplicate/concurrent sends. A pause instruction disables further steps; asking to view contact details does not authorise sends. Enquiries stop for unselected suppliers when the approved target is filled. Human supplier selection remains in KawTeam. A later matching confirmation can mark an approved supplier secured; the runner does not send orders or binding acceptance.
+
+Existing tasks are not silently enrolled: continue that task and say `Email the suppliers` or `Start outreach`. New or edited sourcing requests queue outreach automatically, unless the user asks for research only. Keep KawTeam open to advance website ticks; a permanently running hosted worker is not implemented. WorkBuddy can call `kawteam_outreach_step` for the same authorised task, but this does not give the website an inbound WorkBuddy API. Reconnect desktop MCP to discover the ninth tool.
+
+Verification: controlled mailbox tests, live read-only supplier contact extraction, and an isolated browser tick check pass. No real supplier enquiry was sent during development. Real commercial supplier acceptance, public deployment, unattended scheduling and Drive access remain pending.

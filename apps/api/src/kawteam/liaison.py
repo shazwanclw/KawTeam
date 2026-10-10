@@ -1,4 +1,4 @@
-"""Durable task-scoped communication. Agents cannot approve suppliers or verify contacts."""
+"""Durable task-scoped communication. Agents cannot approve suppliers."""
 
 import copy
 import re
@@ -18,7 +18,7 @@ def request_token(case):
     return payload_hash(
         {
             k: case.get(k)
-            for k in ["quantity", "budgetSen", "deadline", "location", "selectionTarget", "goal"]
+            for k in ["quantity", "budgetSen", "unitBudgetSen", "deadline", "location", "selectionTarget", "goal"]
         }
     )
 
@@ -80,10 +80,12 @@ class Liaison:
         return self.save(case, actor)
 
     def send(self, case_id, vendor_id, subject, body, expected, request_id, actor):
+        from .contacts import contact_valid
+
         case = self.case(case_id, actor=actor)
         vendor = self.vendor(case, vendor_id)
         address = vendor.get("contact", {}).get("email")
-        if not address or vendor["contact"].get("verifiedBy") != "organiser":
+        if not address or not contact_valid(vendor):
             raise ValueError("A verified supplier contact is required before sending.")
         # All messages on this endpoint are explicitly non-binding. Confirmation is a separate future action.
         if re.search(
@@ -203,7 +205,7 @@ class Liaison:
         log(
             current,
             "Supplier enquiry sent",
-            f"A non-binding enquiry was delivered to {vendor['name']}; awaiting reply.",
+            f"A non-binding enquiry was sent through Gmail to {vendor['name']}; awaiting reply.",
             "liaison",
         )
         current["events"][-1]["milestone"] = True
@@ -363,6 +365,10 @@ class Liaison:
             case["events"][-1]["milestone"] = True
             return self.save(case, actor)
         if decision:
+            if decision["status"] == "approved" and not data["final"]:
+                # An acknowledgement is not a new offer and must not overwrite approved terms.
+                message.update(quoteInterpretation=data, interpretedAt=now())
+                return self.save(case, actor)
             raise ValueError(
                 "A supplier decision already exists on these terms; do not overwrite it with another quote."
             )

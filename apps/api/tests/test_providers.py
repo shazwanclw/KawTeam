@@ -29,3 +29,22 @@ def test_explicit_unknown_scope_remains_unknown_instead_of_inheriting_another_qu
     )
     assert "quantity" in result["brief"]
     assert result["brief"]["quantity"] is None
+
+
+def test_chat_sends_actual_execution_status_to_model(monkeypatch):
+    import json
+
+    import httpx
+
+    from kawteam.config import Settings
+    from kawteam.providers import chat_response
+    status = {"email": "configured", "websiteOutreach": "not_connected", "suppliersFound": 5, "verifiedContacts": 0, "emailsSent": 0}
+    def handle(request):
+        payload = json.loads(request.content)
+        prompt = json.loads(payload["contents"][0]["parts"][0]["text"])
+        assert prompt["executionStatus"] == status
+        assert "executionStatus" in payload["systemInstruction"]["parts"][0]["text"]
+        return httpx.Response(200, json={"candidates": [{"content": {"parts": [{"text": json.dumps({"reply": "Five suppliers found; no email sent. Gmail is configured, but automatic outreach is not connected.", "action": "none", "citations": []})}]}}]})
+    monkeypatch.setattr("kawteam.providers.client", lambda: httpx.Client(transport=httpx.MockTransport(handle)))
+    result = chat_response("Did you email them?", {"name": "Tech Night", "executionStatus": status}, [], [], Settings(gemini_key="test"))
+    assert "no email sent" in result["reply"]

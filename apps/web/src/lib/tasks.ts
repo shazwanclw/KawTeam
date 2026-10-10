@@ -13,6 +13,12 @@ export function projectTasks(state:WorkspaceState,project:EventMemory):ProjectTa
  return tasks;
 }
 export const taskCases=(state:WorkspaceState,projectId:string,taskId:string)=>state.cases.filter(c=>c.eventId===projectId&&(c.taskId===taskId||(!c.taskId&&c.id===taskId)));
+export function supplierOutreachLabel(request:ProcurementCase,vendorId:string){
+ const messages=(request.messages||[]).filter(m=>m.vendorId===vendorId);
+ if(messages.some(m=>m.direction==='received'))return 'Reply received';
+ if(messages.some(m=>m.direction==='sent'))return 'Awaiting reply';
+ return 'Not contacted';
+}
 export function taskProgress(cases:ProcurementCase[]){
  const latest=cases.at(-1);const rows=latest?.approvalQueue||[];
  return {target:latest?.selectionTarget||1,secured:rows.filter(r=>r.status==='secured').length,approved:rows.filter(r=>r.status==='approved').length,pending:rows.filter(r=>r.status==='approval_needed').length};

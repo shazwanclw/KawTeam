@@ -17,12 +17,12 @@ const messageTime=(value:string)=>/^\d{4}-\d{2}-\d{2}T/.test(value)&&Number.isFi
 const caseHref=(c:ProcurementCase,tab='')=>`/cases/${encodeURIComponent(c.id)}${tab?'/'+tab:''}`;
 
 function RequestContext({request}:{request:ProcurementCase}){
-  return <div className="flow-request-context"><p>{request.goal}</p><dl><div><dt>Quantity</dt><dd>{request.quantity}</dd></div><div><dt>Budget ceiling</dt><dd>{money(request.budgetSen)}</dd></div><div><dt>Deadline</dt><dd>{dateLabel(request.deadline)}</dd></div><div><dt>Location</dt><dd>{request.location}</dd></div></dl></div>;
+  return <div className="flow-request-context"><p>{request.goal}</p><dl><div><dt>Quantity</dt><dd>{request.quantity??'Not specified'}</dd></div><div><dt>Budget ceiling</dt><dd>{request.budgetSen!==null?money(request.budgetSen):request.unitBudgetSen?`${money(request.unitBudgetSen)} per item`:'Not specified'}</dd></div><div><dt>Deadline</dt><dd>{dateLabel(request.deadline)}</dd></div><div><dt>Location</dt><dd>{request.location||'Not specified'}</dd></div></dl></div>;
 }
 
 function MessageHistory({request,vendorId}:{request:ProcurementCase;vendorId?:string}){
   const messages=(request.messages||[]).filter(m=>(!vendorId||m.vendorId===vendorId)&&['sent','received'].includes(m.direction));
-  return <section className="flow-history"><h3><History size={15}/>Supplier conversation</h3>{messages.length?messages.map(m=><article className={`flow-history-message ${m.direction}`} key={m.id}><div><strong>{m.direction==='received'?'Supplier reply':'Outgoing message'}</strong><span>{m.executionMode==='demo'?'Controlled demo · ':''}{messageTime(m.time)}</span></div><p>{m.body}</p></article>):<p className="flow-muted">No supplier messages have been sent or received for this request.</p>}</section>;
+  return <section className="flow-history"><h3><History size={15}/>Supplier conversation</h3>{messages.length?messages.map(m=><article className={`flow-history-message ${m.direction}`} key={m.id}><div><strong>{m.direction==='received'?'Supplier reply':'Outgoing message'}</strong><span>{m.executionMode==='demo'?'Controlled demo · ':''}{messageTime(m.time||m.at||'')}</span></div><p>{m.body}</p></article>):<p className="flow-muted">No supplier messages have been sent or received for this request.</p>}</section>;
 }
 
 export function AgentStatus({projectId,taskId,working=false}:{projectId?:string;taskId?:string|null;working?:boolean}){

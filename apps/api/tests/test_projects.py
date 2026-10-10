@@ -129,8 +129,9 @@ def test_unresolved_vendor_reference_asks_instead_of_researching():
             json={"eventId": "tech-night", "message": "Buy 20 more shirts from that vendor"},
         )
         assert response.status_code == 200
-        assert "caseId" not in response.json()["assistant"]
-        assert "which vendor" in response.json()["assistant"]["body"].lower()
+        case = next(c for c in response.json()["state"]["cases"] if c["id"] == response.json()["assistant"]["caseId"])
+        assert not case["vendors"] and case["automation"]["status"] == "paused"
+        assert any(f["code"] == "vendor_identity" for f in case["failsafes"])
 
 
 def test_missing_facts_can_be_completed_in_followup_chat():
@@ -144,7 +145,8 @@ def test_missing_facts_can_be_completed_in_followup_chat():
                 "message": "Find vendors for 50 shirts with a budget of RM2000",
             },
         )
-        assert first.json()["assistant"]["missingFacts"] == ["deadline", "location"]
+        assert first.json()["assistant"]["caseId"]
+        assert "missingFacts" not in first.json()["assistant"]
         second = c.post(
             "/chat",
             headers=HEADERS,
@@ -372,8 +374,9 @@ def test_ambiguous_named_supplier_returns_clarification_without_new_case():
             headers=HEADERS,
             json={"eventId": "tech-night", "message": "Contact Shared Printing"},
         )
-        assert "which vendor" in result.json()["assistant"]["body"].lower()
-        assert "caseId" not in result.json()["assistant"]
+        case = next(c for c in result.json()["state"]["cases"] if c["id"] == result.json()["assistant"]["caseId"])
+        assert not case["vendors"]
+        assert any(f["code"] == "vendor_identity" for f in case["failsafes"])
 
 
 def test_research_refresh_retains_human_choice_and_exact_approved_draft(monkeypatch):

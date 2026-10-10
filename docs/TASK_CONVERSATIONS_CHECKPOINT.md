@@ -20,7 +20,7 @@ Run sample liaison and Check demo confirmation are restricted labelled actions f
 
 Seven applied migrations include task conversations and legacy-copy changes. Shared-demo role selection is deliberate, not private multi-user authentication. Tests cover naming/retries, continuation/edits, isolation, legacy threads, valid final quotes, one/ten targets, total budget, stale terms, confirmation proof and role restrictions.
 
-100 backend tests and 43 frontend tests pass, plus Ruff, TypeScript and ESLint. Production build, responsive saved browser flow and database concurrency checks passed before this documentation refresh. Original sample restored; QA projects removed. README documents read-only and opt-in checks.
+103 backend tests and 44 frontend tests pass, plus Ruff, TypeScript and ESLint. Production build, responsive saved browser flow and database concurrency checks passed before this documentation refresh. Original sample restored; QA projects removed. README documents read-only and opt-in checks.
 
 ## Latest integration update
 

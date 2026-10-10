@@ -1,0 +1,45 @@
+import {chromium} from 'playwright';
+import assert from 'node:assert/strict';
+
+const browser=await chromium.launch();
+try{
+ const page=await browser.newPage({viewport:{width:1280,height:900}});
+ page.setDefaultTimeout(5000);
+ const project={id:'history-project',name:'Tech Night',facts:{},backendRevision:1,tasks:[{id:'shirts',name:'Shirts',createdAt:'2026-10-11'}]};
+ const vendor={id:'print',name:'Campus Print',initials:'CP',location:'Subang',color:'sage',executionMode:'live',goodsSen:100000,deliverySen:0,initialSen:100000,arrival:'2026-10-25',specsConfirmed:true,status:'Ready',description:'',strengths:[],concerns:[],quoteRef:'Q1'};
+ const request={id:'shirts-case',eventId:project.id,taskId:'shirts',title:'Shirts',goal:'Find 50 shirts',quantity:50,budgetSen:200000,targetSen:200000,location:'Subang',deadline:'2026-10-25',vendors:[vendor,{...vendor,id:'other',name:'Other Printer'},{...vendor,id:'empty',name:'New Supplier'}],events:[],stage:'decision',selectedVendorId:null,approvalQueue:[{vendorId:'print',status:'approval_needed',rank:1,reason:'Meets your brief'},{vendorId:'other',status:'liaising',reason:'Awaiting reply'},{vendorId:'empty',status:'liaising',reason:'Awaiting reply'}],messages:[{id:'reply',vendorId:'print',direction:'received',body:'We can supply 50 shirts for RM1000.',subject:'Re: Shirts enquiry',receivedAtMs:String(Date.parse('2026-10-11T10:00:00+08:00')),executionMode:'live'},{id:'other-mail',vendorId:'other',direction:'sent',body:'PRIVATE OTHER SUPPLIER',at:'2026-10-11T09:00:00+08:00',executionMode:'live'},{id:'enquiry',vendorId:'print',direction:'sent',body:'Could you quote for 50 shirts?',subject:'Shirts enquiry',at:'2026-10-11T09:00:00+08:00',executionMode:'live'},{id:'clarify',vendorId:'print',direction:'sent',body:'Please confirm delivery is included.',at:'2026-10-11T12:00:00+08:00',executionMode:'live'}],draft:{body:'',subject:'',recipient:'',status:'pending',revision:1}};
+ const state={version:2,profile:'organiser',events:[project],documents:[],threads:[],cases:[request]};
+ await page.route('**/api/kawteam/**',route=>{const path=new URL(route.request().url()).pathname;return route.fulfill({json:path.endsWith('/state')?state:path.endsWith('/automation/tick')?{processed:false}:{}});});
+ await page.goto((process.env.KAWTEAM_TEST_URL||'http://127.0.0.1:3000')+`/projects/${project.id}/tasks/shirts`);
+ await page.getByRole('button',{name:'Email history: Campus Print',exact:true}).click();
+ const dialog=page.getByRole('dialog');
+ await dialog.getByRole('heading',{name:'Email history',exact:true}).waitFor();
+ assert.deepEqual(await dialog.locator('.supplier-history-message-body').allTextContents(),['Could you quote for 50 shirts?','We can supply 50 shirts for RM1000.','Please confirm delivery is included.']);
+ assert.ok(!(await dialog.innerText()).includes('PRIVATE OTHER SUPPLIER'));
+ assert.equal(await dialog.locator('.supplier-history-message.sent').count(),2);
+ await page.keyboard.press('Escape');
+ await page.getByRole('button',{name:'Review supplier: Campus Print',exact:true}).click();
+ await page.getByRole('dialog').getByRole('heading',{name:'Campus Print',exact:true}).waitFor();
+ await page.keyboard.press('Escape');
+ await page.getByRole('button',{name:'Email history: Other Printer',exact:true}).click();
+ assert.equal(await page.getByRole('dialog').locator('.supplier-history-message').count(),1);
+ await page.keyboard.press('Escape');
+ await page.getByRole('button',{name:'Email history: New Supplier',exact:true}).click();
+ await page.getByRole('heading',{name:'No emails recorded yet',exact:true}).waitFor();
+ await page.keyboard.press('Escape');
+ await page.waitForTimeout(250);
+ assert.equal(await page.getByRole('button',{name:'Email history: New Supplier',exact:true}).evaluate(el=>el===document.activeElement),true);
+ const toggle=page.getByRole('button',{name:'Open navigation',exact:true});
+ const before=await toggle.boundingBox();await toggle.click();
+ const expanded=page.getByRole('button',{name:'Collapse navigation',exact:true});
+ assert.equal(await expanded.locator('.hamburger-lines i').count(),3);
+ assert.equal(await expanded.locator('.hamburger-lines').evaluate(el=>getComputedStyle(el.firstElementChild).transitionDuration.split(',')[0]),'0.22s');
+ const after=await expanded.boundingBox();assert.ok(Math.abs(before.x-after.x)<1);
+ await page.emulateMedia({reducedMotion:'reduce'});
+ assert.equal(await expanded.locator('.hamburger-lines i').first().evaluate(el=>getComputedStyle(el).transitionDuration),'0s');
+ await expanded.click();
+ await page.setViewportSize({width:390,height:844});
+ await page.getByRole('button',{name:'Email history: Campus Print',exact:true}).click();
+ assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+ console.log('PASS: supplier-only ordered email history, separate approval action, stationary animated hamburger, reduced motion and mobile width; all gateway calls mocked.');
+}finally{await browser.close();}
