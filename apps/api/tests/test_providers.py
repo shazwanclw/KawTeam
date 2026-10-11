@@ -1,6 +1,15 @@
 import pytest
 
 
+def test_search_uses_service_terms_and_prioritises_printers_over_irrelevant_results():
+    from kawteam.providers import search_topic, supplier_priority
+    brief={'goal':'Find Malaysian T-shirt printing companies for 50 cotton shirts with one-colour printing, including delivery to Subang Jaya','title':'T-shirt merchandise'}
+    assert search_topic(brief)=='Malaysian T-shirt printing companies'
+    printer={'name':'Custom T-Shirt Printing Malaysia','description':'Cotton shirts with printing'}
+    unrelated={'name':'Cheap flights','description':'Booking and delivery in Subang Jaya'}
+    assert supplier_priority(printer,brief)>supplier_priority(unrelated,brief)
+
+
 def test_discovery_keeps_more_than_five_businesses_and_skips_social_sources(monkeypatch):
     import httpx
 

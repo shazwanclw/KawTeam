@@ -9,6 +9,7 @@ from .contacts import contact_valid
 from .enquiries import enquiry_body
 from .failsafes import open_failsafe, refresh_context_failsafes, resolve_failsafe
 from .liaison import request_token
+from .providers import supplier_priority
 from .repository import payload_hash
 from .tasks import current_decisions, now
 from .workflow import fit, log
@@ -72,7 +73,7 @@ class Automation:
         target_filled = sum(
             status in {"approved", "secured"} for status in decisions.values()
         ) >= case.get("selectionTarget", 1)
-        for vendor in case["vendors"]:
+        for vendor in sorted(case['vendors'], key=lambda v: supplier_priority(v, case), reverse=True):
             approved = decisions.get(vendor["id"]) == "approved"
             if (
                 vendor.get("executionMode") != "live"

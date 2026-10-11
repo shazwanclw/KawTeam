@@ -1,4 +1,5 @@
 import json
+import re
 import ssl
 from concurrent.futures import ThreadPoolExecutor
 from datetime import date
@@ -45,6 +46,21 @@ def client():
     return httpx.Client(verify=truststore.SSLContext(ssl.PROTOCOL_TLS_CLIENT), timeout=35)
 
 
+def search_topic(brief):
+    goal = re.split(r'\b(?:for\s+\d+|with|including|budget|needed|delivery|under|less\s+than|within)\b', brief['goal'], flags=re.IGNORECASE)[0]
+    goal = re.sub(r'\b\d+(?:\.\d+)?\b', ' ', goal)
+    goal = re.sub(r'\b(?:find|please|want|need|i|we|me|us|for|the|a|an|around|rm|myr)\b', ' ', goal, flags=re.IGNORECASE)
+    return re.sub(r'\s+', ' ', goal).strip()[:100] or brief['title'][:100]
+
+
+def supplier_priority(vendor, brief):
+    stop = {'supplier','suppliers','company','companies','malaysia','malaysian','business','order','buy','event','vendors'}
+    words = {w.rstrip('s') for w in re.findall(r'[a-z]{3,}', search_topic(brief).lower()) if w not in stop}
+    title = vendor.get('name', '').lower()
+    excerpt = vendor.get('description', '').lower()
+    return sum(3 * (w in title) + (w in excerpt) for w in words)
+
+
 def discover(brief, key, exclude_hosts=()):
     from .contacts import NON_SUPPLIERS, supplier_url
 
@@ -52,13 +68,13 @@ def discover(brief, key, exclude_hosts=()):
         raise ValueError(
             "Live search is not connected. Add TAVILY_API_KEY to the backend environment."
         )
-    topic = brief["goal"][:200]
+    topic = search_topic(brief)
     area = brief.get("location") or "Malaysia"
     queries = [
         f"{topic} supplier {area} official website",
         f"{topic} {area} business email contact",
         f"{topic} {area} quotation company services",
-        f"{brief['title']} {area} supplier sales enquiries",
+        f"{topic} {area} supplier sales enquiries",
     ]
     vendors = []
     seen = set(exclude_hosts)
@@ -122,7 +138,7 @@ def discover(brief, key, exclude_hosts=()):
                         "quantity": brief["quantity"],
                     }
                 )
-    return vendors
+    return sorted(vendors, key=lambda v: supplier_priority(v, brief), reverse=True)
 
 
 def chat_response(message, event, context, history, settings):
