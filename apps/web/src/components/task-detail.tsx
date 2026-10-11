@@ -35,7 +35,7 @@ export function SupplierReview({request,vendorId,onClose}:{request:ProcurementCa
 }
 
 export function TaskDetail({project,task}:{project:EventMemory;task:ProjectTask}){
- const {state,profile,busy,perform}=useDemo();const params=useSearchParams();const cases=taskCases(state,project.id,task.id);const request=cases.find(c=>c.id===params.get('request'))||cases.at(-1);const progress=taskProgress(cases);const dates=taskDates(cases);const [selected,setSelected]=useState<string|null>(null);const [history,setHistory]=useState<string|null>(null);const historyTrigger=useRef<HTMLButtonElement|null>(null);
+ const {state,profile,busy,perform}=useDemo();const params=useSearchParams();const cases=taskCases(state,project.id,task.id);const request=cases.find(c=>c.id===params.get('request'))||cases.at(-1);const progress=taskProgress(cases);const dates=taskDates(cases);const [selected,setSelected]=useState<string|null>(null);const [history,setHistory]=useState<string|null>(()=>params.get('history'));const historyTrigger=useRef<HTMLButtonElement|null>(null);
  const [dismissedApproval,setDismissedApproval]=useState<string|null>(null);
  const approvalKey=params.get('approval')==='1'?`${request?.id}:${params.get('vendor')||'first'}`:null;
  const linkedVendor=request?.vendors.find(v=>v.id===params.get('vendor'))?.id||request?.approvalQueue?.find(r=>r.status==='approval_needed')?.vendorId;

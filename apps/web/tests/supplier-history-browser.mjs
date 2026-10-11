@@ -10,7 +10,10 @@ try{
  const request={id:'shirts-case',eventId:project.id,taskId:'shirts',title:'Shirts',goal:'Find 50 shirts',quantity:50,budgetSen:200000,targetSen:200000,location:'Subang',deadline:'2026-10-25',vendors:[vendor,{...vendor,id:'other',name:'Other Printer'},{...vendor,id:'empty',name:'New Supplier'}],events:[],stage:'decision',selectedVendorId:null,approvalQueue:[{vendorId:'print',status:'approval_needed',rank:1,reason:'Meets your brief'},{vendorId:'other',status:'liaising',reason:'Awaiting reply'},{vendorId:'empty',status:'liaising',reason:'Awaiting reply'}],messages:[{id:'reply',vendorId:'print',direction:'received',body:'We can supply 50 shirts for RM1000.',subject:'Re: Shirts enquiry',receivedAtMs:String(Date.parse('2026-10-11T10:00:00+08:00')),executionMode:'live'},{id:'other-mail',vendorId:'other',direction:'sent',body:'PRIVATE OTHER SUPPLIER',at:'2026-10-11T09:00:00+08:00',executionMode:'live'},{id:'enquiry',vendorId:'print',direction:'sent',body:'Could you quote for 50 shirts?',subject:'Shirts enquiry',at:'2026-10-11T09:00:00+08:00',executionMode:'live'},{id:'clarify',vendorId:'print',direction:'sent',body:'Please confirm delivery is included.',at:'2026-10-11T12:00:00+08:00',executionMode:'live'}],draft:{body:'',subject:'',recipient:'',status:'pending',revision:1}};
  const state={version:2,profile:'organiser',events:[project],documents:[],threads:[],cases:[request]};
  await page.route('**/api/kawteam/**',route=>{const path=new URL(route.request().url()).pathname;return route.fulfill({json:path.endsWith('/state')?state:path.endsWith('/automation/tick')?{processed:false}:{}});});
- await page.goto((process.env.KAWTEAM_TEST_URL||'http://127.0.0.1:3000')+`/projects/${project.id}/tasks/shirts`);
+ await page.goto((process.env.KAWTEAM_TEST_URL||'http://localhost:3000')+`/projects/${project.id}/tasks/shirts?history=print`);
+ await page.getByRole('dialog').getByRole('heading',{name:'Email history',exact:true}).waitFor();
+ assert.equal(await page.getByRole('dialog').locator('.supplier-history-message').count(),3);
+ await page.keyboard.press('Escape');
  await page.getByRole('button',{name:'Email history: Campus Print',exact:true}).click();
  const dialog=page.getByRole('dialog');
  await dialog.getByRole('heading',{name:'Email history',exact:true}).waitFor();
