@@ -1,6 +1,42 @@
 import pytest
 
 
+def test_discovery_keeps_more_than_five_businesses_and_skips_social_sources(monkeypatch):
+    import httpx
+
+    from kawteam.providers import discover
+
+    def handle(request):
+        import json
+
+        payload = json.loads(request.content)
+        assert payload["max_results"] == 20
+        assert "facebook.com" in payload["exclude_domains"]
+        return httpx.Response(
+            200,
+            json={
+                "results": [
+                    {"url": "https://facebook.com/post", "title": "Social"},
+                    *[
+                        {
+                            "url": f"https://printer{i}.example.com/shirts",
+                            "title": f"Printer {i}",
+                            "content": "Shirt printing",
+                        }
+                        for i in range(12)
+                    ],
+                ]
+            },
+        )
+
+    monkeypatch.setattr(
+        "kawteam.providers.client", lambda: httpx.Client(transport=httpx.MockTransport(handle))
+    )
+    vendors = discover({"goal": "50 printed shirts", "title": "Shirts", "quantity": 50}, "test")
+    assert len(vendors) == 12
+    assert len({v["sourceUrl"] for v in vendors}) == 12
+
+
 def test_malformed_provider_briefs_and_citations_cannot_trigger_actions():
     from kawteam.providers import validate_answer
 
@@ -38,16 +74,54 @@ def test_chat_sends_actual_execution_status_to_model(monkeypatch):
 
     from kawteam.config import Settings
     from kawteam.providers import chat_response
-    status = {"email": "configured", "websiteOutreach": "not_connected", "suppliersFound": 5, "verifiedContacts": 0, "emailsSent": 0}
+
+    status = {
+        "email": "configured",
+        "websiteOutreach": "not_connected",
+        "suppliersFound": 5,
+        "verifiedContacts": 0,
+        "emailsSent": 0,
+    }
+
     def handle(request):
         payload = json.loads(request.content)
-        schema = payload['generationConfig']['responseJsonSchema']
-        assert schema['properties']['action']['enum'] == ['none', 'find_vendors']
-        assert schema['additionalProperties'] is False
+        schema = payload["generationConfig"]["responseJsonSchema"]
+        assert schema["properties"]["action"]["enum"] == ["none", "find_vendors"]
+        assert schema["additionalProperties"] is False
         prompt = json.loads(payload["contents"][0]["parts"][0]["text"])
         assert prompt["executionStatus"] == status
         assert "executionStatus" in payload["systemInstruction"]["parts"][0]["text"]
-        return httpx.Response(200, json={"candidates": [{"content": {"parts": [{"text": json.dumps({"reply": "Five suppliers found; no email sent. Gmail is configured, but automatic outreach is not connected.", "action": "none", "citations": []})}]}}]})
-    monkeypatch.setattr("kawteam.providers.client", lambda: httpx.Client(transport=httpx.MockTransport(handle)))
-    result = chat_response("Did you email them?", {"name": "Tech Night", "executionStatus": status}, [], [], Settings(gemini_key="test"))
+        return httpx.Response(
+            200,
+            json={
+                "candidates": [
+                    {
+                        "content": {
+                            "parts": [
+                                {
+                                    "text": json.dumps(
+                                        {
+                                            "reply": "Five suppliers found; no email sent. Gmail is configured, but automatic outreach is not connected.",
+                                            "action": "none",
+                                            "citations": [],
+                                        }
+                                    )
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+        )
+
+    monkeypatch.setattr(
+        "kawteam.providers.client", lambda: httpx.Client(transport=httpx.MockTransport(handle))
+    )
+    result = chat_response(
+        "Did you email them?",
+        {"name": "Tech Night", "executionStatus": status},
+        [],
+        [],
+        Settings(gemini_key="test"),
+    )
     assert "no email sent" in result["reply"]

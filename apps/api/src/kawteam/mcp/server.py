@@ -140,7 +140,7 @@ def kawteam_email_status() -> dict[str, Any]:
 def kawteam_outreach_step(case_id: str) -> dict[str, Any]:
     """Execute one bounded step for a task whose user requested outreach in KawTeam chat. Verify a source-backed business contact, send a non-binding enquiry, read saved threads, interpret a reply or clarify missing terms. Never approves/selects suppliers or sends orders. Repeated steps resume saved progress; uncertain sends stay blocked."""
     settings, _repository, liaison = services()
-    engine = Automation(liaison, lambda vendor, case: discover_contact(vendor, case, settings), lambda case, message: extract_quote(case, message, settings))
+    engine = Automation(liaison, lambda vendor, case: discover_contact(vendor, case, settings), lambda case, message: extract_quote(case, message, settings), lambda case: discover(case, settings.tavily_key, exclude_hosts=[v.get('sourceUrl', '').split('/')[2].lower().removeprefix('www.') for v in case['vendors'] if v.get('sourceUrl', '').startswith(('http://', 'https://'))]))
     return engine.tick(case_id, "teammate")
 
 
