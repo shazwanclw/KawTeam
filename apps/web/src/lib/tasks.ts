@@ -16,7 +16,7 @@ export const taskCases=(state:WorkspaceState,projectId:string,taskId:string)=>st
 export function supplierOutreachLabel(request:ProcurementCase,vendorId:string){
  const messages=(request.messages||[]).filter(m=>m.vendorId===vendorId);
  if(messages.some(m=>m.direction==='received'))return 'Reply received';
- if(messages.some(m=>m.direction==='sent'))return 'Awaiting reply';
+ if(messages.some(m=>m.direction==='sent'))return 'Email sent · Awaiting reply';
  return 'Not contacted';
 }
 export function taskProgress(cases:ProcurementCase[]){

@@ -14,6 +14,8 @@ try{
  await page.getByRole('dialog').getByRole('heading',{name:'Email history',exact:true}).waitFor();
  assert.equal(await page.getByRole('dialog').locator('.supplier-history-message').count(),3);
  await page.keyboard.press('Escape');
+ await page.getByRole('button',{name:'Review supplier: Other Printer',exact:true}).getByText('Email sent · Awaiting reply',{exact:true}).waitFor();
+ await page.getByRole('button',{name:'Review supplier: New Supplier',exact:true}).getByText('Not contacted',{exact:true}).waitFor();
  await page.getByRole('button',{name:'Email history: Campus Print',exact:true}).click();
  const dialog=page.getByRole('dialog');
  await dialog.getByRole('heading',{name:'Email history',exact:true}).waitFor();
