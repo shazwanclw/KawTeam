@@ -104,3 +104,8 @@ Recent recorded checks passed: 154 backend tests, 47 frontend tests, TypeScript,
 ## Hackathon submission
 
 Dormathon 2026, Track 2: WorkBuddy agentic solutions. Required deliverables are a public repository, deployed application link, pitch PDF, group name and campus branch. The supplied deadline is **11 October 2026, 09:30 MYT**, with a 30-minute buffer; operational cutoff **09:00 MYT**. WorkBuddy must demonstrate meaningful tool execution for the track, rather than simply appearing in the pitch. Submission and deployment completion are not claimed here.
+
+## Contributors
+
+- **shazwanclw** — Lead developer, backend architecture, frontend UI, supplier workflow & automation
+- **Adiwert** — Documentation, code quality, environment setup, project configuration & constants
