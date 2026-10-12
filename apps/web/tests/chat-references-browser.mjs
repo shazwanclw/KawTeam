@@ -23,6 +23,7 @@ try{
    const project={...plain,id:'new-shirts',name:'T-shirt Sourcing',tasks:[{id:'new-task',name:'T-shirt merchandise',createdAt:'2026-10-11'}]};
    state.events.push(project);
    const assistant={id:'reply',role:'assistant',body:'Reference read.',time:'2026-10-11T04:00:00Z'};
+   state.threads.push({id:'new-thread',eventId:project.id,taskId:'new-task',messages:[{id:'user',role:'user',body:'Find shirts using this reference',time:assistant.time},assistant]});
    return route.fulfill({json:{eventId:project.id,taskId:'new-task',assistant,state}});
   }
   throw new Error(`Unexpected gateway call ${path}`);
@@ -59,7 +60,8 @@ try{
  await picker.setInputFiles({name:'brief.txt',mimeType:'text/plain',buffer:Buffer.from('We need 50 shirts. Budget RM2000.')});
  await page.getByRole('textbox',{name:'Message KawTeam',exact:true}).fill('Find shirts using this reference');
  await page.getByRole('button',{name:'Send message',exact:true}).click();
- await page.getByRole('heading',{name:'T-shirt Sourcing',exact:true}).waitFor();
+ await page.getByText('Reference read.',{exact:true}).waitFor();
+ assert.equal(new URL(page.url()).pathname,'/');
  assert.ok(submitted);
  await page.setViewportSize({width:390,height:844});
  await page.getByRole('button',{name:'Open navigation',exact:true}).click();

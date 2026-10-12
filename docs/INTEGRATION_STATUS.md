@@ -16,7 +16,7 @@ Remote-seeded UI checks verified eight pending approvals, nineteen searchable ve
 |---|---|---|
 | Supabase | Configured; API reads saved projects; seven migrations applied; task/chat transactions tested | Deployment environment and final deployed checks |
 | Gemini | `GEMINI_API_KEY` present; adapter succeeded; website chat returned and saved a Gemini reply after backend reload | Usage/error handling and deployed smoke test |
-| Tavily | `TAVILY_API_KEY` present; real bounded supplier search returned five source candidates | Broader sourcing and real commercial outreach acceptance |
+| Tavily | Four-query search returned 41 distinct business websites in a live T-shirt check; one business email was source-verified; no suppliers emailed during this check | Real commercial reply/quotation acceptance and deployed workflow checks |
 | Google Calendar | Requested one-way sync; setup instructions supplied; no Calendar adapter or consent implemented | Enable API, obtain owned calendar ID, implement OAuth, upsert sync and reminders |
 | Google Drive | Adapter and persisted snapshot/retrieval exist; neither credential configured | Authorised folder, credential and actual ingestion test |
 | WorkBuddy | Nine scoped tools discovered over real stdio; real project/task reads succeed against Supabase | Actual desktop orchestration evidence and supported website-to-WorkBuddy trigger |
@@ -26,6 +26,8 @@ Remote-seeded UI checks verified eight pending approvals, nineteen searchable ve
 The backend reports email configured and WorkBuddy desktop tools available, with its website trigger not connected. `GET /email/status` performs a live sender identity check. Configuration is not evidence of complete autonomous execution.
 
 ## Gemini and Tavily
+
+Supplier discovery no longer stops at five. Four basic searches request up to twenty results each and exclude social/marketplace domains. Contact lookup searches actual same-site pages when standard paths lack addresses and prefers sales over general info. Initial verified contacts can proceed to sending in the same step. Exhausted contact pools receive at most two replacement searches, excluding known domains; email limits and uncertain-send protections are retained. Local checks: 159 backend tests, Ruff, a live 41-site search, source-backed business contact verification and connected Gmail sender identity. The send-path checks used a mock mail provider, not new external supplier emails. Runtime steps still rely on the visible website tick or explicit WorkBuddy tool invocation.
 
 Use `apps/api/.env`, not frontend public variables. Existing keys are already working; do not request replacement keys without an actual provider failure.
 
@@ -129,3 +131,9 @@ Reuse the existing OAuth client where appropriate; no new API key is needed for 
 - [ ] Complete pitch PDF, group/campus details, deployed link and submission receipt.
 
 Future directions, not demo blockers: private organisation accounts, authorised social messaging, richer CRM/analytics and specialist sponsorship/scholarship workflows. No paid upgrade is assumed or authorised.
+
+## Vercel missing-dependency troubleshooting
+
+The initial backend deployment returned `FUNCTION_INVOCATION_FAILED` because importing `index.py` reached `import httpx` and failed with `ModuleNotFoundError`. The project's Python metadata did not declare runtime dependencies, despite the requirements file listing them. `apps/api/pyproject.toml` now explicitly lists all API runtime dependencies, with separate desktop MCP and development extras. A fresh isolated install using that manifest successfully imported the Vercel entrypoint and returned HTTP 200 from `/health`; this does not verify the hosted deployment.
+
+Push the manifest update and redeploy the backend from the new commit. If using manual Redeploy, disable the existing build cache for that rebuild. Confirm root directory `apps/api` and check `/health` before retrying the frontend. Use the actual backend production domain for frontend `KAWTEAM_API_URL`, without `/health`. Keep local `.env.local` pointed at localhost.

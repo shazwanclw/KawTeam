@@ -71,3 +71,25 @@
 .project-flow-title h1{font-size:34px;}
 .task-project .chat-start h2{font-size:22px;}
 @media(max-width:650px){.project-flow-title h1{font-size:28px;}.task-project .chat-start h2{font-size:20px;}}
+.approval-summary-dialog {
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  overscroll-behavior: contain;
+}
+.approval-summary-dialog > .flow-detail-body {
+  max-height: none;
+  overflow: visible;
+}
+.approval-summary-dialog > .flow-dialog-actions {
+  flex-wrap: nowrap;
+}
+.chat-surface[aria-label="Main chat"].start-conversation > .chat-start {
+  padding-top: clamp(90px, 20dvh, 190px);
+}
+@media (max-width: 650px) {
+  .chat-surface[aria-label="Main chat"].start-conversation > .chat-start {
+    padding-top: clamp(75px, 15dvh, 120px);
+  }
+}

@@ -270,7 +270,7 @@ def create_app(settings=None, repository=None):
         if body.caseId:
             case = record("case", body.caseId)
         else:
-            candidates = [c for c in repository.snapshot()["cases"] if c.get("automation", {}).get("status") in {"queued", "awaiting_replies"} or (c.get("automation", {}).get("status") == "review_ready" and any(d["status"] == "approved" for d in current_decisions(c)))]
+            candidates = [c for c in repository.snapshot()["cases"] if c.get("automation", {}).get("status") in {"queued", "awaiting_replies"} or (c.get("automation", {}).get("status") == "review_ready" and any(d["status"] == "approved" for d in current_decisions(c))) or (c.get('automation', {}).get('status') == 'needs_attention' and not c['automation'].get('error') and c['automation'].get('discoveryRounds', 0) < 2 and c.get('workflowMode') != 'liaise' and all(v.get('outreachBlock') for v in c.get('vendors', [])) and all(v.get('executionMode') == 'live' for v in c.get('vendors', [])))]
             candidates.sort(key=lambda c: c["automation"].get("lastTickAt", ""))
             case = candidates[0] if candidates else None
         if not case:
@@ -278,7 +278,7 @@ def create_app(settings=None, repository=None):
         last_tick = case.get("automation", {}).get("lastTickAt")
         if last_tick and (datetime.now(ZoneInfo("Asia/Kuala_Lumpur")) - datetime.fromisoformat(last_tick)).total_seconds() < 12:
             return {"processed": False, "reason": "Task step already running or recently checked."}
-        engine = Automation(email_service(), lambda vendor, case: discover_contact(vendor, case, settings), lambda case, message: extract_quote(case, message, settings))
+        engine = Automation(email_service(), lambda vendor, case: discover_contact(vendor, case, settings), lambda case, message: extract_quote(case, message, settings), lambda case: discover(case, settings.tavily_key, exclude_hosts=[v.get('sourceUrl', '').split('/')[2].lower().removeprefix('www.') for v in case['vendors'] if v.get('sourceUrl', '').startswith(('http://', 'https://'))]))
         try:
             result = engine.tick(case["id"], role)
             if any(f["code"] == "provider_connection" and f["status"] == "open" for f in result.get("failsafes", [])):

@@ -19,7 +19,7 @@ test('discovered suppliers remain not contacted until an actual send is recorded
  const c=initialState().cases[0];c.messages=[];
  assert.equal(supplierOutreachLabel(c,'campus'),'Not contacted');
  c.messages.push({id:'send',vendorId:'campus',direction:'sent',body:'Enquiry',time:'2026-10-11T03:00:00+08:00',executionMode:'live'});
- assert.equal(supplierOutreachLabel(c,'campus'),'Awaiting reply');
+ assert.equal(supplierOutreachLabel(c,'campus'),'Email sent · Awaiting reply');
  assert.equal(supplierOutreachLabel(c,'willow'),'Not contacted');
 });
 

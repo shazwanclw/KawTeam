@@ -31,7 +31,7 @@ export function ChatSurface({project:fixedProject,taskId,onCreateProject}:{proje
  const pending=useRef<{message:string;id:string;scope:string|null;references:string;drive:string|null}|null>(null);const bottom=useRef<HTMLDivElement>(null);
  const project=fixedProject||state.events.find(p=>p.id===selectedId);
  const tasks=project?projectTasks(state,project):[];
- const activeTaskId=fixedProject?(taskId||selectedTaskId):null;
+ const activeTaskId=taskId||selectedTaskId;
  const task=tasks.find(t=>t.id===activeTaskId);
  const messages=project&&activeTaskId?(state.threads.find(t=>t.eventId===project.id&&t.taskId===activeTaskId)||state.threads.find(t=>activeTaskId===`legacy-${project.id}`&&t.eventId===project.id&&!t.taskId))?.messages||[]:[];
  const visibleMessages=optimistic&&!messages.some(m=>m.role==='user'&&(m.id===optimistic.id||m.inReplyTo===optimistic.id))?[...messages,optimistic]:messages;
@@ -51,8 +51,8 @@ export function ChatSurface({project:fixedProject,taskId,onCreateProject}:{proje
    if(multipart){multipart.append('payload',JSON.stringify(payload));for(const file of files)multipart.append('files',file);}
    const result=await api<{assistant:ChatMessage;eventId:string;taskId:string;state:WorkspaceState}>(multipart?'chat/references':'chat',multipart||payload);
    acceptState(result.state);setOptimistic(null);pending.current=null;setFiles([]);setDriveUrl('');
-   if(fixedProject&&result.eventId===fixedProject.id)setSelectedTaskId(result.taskId);
-   else router.push(`/projects/${result.eventId}?task=${encodeURIComponent(result.taskId)}`);
+   if(!fixedProject)setSelectedId(result.eventId);
+   setSelectedTaskId(result.taskId);
   }catch(error){setOptimistic(null);setInput(message);notify(error instanceof Error?error.message:'Your message could not be saved. Try again.');}
   finally{setSending(false);}
  }
@@ -63,7 +63,7 @@ export function ChatSurface({project:fixedProject,taskId,onCreateProject}:{proje
   <DropdownMenuContent className="chat-picker-menu" align="start"><DropdownMenuLabel>Continue a task, or start fresh</DropdownMenuLabel><DropdownMenuItem onSelect={()=>{if(taskId)router.push(`/projects/${project!.id}`);else setSelectedTaskId(null);}}><Plus size={16}/><span>New Task<small>A separate conversation</small></span>{!activeTaskId&&<Check size={14}/>}</DropdownMenuItem><DropdownMenuSeparator/>{tasks.map(t=><DropdownMenuItem key={t.id} onSelect={()=>{if(taskId)router.push(`/projects/${project!.id}?task=${t.id}`);else setSelectedTaskId(t.id);}}><MessageSquare size={16}/><span>{t.name}</span>{t.id===activeTaskId&&<Check size={14}/>}</DropdownMenuItem>)}</DropdownMenuContent>
  </DropdownMenu>:<DropdownMenu>
   <DropdownMenuTrigger className="chat-project-picker" aria-label="Choose project" disabled={sending||loading}><Folder size={16}/><span>{project?.name||'Choose project'}</span><ChevronDown size={14}/></DropdownMenuTrigger>
-  <DropdownMenuContent className="chat-picker-menu" align="start"><DropdownMenuLabel>What is this task for?</DropdownMenuLabel><DropdownMenuItem onSelect={()=>setSelectedId(null)}><MessageSquare size={16}/><span>No project yet<small>Start from your prompt</small></span>{!project&&<Check size={14}/>}</DropdownMenuItem><DropdownMenuSeparator/>{state.events.map(p=><DropdownMenuItem key={p.id} onSelect={()=>setSelectedId(p.id)}><Folder size={16}/><span>{p.name}</span>{p.id===project?.id&&<Check size={14}/>}</DropdownMenuItem>)}{!state.events.length&&<DropdownMenuItem disabled={profile==='observer'} onSelect={onCreateProject}><Plus size={16}/><span>Add a project<small>Or just start a conversation</small></span></DropdownMenuItem>}</DropdownMenuContent>
+  <DropdownMenuContent className="chat-picker-menu" align="start"><DropdownMenuLabel>What is this task for?</DropdownMenuLabel><DropdownMenuItem onSelect={()=>{setSelectedId(null);setSelectedTaskId(null);}}><MessageSquare size={16}/><span>No project yet<small>Start from your prompt</small></span>{!project&&<Check size={14}/>}</DropdownMenuItem><DropdownMenuSeparator/>{state.events.map(p=><DropdownMenuItem key={p.id} onSelect={()=>{setSelectedId(p.id);setSelectedTaskId(null);}}><Folder size={16}/><span>{p.name}</span>{p.id===project?.id&&<Check size={14}/>}</DropdownMenuItem>)}{!state.events.length&&<DropdownMenuItem disabled={profile==='observer'} onSelect={onCreateProject}><Plus size={16}/><span>Add a project<small>Or just start a conversation</small></span></DropdownMenuItem>}</DropdownMenuContent>
  </DropdownMenu>;
  const composer=<div className="chat-compose-area"><form className="chat-compose" onSubmit={send}><ReferenceChips driveUrl={project?.driveSource?.url?'':driveUrl} onDrive={setDriveUrl} files={files} onFiles={setFiles} disabled={sending}/><textarea id="chat-message" aria-label="Message KawTeam" value={input} rows={hasConversation?2:3} maxLength={5000} onChange={e=>setInput(e.target.value)} onKeyDown={e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.nativeEvent.isComposing){e.preventDefault();e.currentTarget.form?.requestSubmit();}}} placeholder={profile==='observer'?'Observer view · switch profile to continue':task?'Ask a question or update this task…':fixedProject?'What would you like to get done?':'Tell us what you’re looking for…'} disabled={profile==='observer'||sending||loading}/><div className="chat-compose-tools"><div>{picker}<ReferenceTools showDrive={!project?.driveSource?.url} driveUrl={driveUrl} onDrive={setDriveUrl} files={files} onFiles={setFiles} disabled={profile==='observer'||sending||loading} onError={notify}/></div><button className="chat-send" type="submit" aria-label="Send message" disabled={sending||!input.trim()||profile==='observer'||loading}><ArrowUp size={21}/></button></div></form></div>;
 

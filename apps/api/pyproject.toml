@@ -3,6 +3,26 @@ name = "kawteam-tools"
 version = "0.1.0"
 description = "KawTeam event memory, supplier workflow and FastAPI backend"
 requires-python = ">=3.12"
+dependencies = [
+    "fastapi==0.143.0",
+    "httpx==0.28.1",
+    "pydantic==2.14.0",
+    "python-dotenv==1.2.4",
+    "python-multipart==0.0.32",
+    "truststore==0.10.4",
+    "python-docx==1.2.0",
+    "openpyxl==3.1.5",
+    "pypdf==6.20.0",
+    "google-auth==2.61.0",
+    "google-auth-oauthlib==1.5.0",
+    "tzdata==2026.5",
+    "uvicorn==0.54.0",
+]
+
+[project.optional-dependencies]
+desktop = ["mcp==2.3.0"]
+dev = ["pytest==9.1.1", "ruff==0.17.0"]
+
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
